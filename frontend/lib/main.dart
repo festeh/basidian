@@ -4,6 +4,7 @@ import 'screens/home_screen.dart';
 import 'services/notes_provider.dart';
 import 'services/theme_provider.dart';
 import 'services/asr_settings_provider.dart';
+import 'services/filesystem_provider.dart';
 import 'services/audio_service.dart';
 
 void main() {
@@ -23,6 +24,7 @@ class RumiApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NotesProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => ASRSettingsProvider()),
+        ChangeNotifierProvider(create: (_) => FilesystemProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {

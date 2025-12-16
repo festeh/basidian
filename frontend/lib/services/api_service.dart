@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/note.dart';
+import '../models/fs_node.dart';
 
 class ApiService {
   static const String baseUrl = String.fromEnvironment(
@@ -187,6 +188,217 @@ class ApiService {
         return 'Gateway Timeout - Server response timeout';
       default:
         return 'Unexpected server response';
+    }
+  }
+
+  // ==================== Filesystem API ====================
+
+  static Future<List<FsNode>> getTree({String? parentPath}) async {
+    String url = '$baseUrl/fs/tree';
+    if (parentPath != null) {
+      url += '?parent_path=${Uri.encodeComponent(parentPath)}';
+    }
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        return jsonList.map((json) => FsNode.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load filesystem tree: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while loading filesystem tree: $e');
+    }
+  }
+
+  static Future<FsNode> getNodeByPath(String path) async {
+    final url = '$baseUrl/fs/node?path=${Uri.encodeComponent(path)}';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        return FsNode.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 404) {
+        throw Exception('Node not found at path: $path');
+      } else {
+        throw Exception('Failed to load node: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while loading node: $e');
+    }
+  }
+
+  static Future<FsNode> getNodeById(String id) async {
+    final url = '$baseUrl/fs/node/$id';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        return FsNode.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 404) {
+        throw Exception('Node not found with id: $id');
+      } else {
+        throw Exception('Failed to load node: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while loading node: $e');
+    }
+  }
+
+  static Future<FsNode> createNode(FsNode node) async {
+    final url = '$baseUrl/fs/node';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(node.toCreateJson()),
+      );
+
+      if (response.statusCode == 201) {
+        return FsNode.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 409) {
+        throw Exception('Path already exists: ${node.path}');
+      } else {
+        throw Exception('Failed to create node: ${response.statusCode} - ${response.body}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while creating node: $e');
+    }
+  }
+
+  static Future<FsNode> updateNode(FsNode node) async {
+    final url = '$baseUrl/fs/node/${node.id}';
+
+    try {
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(node.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        return FsNode.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 404) {
+        throw Exception('Node not found');
+      } else {
+        throw Exception('Failed to update node: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while updating node: $e');
+    }
+  }
+
+  static Future<void> deleteNode(String id) async {
+    final url = '$baseUrl/fs/node/$id';
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+
+      if (response.statusCode != 204) {
+        throw Exception('Failed to delete node: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while deleting node: $e');
+    }
+  }
+
+  static Future<FsNode> moveNode(String id, {String? newParentPath, String? newName}) async {
+    final url = '$baseUrl/fs/move/$id';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          if (newParentPath != null) 'new_parent_path': newParentPath,
+          if (newName != null) 'new_name': newName,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return FsNode.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 409) {
+        throw Exception('Destination path already exists');
+      } else {
+        throw Exception('Failed to move node: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while moving node: $e');
+    }
+  }
+
+  static Future<List<FsNode>> searchFiles(String query) async {
+    final url = '$baseUrl/fs/search?q=${Uri.encodeComponent(query)}';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        return jsonList.map((json) => FsNode.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to search files: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while searching files: $e');
+    }
+  }
+
+  static Future<FsNode> getOrCreateDailyNote(DateTime date) async {
+    final dateString = date.toIso8601String().substring(0, 10);
+    final url = '$baseUrl/daily/$dateString';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return FsNode.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Failed to get/create daily note: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error while getting daily note: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> migrateToFilesystem() async {
+    final url = '$baseUrl/migrate-to-filesystem';
+
+    try {
+      final response = await http.post(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to migrate notes: ${response.statusCode}');
+      }
+    } on SocketException catch (e) {
+      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error during migration: $e');
     }
   }
 }
