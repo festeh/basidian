@@ -1,4 +1,4 @@
-# Justfile for Rumi - Daily Notes App
+# Justfile for Basidian - Daily Notes App
 # Root-level commands for managing frontend and backend
 
 # Default recipe: show available commands
@@ -9,11 +9,11 @@ default:
 
 # Build the backend server
 build-backend:
-    cd backend && go build -o rumi-server .
+    cd backend && go build -o basidian-server .
 
 # Run the backend server
 run-backend:
-    cd backend && ./rumi-server serve
+    cd backend && ./basidian-server serve
 
 # Run backend with auto-rebuild on changes (requires air)
 dev-backend:
@@ -21,7 +21,7 @@ dev-backend:
 
 # Clean backend build artifacts
 clean-backend:
-    rm -f backend/rumi-server
+    rm -f backend/basidian-server
 
 # ============== Frontend (Flutter) ==============
 
@@ -72,7 +72,7 @@ run-all-linux:
     #!/usr/bin/env bash
     set -euo pipefail
     trap 'kill 0' EXIT
-    (cd backend && ./rumi-server serve) &
+    (cd backend && ./basidian-server serve) &
     sleep 2
     (cd frontend && just run-linux) &
     wait
@@ -82,7 +82,7 @@ run-all-android:
     #!/usr/bin/env bash
     set -euo pipefail
     trap 'kill 0' EXIT
-    (cd backend && ./rumi-server serve) &
+    (cd backend && ./basidian-server serve) &
     sleep 2
     (cd frontend && just run-android) &
     wait

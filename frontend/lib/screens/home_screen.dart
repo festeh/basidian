@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // App title
           Text(
-            'Rumi',
+            'Basidian',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),

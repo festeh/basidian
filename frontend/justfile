@@ -1,4 +1,4 @@
-# Justfile for Rumi Flutter Frontend
+# Justfile for Basidian Flutter Frontend
 # Backend server configuration
 set dotenv-load
 backend_url := env_var('BACKEND_URL')

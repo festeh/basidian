@@ -25,7 +25,7 @@ jobs:
       run: |
         cd backend
         go mod download
-        CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o rumi-backend main.go
+        CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o basidian-backend main.go
 
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.1.0
@@ -35,13 +35,13 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           # Stop the service if running
-          sudo systemctl stop rumi-backend || true
+          sudo systemctl stop basidian-backend || true
 
           # Create directory if it doesn't exist
-          sudo mkdir -p /root/rumi
+          sudo mkdir -p /root/basidian
 
           # Set proper ownership
-          sudo chown -R root:root /root/rumi
+          sudo chown -R root:root /root/basidian
 
     - name: Copy files to VPS
       uses: appleboy/scp-action@v0.1.7
@@ -49,8 +49,8 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "backend/rumi-backend"
-        target: "/root/rumi/"
+        source: "backend/basidian-backend"
+        target: "/root/basidian/"
         strip_components: 1
 
     - name: Setup systemd service and start
@@ -61,24 +61,24 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           # Make binary executable
-          sudo chmod +x /root/rumi/rumi-backend
+          sudo chmod +x /root/basidian/basidian-backend
 
           # Create systemd service file
-          sudo tee /etc/systemd/system/rumi-backend.service > /dev/null <<EOF
+          sudo tee /etc/systemd/system/basidian-backend.service > /dev/null <<EOF
           [Unit]
-          Description=Rumi Backend Service
+          Description=Basidian Backend Service
           After=network.target
 
           [Service]
           Type=simple
           User=root
-          WorkingDirectory=/root/rumi
-          ExecStart=/root/rumi/rumi-backend serve --http=127.0.0.1:9090
+          WorkingDirectory=/root/basidian
+          ExecStart=/root/basidian/basidian-backend serve --http=127.0.0.1:9090
           Restart=always
           RestartSec=5
           StandardOutput=journal
           StandardError=journal
-          SyslogIdentifier=rumi-backend
+          SyslogIdentifier=basidian-backend
 
           [Install]
           WantedBy=multi-user.target
@@ -86,8 +86,8 @@ jobs:
 
           # Reload systemd and start service
           sudo systemctl daemon-reload
-          sudo systemctl enable rumi-backend
-          sudo systemctl start rumi-backend
+          sudo systemctl enable basidian-backend
+          sudo systemctl start basidian-backend
 
           # Check service status
-          sudo systemctl status rumi-backend --no-pager -l
+          sudo systemctl status basidian-backend --no-pager -l
