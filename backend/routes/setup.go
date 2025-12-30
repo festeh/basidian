@@ -26,7 +26,7 @@ func Setup(r *gin.Engine) {
 
 	// Health check
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok", "service": "rumi-backend"})
+		c.JSON(200, gin.H{"status": "ok", "service": "basidian-backend"})
 	})
 
 	// Notes API

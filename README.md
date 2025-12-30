@@ -1,4 +1,4 @@
-# Rumi - Daily Notes App
+# Basidian - Daily Notes App
 
 A beautiful daily notes application built with Flutter (frontend) and Go (backend).
 
@@ -53,7 +53,7 @@ A beautiful daily notes application built with Flutter (frontend) and Go (backen
 ## Project Structure
 
 ```
-rumi/
+basidian/
 ├── README.md
 ├── backend/                 # Go REST API
 │   ├── main.go
