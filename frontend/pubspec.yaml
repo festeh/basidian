@@ -1,5 +1,5 @@
-name: rumi
-description: "A beautiful daily notes app for capturing your thoughts."
+name: basidian
+description: "A second brain app for organizing your thoughts."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -55,22 +55,22 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/rumi_icon_1024.png"
+  image_path: "assets/icons/basidian_icon_1024.png"
   min_sdk_android: 21
   adaptive_icon_background: "#1E1E2E"
   adaptive_icon_foreground: "assets/icons/ic_launcher_foreground.png"
   web:
     generate: true
-    image_path: "assets/icons/rumi_icon_1024.png"
+    image_path: "assets/icons/basidian_icon_1024.png"
   windows:
     generate: true
-    image_path: "assets/icons/rumi_icon_1024.png"
+    image_path: "assets/icons/basidian_icon_1024.png"
   macos:
     generate: true
-    image_path: "assets/icons/rumi_icon_1024.png"
+    image_path: "assets/icons/basidian_icon_1024.png"
   linux:
     generate: true
-    image_path: "assets/icons/rumi_icon_1024.png"
+    image_path: "assets/icons/basidian_icon_1024.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
