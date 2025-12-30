@@ -11,11 +11,11 @@ void main() {
   // Validate required environment variables at startup
   AudioService.validateConfig();
 
-  runApp(const RumiApp());
+  runApp(const BasidianApp());
 }
 
-class RumiApp extends StatelessWidget {
-  const RumiApp({super.key});
+class BasidianApp extends StatelessWidget {
+  const BasidianApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class RumiApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
-            title: 'Rumi - Daily Notes',
+            title: 'Basidian - Daily Notes',
             theme: themeProvider.themeData,
             home: const HomeScreen(),
             debugShowCheckedModeBanner: false,
