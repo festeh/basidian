@@ -1,21 +1,21 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
+	"database/sql"
 	"log"
-	"strings"
+	"basidian/database"
 	"time"
 
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/types"
+	"github.com/gin-gonic/gin"
 )
 
-func formatDateTime(dt types.DateTime) interface{} {
-	if dt.IsZero() {
-		return nil
-	}
-	return dt.Time().Local().Format(time.RFC3339)
+type Note struct {
+	ID        string  `json:"id"`
+	Title     string  `json:"title"`
+	Content   string  `json:"content"`
+	Date      string  `json:"date"`
+	CreatedAt *string `json:"created_at"`
+	UpdatedAt *string `json:"updated_at"`
 }
 
 type NoteRequest struct {
@@ -24,225 +24,259 @@ type NoteRequest struct {
 	Date    string `json:"date"`
 }
 
-func GetNotes(re *core.RequestEvent, app core.App) error {
-	log.Printf("GetNotes: Starting to fetch notes")
+func GetNotes(c *gin.Context) {
+	log.Printf("GetNotes: Fetching all notes")
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	rows, err := database.DB.Query(`
+		SELECT id, title, content, date, created, updated
+		FROM notes
+		ORDER BY date DESC
+	`)
 	if err != nil {
-		log.Printf("GetNotes: Failed to find collection 'notes': %v", err)
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		log.Printf("GetNotes: Query failed: %v", err)
+		c.JSON(500, gin.H{"error": "Failed to fetch notes"})
+		return
+	}
+	defer rows.Close()
+
+	notes := make([]Note, 0)
+	for rows.Next() {
+		var n Note
+		var created, updated string
+		if err := rows.Scan(&n.ID, &n.Title, &n.Content, &n.Date, &created, &updated); err != nil {
+			log.Printf("GetNotes: Scan failed: %v", err)
+			continue
+		}
+		if created != "" {
+			n.CreatedAt = &created
+		}
+		if updated != "" {
+			n.UpdatedAt = &updated
+		}
+		notes = append(notes, n)
 	}
 
-	log.Printf("GetNotes: Found collection 'notes', ID: %s", collection.Id)
-	log.Printf("GetNotes: Collection fields: %+v", collection.Fields)
-
-	records, err := app.FindRecordsByFilter(collection, "1=1", "-date", 0, 0)
-	if err != nil {
-		log.Printf("GetNotes: FindRecordsByFilter failed - Error: %v", err)
-		log.Printf("GetNotes: Query details - Collection: %s, Filter: '1=1', Sort: '-date'", collection.Name)
-		return re.JSON(500, map[string]string{"error": "Failed to fetch notes", "details": err.Error()})
-	}
-
-	log.Printf("GetNotes: Successfully fetched %d records", len(records))
-
-	notes := make([]map[string]interface{}, 0)
-	for _, record := range records {
-		notes = append(notes, map[string]interface{}{
-			"id":         record.Id,
-			"title":      record.GetString("title"),
-			"content":    record.GetString("content"),
-			"date":       record.GetString("date"),
-			"created_at": formatDateTime(record.GetDateTime("created")),
-			"updated_at": formatDateTime(record.GetDateTime("updated")),
-		})
-	}
-
-	return re.JSON(200, notes)
+	log.Printf("GetNotes: Found %d notes", len(notes))
+	c.JSON(200, notes)
 }
 
-func GetNote(re *core.RequestEvent, app core.App) error {
-	id := re.Request.PathValue("id")
+func GetNote(c *gin.Context) {
+	id := c.Param("id")
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	var n Note
+	var created, updated string
+	err := database.DB.QueryRow(`
+		SELECT id, title, content, date, created, updated
+		FROM notes
+		WHERE id = ?
+	`, id).Scan(&n.ID, &n.Title, &n.Content, &n.Date, &created, &updated)
+
+	if err == sql.ErrNoRows {
+		c.JSON(404, gin.H{"error": "Note not found"})
+		return
+	}
 	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		c.JSON(500, gin.H{"error": "Failed to fetch note"})
+		return
 	}
 
-	record, err := app.FindRecordById(collection, id)
-	if err != nil {
-		return re.JSON(404, map[string]string{"error": "Note not found"})
+	if created != "" {
+		n.CreatedAt = &created
+	}
+	if updated != "" {
+		n.UpdatedAt = &updated
 	}
 
-	note := map[string]interface{}{
-		"id":         record.Id,
-		"title":      record.GetString("title"),
-		"content":    record.GetString("content"),
-		"date":       record.GetString("date"),
-		"created_at": formatDateTime(record.GetDateTime("created")),
-		"updated_at": formatDateTime(record.GetDateTime("updated")),
-	}
-
-	return re.JSON(200, note)
+	c.JSON(200, n)
 }
 
-func CreateNote(re *core.RequestEvent, app core.App) error {
-	var noteReq NoteRequest
-	if err := json.NewDecoder(re.Request.Body).Decode(&noteReq); err != nil {
-		return re.JSON(400, map[string]string{"error": "Invalid JSON"})
+func CreateNote(c *gin.Context) {
+	var req NoteRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid JSON"})
+		return
 	}
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	id := database.GenerateID()
+	now := time.Now().Format(time.RFC3339)
+
+	date := req.Date
+	if date == "" {
+		date = time.Now().Format("2006-01-02")
+	}
+
+	_, err := database.DB.Exec(`
+		INSERT INTO notes (id, title, content, date, created, updated)
+		VALUES (?, ?, ?, ?, ?, ?)
+	`, id, req.Title, req.Content, date, now, now)
+
 	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		log.Printf("CreateNote: Insert failed: %v", err)
+		c.JSON(500, gin.H{"error": "Failed to create note"})
+		return
 	}
 
-	record := core.NewRecord(collection)
-	record.Set("title", noteReq.Title)
-	record.Set("content", noteReq.Content)
-
-	if noteReq.Date == "" {
-		record.Set("date", time.Now().Format("2006-01-02"))
-	} else {
-		record.Set("date", noteReq.Date)
+	note := Note{
+		ID:        id,
+		Title:     req.Title,
+		Content:   req.Content,
+		Date:      date,
+		CreatedAt: &now,
+		UpdatedAt: &now,
 	}
 
-	if err := app.Save(record); err != nil {
-		return re.JSON(500, map[string]string{"error": "Failed to create note"})
-	}
-
-	note := map[string]interface{}{
-		"id":         record.Id,
-		"title":      record.GetString("title"),
-		"content":    record.GetString("content"),
-		"date":       record.GetString("date"),
-		"created_at": formatDateTime(record.GetDateTime("created")),
-		"updated_at": formatDateTime(record.GetDateTime("updated")),
-	}
-
-	return re.JSON(201, note)
+	log.Printf("CreateNote: Created note %s", id)
+	c.JSON(201, note)
 }
 
-func UpdateNote(re *core.RequestEvent, app core.App) error {
-	id := re.Request.PathValue("id")
+func UpdateNote(c *gin.Context) {
+	id := c.Param("id")
 
-	var noteReq NoteRequest
-	if err := json.NewDecoder(re.Request.Body).Decode(&noteReq); err != nil {
-		return re.JSON(400, map[string]string{"error": "Invalid JSON"})
+	var req NoteRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid JSON"})
+		return
 	}
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	// Check if note exists
+	var exists bool
+	err := database.DB.QueryRow("SELECT 1 FROM notes WHERE id = ?", id).Scan(&exists)
+	if err == sql.ErrNoRows {
+		c.JSON(404, gin.H{"error": "Note not found"})
+		return
+	}
+
+	now := time.Now().Format(time.RFC3339)
+
+	_, err = database.DB.Exec(`
+		UPDATE notes
+		SET title = ?, content = ?, date = ?, updated = ?
+		WHERE id = ?
+	`, req.Title, req.Content, req.Date, now, id)
+
 	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		log.Printf("UpdateNote: Update failed: %v", err)
+		c.JSON(500, gin.H{"error": "Failed to update note"})
+		return
 	}
 
-	record, err := app.FindRecordById(collection, id)
-	if err != nil {
-		return re.JSON(404, map[string]string{"error": "Note not found"})
+	// Fetch updated record
+	var n Note
+	var created, updated string
+	database.DB.QueryRow(`
+		SELECT id, title, content, date, created, updated
+		FROM notes WHERE id = ?
+	`, id).Scan(&n.ID, &n.Title, &n.Content, &n.Date, &created, &updated)
+
+	if created != "" {
+		n.CreatedAt = &created
+	}
+	if updated != "" {
+		n.UpdatedAt = &updated
 	}
 
-	record.Set("title", noteReq.Title)
-	record.Set("content", noteReq.Content)
-	record.Set("date", noteReq.Date)
-
-	if err := app.Save(record); err != nil {
-		return re.JSON(500, map[string]string{"error": "Failed to update note"})
-	}
-
-	note := map[string]interface{}{
-		"id":         record.Id,
-		"title":      record.GetString("title"),
-		"content":    record.GetString("content"),
-		"date":       record.GetString("date"),
-		"created_at": formatDateTime(record.GetDateTime("created")),
-		"updated_at": formatDateTime(record.GetDateTime("updated")),
-	}
-
-	return re.JSON(200, note)
+	log.Printf("UpdateNote: Updated note %s", id)
+	c.JSON(200, n)
 }
 
-func DeleteNote(re *core.RequestEvent, app core.App) error {
-	id := re.Request.PathValue("id")
+func DeleteNote(c *gin.Context) {
+	id := c.Param("id")
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	// Check if note exists
+	var exists bool
+	err := database.DB.QueryRow("SELECT 1 FROM notes WHERE id = ?", id).Scan(&exists)
+	if err == sql.ErrNoRows {
+		c.JSON(404, gin.H{"error": "Note not found"})
+		return
+	}
+
+	_, err = database.DB.Exec("DELETE FROM notes WHERE id = ?", id)
 	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		log.Printf("DeleteNote: Delete failed: %v", err)
+		c.JSON(500, gin.H{"error": "Failed to delete note"})
+		return
 	}
 
-	record, err := app.FindRecordById(collection, id)
-	if err != nil {
-		return re.JSON(404, map[string]string{"error": "Note not found"})
-	}
-
-	if err := app.Delete(record); err != nil {
-		return re.JSON(500, map[string]string{"error": "Failed to delete note"})
-	}
-
-	return re.NoContent(204)
+	log.Printf("DeleteNote: Deleted note %s", id)
+	c.Status(204)
 }
 
-func GetNotesByDate(re *core.RequestEvent, app core.App) error {
-	dateStr := re.Request.PathValue("date")
+func GetNotesByDate(c *gin.Context) {
+	dateStr := c.Param("date")
 
 	_, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
-		return re.JSON(400, map[string]string{"error": "Invalid date format. Use YYYY-MM-DD"})
+		c.JSON(400, gin.H{"error": "Invalid date format. Use YYYY-MM-DD"})
+		return
 	}
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	rows, err := database.DB.Query(`
+		SELECT id, title, content, date, created, updated
+		FROM notes
+		WHERE date LIKE ?
+		ORDER BY created DESC
+	`, dateStr+"%")
 	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		c.JSON(500, gin.H{"error": "Failed to fetch notes"})
+		return
+	}
+	defer rows.Close()
+
+	notes := make([]Note, 0)
+	for rows.Next() {
+		var n Note
+		var created, updated string
+		if err := rows.Scan(&n.ID, &n.Title, &n.Content, &n.Date, &created, &updated); err != nil {
+			continue
+		}
+		if created != "" {
+			n.CreatedAt = &created
+		}
+		if updated != "" {
+			n.UpdatedAt = &updated
+		}
+		notes = append(notes, n)
 	}
 
-	filter := fmt.Sprintf("date ~ '%s'", dateStr)
-	records, err := app.FindRecordsByFilter(collection, filter, "-created", 0, 0)
-	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Failed to fetch notes"})
-	}
-
-	notes := make([]map[string]interface{}, 0)
-	for _, record := range records {
-		notes = append(notes, map[string]interface{}{
-			"id":         record.Id,
-			"title":      record.GetString("title"),
-			"content":    record.GetString("content"),
-			"date":       record.GetString("date"),
-			"created_at": formatDateTime(record.GetDateTime("created")),
-			"updated_at": formatDateTime(record.GetDateTime("updated")),
-		})
-	}
-
-	return re.JSON(200, notes)
+	c.JSON(200, notes)
 }
 
-func SearchNotes(re *core.RequestEvent, app core.App) error {
-	query := re.Request.URL.Query().Get("q")
+func SearchNotes(c *gin.Context) {
+	query := c.Query("q")
 	if query == "" {
-		return re.JSON(400, map[string]string{"error": "Search query is required"})
+		c.JSON(400, gin.H{"error": "Search query is required"})
+		return
 	}
 
-	collection, err := app.FindCollectionByNameOrId("notes")
+	searchPattern := "%" + query + "%"
+
+	rows, err := database.DB.Query(`
+		SELECT id, title, content, date, created, updated
+		FROM notes
+		WHERE title LIKE ? OR content LIKE ?
+		ORDER BY date DESC
+	`, searchPattern, searchPattern)
 	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Collection not found"})
+		c.JSON(500, gin.H{"error": "Failed to search notes"})
+		return
+	}
+	defer rows.Close()
+
+	notes := make([]Note, 0)
+	for rows.Next() {
+		var n Note
+		var created, updated string
+		if err := rows.Scan(&n.ID, &n.Title, &n.Content, &n.Date, &created, &updated); err != nil {
+			continue
+		}
+		if created != "" {
+			n.CreatedAt = &created
+		}
+		if updated != "" {
+			n.UpdatedAt = &updated
+		}
+		notes = append(notes, n)
 	}
 
-	escapedQuery := strings.ReplaceAll(query, "'", "''")
-	filter := fmt.Sprintf("title ~ '%s' || content ~ '%s'", escapedQuery, escapedQuery)
-	records, err := app.FindRecordsByFilter(collection, filter, "-date", 0, 0)
-	if err != nil {
-		return re.JSON(500, map[string]string{"error": "Failed to search notes"})
-	}
-
-	notes := make([]map[string]interface{}, 0)
-	for _, record := range records {
-		notes = append(notes, map[string]interface{}{
-			"id":         record.Id,
-			"title":      record.GetString("title"),
-			"content":    record.GetString("content"),
-			"date":       record.GetString("date"),
-			"created_at": formatDateTime(record.GetDateTime("created")),
-			"updated_at": formatDateTime(record.GetDateTime("updated")),
-		})
-	}
-
-	return re.JSON(200, notes)
+	c.JSON(200, notes)
 }

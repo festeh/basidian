@@ -1,33 +1,34 @@
 package main
 
 import (
+	"flag"
 	"log"
-	"rumi-backend/database"
-	"rumi-backend/routes"
+	"basidian/database"
+	"basidian/routes"
 
-	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/core"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	app := pocketbase.New()
+	addr := flag.String("http", ":8090", "HTTP server address")
+	dbPath := flag.String("db", "./pb_data/data.db", "SQLite database path")
+	flag.Parse()
 
-	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
-		log.Printf("Setting up PocketBase server on %s", se.Server.Addr)
+	// Initialize database
+	if err := database.Init(*dbPath); err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+	defer database.Close()
 
-		if err := database.EnsureNotesCollection(se.App); err != nil {
-			log.Fatalf("Failed to ensure notes collection: %v", err)
-		}
-		log.Printf("Notes collection ensured successfully")
+	// Set up Gin router
+	r := gin.Default()
 
-		routes.Setup(se, app)
-		log.Printf("Custom routes setup completed")
+	// Set up routes
+	routes.Setup(r)
+	log.Printf("Routes configured")
 
-		log.Printf("Server started on %s", se.Server.Addr)
-		return se.Next()
-	})
-
-	if err := app.Start(); err != nil {
+	log.Printf("Server starting on %s", *addr)
+	if err := r.Run(*addr); err != nil {
 		log.Fatal(err)
 	}
 }
