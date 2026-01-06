@@ -15,18 +15,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.24'
-        cache-dependency-path: backend/go.sum
-
-    - name: Build backend
-      run: |
-        cd backend
-        go mod download
-        CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o basidian main.go
-
     - name: Deploy to VPS
       uses: appleboy/ssh-action@v1.1.0
       with:
@@ -37,31 +25,35 @@ jobs:
           # Stop the service if running
           sudo systemctl stop basidian || true
 
+          # Install uv if not present
+          if ! command -v /root/.local/bin/uv &> /dev/null; then
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+          fi
+
           # Create directory if it doesn't exist
           sudo mkdir -p /root/basidian
 
-          # Set proper ownership
-          sudo chown -R root:root /root/basidian
-
-    - name: Copy files to VPS
+    - name: Copy backend code to VPS
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "backend/basidian"
+        source: "backend/"
         target: "/root/basidian/"
-        strip_components: 1
+        strip_components: 0
+        overwrite: true
 
-    - name: Setup systemd service and start
+    - name: Setup and start service
       uses: appleboy/ssh-action@v1.1.0
       with:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
         script: |
-          # Make binary executable
-          sudo chmod +x /root/basidian/basidian
+          # Install Python dependencies
+          cd /root/basidian/backend
+          /root/.local/bin/uv sync
 
           # Create systemd service file
           sudo tee /etc/systemd/system/basidian.service > /dev/null <<EOF
@@ -72,8 +64,8 @@ jobs:
           [Service]
           Type=simple
           User=root
-          WorkingDirectory=/root/basidian
-          ExecStart=/root/basidian/basidian serve --http=127.0.0.1:9090
+          WorkingDirectory=/root/basidian/backend
+          ExecStart=/root/.local/bin/uv run basidian-server serve --http=127.0.0.1:9090
           Restart=always
           RestartSec=5
           StandardOutput=journal

@@ -1,2 +1,29 @@
-pb_data
-basidian-server
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# uv
+uv.lock
+
+# Database (keep pb_data structure but not data files)
+pb_data/*.db
+pb_data/*.db-journal
+pb_data/*.db-wal
+pb_data/*.db-shm
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+*.egg-info/

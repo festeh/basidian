@@ -1,21 +1,21 @@
 # Basidian - Second Brain App
 
-A beautiful second brain application built with Flutter (frontend) and Go (backend).
+A beautiful second brain application built with Flutter (frontend) and Python/FastAPI (backend).
 
 ## Features
 
-- 📝 Create and edit daily notes
-- 📁 Tree-like filesystem for organizing files
-- 📅 Browse notes by date
-- 🔍 Search across all your notes
-- 🎨 Clean, minimalist interface
-- 📱 Cross-platform (Android, iOS, Web, Desktop)
-- 💾 SQLite database for data persistence
+- Create and edit daily notes
+- Tree-like filesystem for organizing files
+- Browse notes by date
+- Search across all your notes
+- Clean, minimalist interface
+- Cross-platform (Android, iOS, Web, Desktop)
+- SQLite database for data persistence
 
 ## Architecture
 
 - **Frontend**: Flutter with Provider for state management
-- **Backend**: Go with Gin for REST API
+- **Backend**: Python with FastAPI for REST API
 - **Database**: SQLite for data storage
 
 ## Getting Started
@@ -23,7 +23,8 @@ A beautiful second brain application built with Flutter (frontend) and Go (backe
 ### Prerequisites
 
 - Flutter SDK (3.32.8+)
-- Go (1.24+)
+- Python (3.12+)
+- uv (Python package manager)
 - Just (task runner)
 
 ### Running the Application
@@ -39,7 +40,8 @@ Or manually:
 1. **Start the Backend**:
    ```bash
    cd backend
-   go run . -http=:8090
+   uv sync
+   uv run basidian-server serve --http=:8090
    ```
 
 2. **Start the Frontend**:
@@ -78,17 +80,18 @@ Or manually:
 basidian/
 ├── README.md
 ├── justfile                # Task runner commands
-├── backend/                # Go REST API
-│   ├── main.go
-│   ├── go.mod
-│   ├── database/
-│   │   └── db.go
-│   ├── handlers/
-│   │   ├── notes.go
-│   │   ├── filesystem.go
-│   │   └── daily_files.go
-│   └── routes/
-│       └── setup.go
+├── backend/                # Python/FastAPI REST API
+│   ├── pyproject.toml
+│   ├── src/basidian_server/
+│   │   ├── main.py
+│   │   ├── database.py
+│   │   ├── models.py
+│   │   └── handlers/
+│   │       ├── notes.py
+│   │       ├── filesystem.py
+│   │       └── daily.py
+│   └── pb_data/
+│       └── data.db
 └── frontend/               # Flutter app
     ├── pubspec.yaml
     └── lib/
