@@ -70,7 +70,7 @@ class NoteCard extends StatelessWidget {
                       child: Text(
                         note.content,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.8),
+                          color: colorScheme.onSurface.withValues(alpha: 0.8),
                         ),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -98,13 +98,13 @@ class NoteCard extends StatelessWidget {
                     Icon(
                       Icons.access_time,
                       size: IconSizes.sm,
-                      color: colorScheme.onSurface.withOpacity(0.6),
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                     SizedBox(width: Spacing.xs),
                     Text(
                       _formatDateTime(note.updatedAt ?? note.createdAt ?? note.date),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                     if (!_isToday(note.date)) ...[
@@ -112,13 +112,13 @@ class NoteCard extends StatelessWidget {
                       Icon(
                         Icons.calendar_today,
                         size: IconSizes.sm,
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                       SizedBox(width: Spacing.xs),
                       Text(
                         DateFormat('MMM dd').format(note.date),
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                     ],

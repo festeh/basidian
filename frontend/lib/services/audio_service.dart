@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -96,17 +95,17 @@ class AudioService {
   Future<String> transcribeAudio(String filePath, {String languageCode = ''}) async {
     try {
       final url = '$transcriptionUrl/speak';
-      print('🎤 [AudioService] Starting transcription...');
-      print('🎤 [AudioService] Transcription URL: $url');
-      print('🎤 [AudioService] Audio file path: $filePath');
-      print('🎤 [AudioService] Language code: ${languageCode.isEmpty ? "auto" : languageCode}');
+      debugPrint('🎤 [AudioService] Starting transcription...');
+      debugPrint('🎤 [AudioService] Transcription URL: $url');
+      debugPrint('🎤 [AudioService] Audio file path: $filePath');
+      debugPrint('🎤 [AudioService] Language code: ${languageCode.isEmpty ? "auto" : languageCode}');
 
       // Check if file exists
       final file = File(filePath);
       final fileExists = await file.exists();
       final fileSize = fileExists ? await file.length() : 0;
-      print('🎤 [AudioService] File exists: $fileExists');
-      print('🎤 [AudioService] File size: $fileSize bytes');
+      debugPrint('🎤 [AudioService] File exists: $fileExists');
+      debugPrint('🎤 [AudioService] File size: $fileSize bytes');
 
       final request = http.MultipartRequest(
         'POST',
@@ -116,9 +115,9 @@ class AudioService {
       // Prepare audio data based on platform
       if (_isLinux && filePath.endsWith('.wav')) {
         // Linux: Convert WAV to PCM before sending
-        print('🎤 [AudioService] Converting WAV to PCM...');
+        debugPrint('🎤 [AudioService] Converting WAV to PCM...');
         final pcmData = await _wavToPcm(filePath);
-        print('🎤 [AudioService] PCM data size: ${pcmData.length} bytes');
+        debugPrint('🎤 [AudioService] PCM data size: ${pcmData.length} bytes');
 
         request.files.add(
           http.MultipartFile.fromBytes(
@@ -142,28 +141,28 @@ class AudioService {
         request.fields['language_code'] = languageCode;
       }
 
-      print('🎤 [AudioService] Sending request to $url...');
-      print('🎤 [AudioService] Request fields: ${request.fields}');
+      debugPrint('🎤 [AudioService] Sending request to $url...');
+      debugPrint('🎤 [AudioService] Request fields: ${request.fields}');
 
       final streamedResponse = await request.send();
       final responseBody = await streamedResponse.stream.bytesToString();
 
-      print('🎤 [AudioService] Response status: ${streamedResponse.statusCode}');
-      print('🎤 [AudioService] Response headers: ${streamedResponse.headers}');
-      print('🎤 [AudioService] Response body: $responseBody');
+      debugPrint('🎤 [AudioService] Response status: ${streamedResponse.statusCode}');
+      debugPrint('🎤 [AudioService] Response headers: ${streamedResponse.headers}');
+      debugPrint('🎤 [AudioService] Response body: $responseBody');
 
       if (streamedResponse.statusCode == 200) {
         final jsonResponse = jsonDecode(responseBody);
         final transcribedText = jsonResponse['text'] ?? jsonResponse['transcribed_text'] ?? 'No transcription available';
-        print('🎤 [AudioService] Transcription successful: $transcribedText');
+        debugPrint('🎤 [AudioService] Transcription successful: $transcribedText');
         return transcribedText;
       } else {
         final errorMsg = 'Transcription failed: HTTP ${streamedResponse.statusCode}\nURL: $url\nResponse: $responseBody';
-        print('❌ [AudioService] $errorMsg');
+        debugPrint('❌ [AudioService] $errorMsg');
         throw Exception(errorMsg);
       }
     } catch (e) {
-      print('❌ [AudioService] Exception during transcription: $e');
+      debugPrint('❌ [AudioService] Exception during transcription: $e');
       throw Exception('Error transcribing audio: $e');
     }
   }

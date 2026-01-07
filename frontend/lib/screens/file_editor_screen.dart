@@ -305,8 +305,13 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
         }
         return KeyEventResult.ignored;
       },
-      child: WillPopScope(
-        onWillPop: _onWillPop,
+      child: PopScope(
+        canPop: !_hasChanges,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final shouldPop = await _onWillPop();
+          if (shouldPop && mounted) Navigator.pop(context);
+        },
         child: Scaffold(
           appBar: AppBar(
             title: Text(_currentFile!.name),
@@ -328,20 +333,20 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
           Icon(
             Icons.description_outlined,
             size: IconSizes.xxxl,
-            color: colorScheme.onSurface.withOpacity(0.3),
+            color: colorScheme.onSurface.withValues(alpha: 0.3),
           ),
           SizedBox(height: Spacing.lg),
           Text(
             'Select a file to edit',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onSurface.withOpacity(0.5),
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
             ),
           ),
           SizedBox(height: Spacing.sm),
           Text(
             'or create a new one from the sidebar',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.withOpacity(0.4),
+              color: colorScheme.onSurface.withValues(alpha: 0.4),
             ),
           ),
         ],
@@ -373,7 +378,7 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
                         child: Icon(
                           Icons.chevron_right,
                           size: IconSizes.sm,
-                          color: colorScheme.onSurface.withOpacity(0.4),
+                          color: colorScheme.onSurface.withValues(alpha: 0.4),
                         ),
                       ),
                     Text(
@@ -382,7 +387,7 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
                         fontSize: TypeScale.sm,
                         color: i == breadcrumb.length - 1
                             ? colorScheme.onSurface
-                            : colorScheme.onSurface.withOpacity(0.6),
+                            : colorScheme.onSurface.withValues(alpha: 0.6),
                         fontWeight: i == breadcrumb.length - 1
                             ? FontWeight.w500
                             : FontWeight.normal,
@@ -402,7 +407,7 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
                 vertical: Spacing.xs,
               ),
               decoration: BoxDecoration(
-                color: colorScheme.primary.withOpacity(0.1),
+                color: colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Radii.sm),
               ),
               child: Row(
@@ -481,7 +486,7 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
         color: colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: colorScheme.outline.withOpacity(0.2),
+            color: colorScheme.outline.withValues(alpha: 0.2),
           ),
         ),
       ),

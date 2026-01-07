@@ -226,13 +226,13 @@ class _SidebarWidgetState extends State<SidebarWidget> {
               Icon(
                 Icons.folder_open,
                 size: IconSizes.xxl,
-                color: theme.colorScheme.onSurface.withOpacity(0.4),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
               ),
               const SizedBox(height: Spacing.md),
               Text(
                 'No files yet',
                 style: TextStyle(
-                  color: theme.colorScheme.onSurface.withOpacity(0.6),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: Spacing.sm),
@@ -277,7 +277,7 @@ class _SidebarWidgetState extends State<SidebarWidget> {
             child: Text(
               'No results found',
               style: TextStyle(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
           );
@@ -302,7 +302,7 @@ class _SidebarWidgetState extends State<SidebarWidget> {
                 node.path,
                 style: TextStyle(
                   fontSize: TypeScale.xs,
-                  color: theme.colorScheme.onSurface.withOpacity(0.5),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                 ),
               ),
               onTap: () {
@@ -434,7 +434,7 @@ class _QuickActionButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Material(
-      color: theme.colorScheme.primary.withOpacity(0.1),
+      color: theme.colorScheme.primary.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(Radii.md),
       child: InkWell(
         onTap: onPressed,

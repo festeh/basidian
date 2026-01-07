@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
               VerticalDivider(
                 width: 1,
                 thickness: 1,
-                color: colorScheme.outline.withOpacity(0.2),
+                color: colorScheme.outline.withValues(alpha: 0.2),
               ),
 
             // Main content area
@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               'Creating in: $parentPath',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ),
             SizedBox(height: Spacing.md),

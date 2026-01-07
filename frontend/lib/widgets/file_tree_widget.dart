@@ -57,7 +57,7 @@ class FileTreeItem extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: isSelected
-                  ? theme.colorScheme.primary.withOpacity(0.15)
+                  ? theme.colorScheme.primary.withValues(alpha: 0.15)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(Radii.sm),
             ),
@@ -74,7 +74,7 @@ class FileTreeItem extends StatelessWidget {
                             ? Icons.keyboard_arrow_down
                             : Icons.keyboard_arrow_right,
                         size: IconSizes.sm,
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
                     ),
                   )
@@ -159,7 +159,7 @@ class FileTreeItem extends StatelessWidget {
       return theme.colorScheme.primary;
     }
 
-    return theme.colorScheme.onSurface.withOpacity(0.7);
+    return theme.colorScheme.onSurface.withValues(alpha: 0.7);
   }
 
   void _onTap(BuildContext context) {

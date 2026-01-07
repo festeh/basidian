@@ -72,7 +72,7 @@ class SettingsScreen extends StatelessWidget {
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(Radii.lg),
             border: Border.all(
-              color: colorScheme.outline.withOpacity(0.3),
+              color: colorScheme.outline.withValues(alpha: 0.3),
               width: Borders.thin,
             ),
           ),
@@ -85,7 +85,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: Spacing.sm),
               DropdownButtonFormField<ASRLanguage>(
-                value: asrSettings.language,
+                initialValue: asrSettings.language,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: Spacing.md,
@@ -136,7 +136,7 @@ class SettingsScreen extends StatelessWidget {
               border: Border.all(
                 color: isSelected
                     ? colorScheme.primary
-                    : colorScheme.outline.withOpacity(0.3),
+                    : colorScheme.outline.withValues(alpha: 0.3),
                 width: isSelected ? Borders.medium : Borders.thin,
               ),
             ),
@@ -153,7 +153,7 @@ class SettingsScreen extends StatelessWidget {
                         color: color,
                         borderRadius: BorderRadius.circular(Radii.sm),
                         border: Border.all(
-                          color: colorScheme.outline.withOpacity(0.2),
+                          color: colorScheme.outline.withValues(alpha: 0.2),
                           width: Borders.thin,
                         ),
                       ),

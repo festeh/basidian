@@ -230,8 +230,8 @@ class AppThemes {
       onSurface: text,
       error: error,
       onError: Colors.white,
-      outline: subtext.withOpacity(0.5),
-      shadow: Colors.black.withOpacity(0.1),
+      outline: subtext.withValues(alpha: 0.5),
+      shadow: Colors.black.withValues(alpha: 0.1),
       surfaceTint: accent,
     );
 
@@ -251,7 +251,7 @@ class AppThemes {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Radii.lg),
           side: BorderSide(
-            color: subtext.withOpacity(0.2),
+            color: subtext.withValues(alpha: 0.2),
             width: Borders.thin,
           ),
         ),
@@ -271,11 +271,11 @@ class AppThemes {
         filled: false,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Radii.lg),
-          borderSide: BorderSide(color: subtext.withOpacity(0.3)),
+          borderSide: BorderSide(color: subtext.withValues(alpha: 0.3)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Radii.lg),
-          borderSide: BorderSide(color: subtext.withOpacity(0.3)),
+          borderSide: BorderSide(color: subtext.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Radii.lg),
@@ -301,7 +301,7 @@ class AppThemes {
         behavior: SnackBarBehavior.floating,
       ),
       dividerTheme: DividerThemeData(
-        color: subtext.withOpacity(0.2),
+        color: subtext.withValues(alpha: 0.2),
         thickness: Borders.thin,
       ),
       textTheme: TextTheme(

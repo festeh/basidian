@@ -260,8 +260,13 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
         }
         return KeyEventResult.ignored;
       },
-      child: WillPopScope(
-        onWillPop: _onWillPop,
+      child: PopScope(
+        canPop: !_hasChanges,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final shouldPop = await _onWillPop();
+          if (shouldPop && mounted) Navigator.pop(context);
+        },
         child: Scaffold(
         appBar: AppBar(
           title: Text(widget.note.id == null ? 'New Note' : 'Edit Note'),
@@ -313,7 +318,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                   padding: EdgeInsets.all(Spacing.md),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: colorScheme.outline.withOpacity(0.3),
+                      color: colorScheme.outline.withValues(alpha: 0.3),
                     ),
                     borderRadius: BorderRadius.circular(Radii.md),
                   ),
@@ -385,7 +390,7 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
                   color: colorScheme.surface,
                   border: Border(
                     top: BorderSide(
-                      color: colorScheme.outline.withOpacity(0.2),
+                      color: colorScheme.outline.withValues(alpha: 0.2),
                     ),
                   ),
                 ),

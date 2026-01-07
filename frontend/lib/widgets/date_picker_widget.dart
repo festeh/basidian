@@ -60,7 +60,7 @@ class DatePickerWidget extends StatelessWidget {
                           Text(
                             'Today',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+                              color: colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                             ),
                           ),
                       ],
