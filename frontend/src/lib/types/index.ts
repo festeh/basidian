@@ -33,6 +33,7 @@ export interface Theme {
 	name: string;
 	displayName: string;
 	isDark: boolean;
+	shikiTheme: string;
 	colors: {
 		base: string;
 		mantle: string;
@@ -44,6 +45,14 @@ export interface Theme {
 		secondary: string;
 		error: string;
 		success: string;
+		// Code syntax highlighting colors
+		codeKeyword: string;
+		codeString: string;
+		codeComment: string;
+		codeNumber: string;
+		codeFunction: string;
+		codeVariable: string;
+		codeOperator: string;
 	};
 }
 

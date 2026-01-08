@@ -22,11 +22,11 @@ deps-backend:
 
 # Run Tauri app in development mode
 tauri-dev:
-    cd frontend && npm run tauri:dev
+    cd frontend && mise exec -- npm run tauri:dev
 
 # Build Tauri app for production
 tauri-build:
-    cd frontend && npm run tauri:build
+    cd frontend && mise exec -- npm run tauri:build
 
 # Install frontend dependencies
 deps-frontend:
@@ -45,7 +45,7 @@ dev:
     trap 'kill 0' EXIT
     (cd backend && uv run basidian-server serve --http=0.0.0.0:8090) &
     sleep 2
-    cd frontend && VITE_BACKEND_URL=http://localhost:8090/api npm run tauri:dev
+    cd frontend && VITE_BACKEND_URL=http://localhost:8090/api mise exec -- npm run tauri:dev
     wait
 
 # ============== Utilities ==============

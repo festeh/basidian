@@ -48,5 +48,14 @@ export function applyTheme(theme: Theme) {
 	root.style.setProperty('--color-error', theme.colors.error);
 	root.style.setProperty('--color-success', theme.colors.success);
 
+	// Code syntax highlighting colors
+	root.style.setProperty('--color-code-keyword', theme.colors.codeKeyword);
+	root.style.setProperty('--color-code-string', theme.colors.codeString);
+	root.style.setProperty('--color-code-comment', theme.colors.codeComment);
+	root.style.setProperty('--color-code-number', theme.colors.codeNumber);
+	root.style.setProperty('--color-code-function', theme.colors.codeFunction);
+	root.style.setProperty('--color-code-variable', theme.colors.codeVariable);
+	root.style.setProperty('--color-code-operator', theme.colors.codeOperator);
+
 	root.style.colorScheme = theme.isDark ? 'dark' : 'light';
 }

@@ -1,3 +1,5 @@
+@import 'katex/dist/katex.min.css';
+
 :root {
 	/* Default theme (Catppuccin Mocha) */
 	--color-base: #1e1e2e;
@@ -10,6 +12,15 @@
 	--color-secondary: #f5c2e7;
 	--color-error: #f38ba8;
 	--color-success: #a6e3a1;
+
+	/* Code syntax highlighting colors */
+	--color-code-keyword: #cba6f7;
+	--color-code-string: #a6e3a1;
+	--color-code-comment: #6c7086;
+	--color-code-number: #fab387;
+	--color-code-function: #89b4fa;
+	--color-code-variable: #f5c2e7;
+	--color-code-operator: #94e2d5;
 
 	color-scheme: dark;
 }
