@@ -28,6 +28,12 @@ run:
 run-android:
     cd frontend && just run-android
 
+# Run frontend on Linux pointing to local backend
+run-local:
+    cd frontend && flutter run -d linux \
+        --dart-define=BACKEND_URL=http://localhost:8090/api \
+        --dart-define=TRANSCRIPTION_URL=http://localhost:8091
+
 # Build Linux release
 build-linux:
     cd frontend && just build-linux
