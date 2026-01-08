@@ -17,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 basidian-server = "basidian_server.main:cli"
+bscli = "basidian_server.bscli:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.11,<0.10.0"]
