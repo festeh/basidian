@@ -1,14 +1,13 @@
-import logging
 from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
+from loguru import logger
 
 from .. import database as db
 from ..models import FsNode, FsNodeRequest, MoveRequest
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
 
 
 def _build_path(parent_path: str, name: str) -> str:

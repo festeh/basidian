@@ -1,14 +1,13 @@
-import logging
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
+from loguru import logger
 
 from .. import database as db
 from ..models import DailyContentRequest, DailyListResponse, DailyNote, DailyYear
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
 
 
 def _date_to_path(date_str: str) -> str:

@@ -47,9 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // Sidebar (or drawer on narrow screens)
             if (!isNarrow && !_sidebarCollapsed)
-              SidebarWidget(
+              const SidebarWidget(
                 width: 280,
-                onTodayPressed: () {},
               ),
 
             // Divider between sidebar and content
@@ -93,12 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       drawer: isNarrow
-          ? Drawer(
+          ? const Drawer(
               child: SidebarWidget(
                 width: 300,
-                onTodayPressed: () {
-                  Navigator.of(context).pop();
-                },
               ),
             )
           : null,
@@ -147,19 +143,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           const Spacer(),
-
-          // Today button
-          IconButton(
-            icon: const Icon(Icons.today),
-            onPressed: () {
-              context.read<FilesystemProvider>().getTodayNote();
-            },
-            tooltip: 'Go to Today',
-            style: IconButton.styleFrom(
-              backgroundColor: colorScheme.primaryContainer,
-            ),
-          ),
-          SizedBox(width: Spacing.xs),
 
           // Settings button
           IconButton(

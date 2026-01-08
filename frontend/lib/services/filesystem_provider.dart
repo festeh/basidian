@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/fs_node.dart';
 import 'api_service.dart';
+import 'app_logger.dart';
 
 class FilesystemProvider extends ChangeNotifier {
   List<FsNode> _rootNodes = [];
@@ -29,6 +30,7 @@ class FilesystemProvider extends ChangeNotifier {
 
   // Load the full tree from the server
   Future<void> loadTree() async {
+    logger.d('loadTree: starting');
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -37,7 +39,9 @@ class FilesystemProvider extends ChangeNotifier {
       final nodes = await ApiService.getTree();
       _rootNodes = _buildTree(nodes);
       _applyExpandedState();
+      logger.i('loadTree: loaded ${_rootNodes.length} root nodes');
     } catch (e) {
+      logger.e('loadTree: failed', error: e);
       _errorMessage = e.toString();
     }
 

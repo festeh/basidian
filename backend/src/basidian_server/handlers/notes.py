@@ -1,13 +1,12 @@
-import logging
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Query
+from loguru import logger
 
 from .. import database as db
 from ..models import Note, NoteRequest
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
 
 
 def _row_to_note(row) -> Note:

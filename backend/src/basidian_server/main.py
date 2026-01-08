@@ -1,20 +1,24 @@
-import logging
+import sys
+import time
 from contextlib import asynccontextmanager
 
 import click
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
 
 from . import database as db
 from .handlers import daily_router, filesystem_router, notes_router
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+# Configure loguru
+logger.remove()
+logger.add(
+    sys.stderr,
+    format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan> - <level>{message}</level>",
+    level="DEBUG",
+    colorize=True,
 )
-logger = logging.getLogger(__name__)
 
 
 def create_app(db_path: str = "./pb_data/data.db") -> FastAPI:
@@ -39,6 +43,17 @@ def create_app(db_path: str = "./pb_data/data.db") -> FastAPI:
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "Authorization"],
     )
+
+    # Request logging middleware
+    @app.middleware("http")
+    async def log_requests(request: Request, call_next):
+        start_time = time.time()
+        response = await call_next(request)
+        duration_ms = (time.time() - start_time) * 1000
+        logger.info(
+            f"{request.method} {request.url.path} → {response.status_code} ({duration_ms:.1f}ms)"
+        )
+        return response
 
     # Health check
     @app.get("/health")

@@ -6,12 +6,10 @@ import 'file_tree_widget.dart';
 
 class SidebarWidget extends StatefulWidget {
   final double width;
-  final VoidCallback? onTodayPressed;
 
   const SidebarWidget({
     super.key,
     this.width = 250,
-    this.onTodayPressed,
   });
 
   @override
@@ -41,11 +39,6 @@ class _SidebarWidgetState extends State<SidebarWidget> {
         children: [
           // Header
           _buildHeader(context, theme),
-
-          const Divider(height: 1),
-
-          // Quick actions
-          _buildQuickActions(context, theme, provider),
 
           const Divider(height: 1),
 
@@ -99,41 +92,6 @@ class _SidebarWidgetState extends State<SidebarWidget> {
             onPressed: () => _showNewFileDialog(context),
             padding: const EdgeInsets.all(Spacing.xs),
             constraints: const BoxConstraints(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickActions(
-    BuildContext context,
-    ThemeData theme,
-    FilesystemProvider provider,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.sm,
-        vertical: Spacing.xs,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _QuickActionButton(
-              icon: Icons.today,
-              label: 'Today',
-              onPressed: () async {
-                await provider.getTodayNote();
-                widget.onTodayPressed?.call();
-              },
-            ),
-          ),
-          const SizedBox(width: Spacing.sm),
-          Expanded(
-            child: _QuickActionButton(
-              icon: Icons.calendar_month,
-              label: 'Calendar',
-              onPressed: () => _showDatePicker(context, provider),
-            ),
           ),
         ],
       ),
@@ -404,67 +362,4 @@ class _SidebarWidgetState extends State<SidebarWidget> {
     );
   }
 
-  void _showDatePicker(BuildContext context, FilesystemProvider provider) async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: provider.selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
-    );
-
-    if (date != null) {
-      await provider.getDailyNote(date);
-    }
-  }
-}
-
-class _QuickActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onPressed;
-
-  const _QuickActionButton({
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Material(
-      color: theme.colorScheme.primary.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(Radii.md),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(Radii.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.sm,
-            vertical: Spacing.sm,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: IconSizes.sm,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(width: Spacing.xs),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: TypeScale.sm,
-                  fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

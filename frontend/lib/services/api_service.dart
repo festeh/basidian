@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/note.dart';
 import '../models/fs_node.dart';
+import 'app_logger.dart';
 
 class ApiService {
   static const String baseUrl = String.fromEnvironment(
@@ -199,18 +200,25 @@ class ApiService {
       url += '?parent_path=${Uri.encodeComponent(parentPath)}';
     }
 
+    logger.d('getTree: GET $url');
+
     try {
       final response = await http.get(Uri.parse(url));
+      logger.d('getTree: response ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = json.decode(response.body);
+        logger.i('getTree: loaded ${jsonList.length} nodes');
         return jsonList.map((json) => FsNode.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load filesystem tree: ${response.statusCode}');
+        logger.e('getTree: failed with ${response.statusCode}: ${response.body}');
+        throw Exception('Failed to load filesystem tree: ${response.statusCode}\n${response.body}');
       }
     } on SocketException catch (e) {
-      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+      logger.e('getTree: SocketException - ${e.message}', error: e);
+      throw Exception('Network error: Cannot connect to server at $url\nDetails: ${e.message}');
     } catch (e) {
+      logger.e('getTree: unexpected error', error: e);
       throw Exception('Unexpected error while loading filesystem tree: $e');
     }
   }
@@ -369,17 +377,24 @@ class ApiService {
     final dateString = date.toIso8601String().substring(0, 10);
     final url = '$baseUrl/daily/$dateString';
 
+    logger.d('getOrCreateDailyNote: GET $url');
+
     try {
       final response = await http.get(Uri.parse(url));
+      logger.d('getOrCreateDailyNote: response ${response.statusCode}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        logger.i('getOrCreateDailyNote: success for $dateString');
         return FsNode.fromJson(json.decode(response.body));
       } else {
-        throw Exception('Failed to get/create daily note: ${response.statusCode}');
+        logger.e('getOrCreateDailyNote: failed ${response.statusCode}: ${response.body}');
+        throw Exception('Failed to get/create daily note: ${response.statusCode}\n${response.body}');
       }
     } on SocketException catch (e) {
-      throw Exception('Network error: Cannot connect to server\nDetails: ${e.message}');
+      logger.e('getOrCreateDailyNote: SocketException', error: e);
+      throw Exception('Network error: Cannot connect to server at $url\nDetails: ${e.message}');
     } catch (e) {
+      logger.e('getOrCreateDailyNote: unexpected error', error: e);
       throw Exception('Unexpected error while getting daily note: $e');
     }
   }

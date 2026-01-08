@@ -5,6 +5,7 @@ import 'package:record/record.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'app_logger.dart';
 
 class AudioService {
   static const String transcriptionUrl = String.fromEnvironment('TRANSCRIPTION_URL');
@@ -95,17 +96,14 @@ class AudioService {
   Future<String> transcribeAudio(String filePath, {String languageCode = ''}) async {
     try {
       final url = '$transcriptionUrl/speak';
-      debugPrint('🎤 [AudioService] Starting transcription...');
-      debugPrint('🎤 [AudioService] Transcription URL: $url');
-      debugPrint('🎤 [AudioService] Audio file path: $filePath');
-      debugPrint('🎤 [AudioService] Language code: ${languageCode.isEmpty ? "auto" : languageCode}');
+      logger.d('transcribeAudio: POST $url');
+      logger.d('transcribeAudio: file=$filePath, lang=${languageCode.isEmpty ? "auto" : languageCode}');
 
       // Check if file exists
       final file = File(filePath);
       final fileExists = await file.exists();
       final fileSize = fileExists ? await file.length() : 0;
-      debugPrint('🎤 [AudioService] File exists: $fileExists');
-      debugPrint('🎤 [AudioService] File size: $fileSize bytes');
+      logger.d('transcribeAudio: file exists=$fileExists, size=$fileSize bytes');
 
       final request = http.MultipartRequest(
         'POST',
@@ -115,9 +113,9 @@ class AudioService {
       // Prepare audio data based on platform
       if (_isLinux && filePath.endsWith('.wav')) {
         // Linux: Convert WAV to PCM before sending
-        debugPrint('🎤 [AudioService] Converting WAV to PCM...');
+        logger.d('transcribeAudio: converting WAV to PCM');
         final pcmData = await _wavToPcm(filePath);
-        debugPrint('🎤 [AudioService] PCM data size: ${pcmData.length} bytes');
+        logger.d('transcribeAudio: PCM size=${pcmData.length} bytes');
 
         request.files.add(
           http.MultipartFile.fromBytes(
@@ -141,28 +139,24 @@ class AudioService {
         request.fields['language_code'] = languageCode;
       }
 
-      debugPrint('🎤 [AudioService] Sending request to $url...');
-      debugPrint('🎤 [AudioService] Request fields: ${request.fields}');
+      logger.d('transcribeAudio: sending request');
 
       final streamedResponse = await request.send();
       final responseBody = await streamedResponse.stream.bytesToString();
 
-      debugPrint('🎤 [AudioService] Response status: ${streamedResponse.statusCode}');
-      debugPrint('🎤 [AudioService] Response headers: ${streamedResponse.headers}');
-      debugPrint('🎤 [AudioService] Response body: $responseBody');
+      logger.d('transcribeAudio: response ${streamedResponse.statusCode}');
 
       if (streamedResponse.statusCode == 200) {
         final jsonResponse = jsonDecode(responseBody);
         final transcribedText = jsonResponse['text'] ?? jsonResponse['transcribed_text'] ?? 'No transcription available';
-        debugPrint('🎤 [AudioService] Transcription successful: $transcribedText');
+        logger.i('transcribeAudio: success - "${transcribedText.substring(0, transcribedText.length > 50 ? 50 : transcribedText.length)}..."');
         return transcribedText;
       } else {
-        final errorMsg = 'Transcription failed: HTTP ${streamedResponse.statusCode}\nURL: $url\nResponse: $responseBody';
-        debugPrint('❌ [AudioService] $errorMsg');
-        throw Exception(errorMsg);
+        logger.e('transcribeAudio: failed ${streamedResponse.statusCode}: $responseBody');
+        throw Exception('Transcription failed: HTTP ${streamedResponse.statusCode}\nURL: $url\nResponse: $responseBody');
       }
     } catch (e) {
-      debugPrint('❌ [AudioService] Exception during transcription: $e');
+      logger.e('transcribeAudio: exception', error: e);
       throw Exception('Error transcribing audio: $e');
     }
   }
