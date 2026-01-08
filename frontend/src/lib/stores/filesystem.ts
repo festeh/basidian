@@ -2,6 +2,9 @@ import { writable, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import type { FsNode } from '$lib/types';
 import { api } from '$lib/api/client';
+import { createLogger } from '$lib/utils/logger';
+
+const log = createLogger('Filesystem');
 
 const EXPANDED_PATHS_KEY = 'basidian-expanded-paths';
 
@@ -233,10 +236,19 @@ export const filesystemActions = {
 	},
 
 	async renameNode(node: FsNode, newName: string) {
+		log.info('renameNode', { id: node.id, from: node.name, to: newName });
 		try {
-			await api.moveNode(node.id!, { new_name: newName });
+			const updated = await api.moveNode(node.id!, { new_name: newName });
+			log.debug('rename success', { updated });
 			await this.loadTree();
+
+			// Update currentFile if it was the renamed file
+			const current = get(currentFile);
+			if (current && current.id === node.id) {
+				currentFile.set({ ...updated, content: current.content });
+			}
 		} catch (e) {
+			log.error('rename failed', e);
 			error.set(e instanceof Error ? e.message : 'Failed to rename node');
 		}
 	},

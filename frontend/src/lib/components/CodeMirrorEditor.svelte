@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirror/view';
-	import { EditorState } from '@codemirror/state';
+	import { EditorState, type Extension, Annotation } from '@codemirror/state';
 	import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 	import { languages } from '@codemirror/language-data';
 	import {
@@ -16,6 +16,8 @@
 		bracketMatching,
 		indentOnInput
 	} from '@codemirror/language';
+	import { vim } from '@replit/codemirror-vim';
+	import { settings } from '$lib/stores/settings';
 
 	interface Props {
 		content: string;
@@ -26,6 +28,10 @@
 
 	let editorContainer: HTMLDivElement;
 	let view: EditorView | null = null;
+	let previousVimMode: boolean | null = null;
+
+	// Annotation to mark programmatic content updates
+	const externalUpdate = Annotation.define<boolean>();
 
 	// Theme based on CSS variables
 	const theme = EditorView.theme({
@@ -76,43 +82,79 @@
 		}
 	});
 
-	onMount(() => {
+	function createEditor(useVim: boolean) {
+		const extensions: Extension[] = [
+			lineNumbers(),
+			highlightActiveLine(),
+			history(),
+			bracketMatching(),
+			indentOnInput(),
+			markdown({
+				base: markdownLanguage,
+				codeLanguages: languages
+			}),
+			syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+			keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+			theme,
+			baseTheme,
+			EditorView.updateListener.of((update) => {
+				if (update.docChanged) {
+					const isExternal = update.transactions.some((tr) => tr.annotation(externalUpdate));
+					if (!isExternal) {
+						onchange(update.state.doc.toString());
+					}
+				}
+			}),
+			EditorView.lineWrapping
+		];
+
+		if (useVim) {
+			extensions.unshift(vim());
+		}
+
 		const startState = EditorState.create({
 			doc: content,
-			extensions: [
-				lineNumbers(),
-				highlightActiveLine(),
-				history(),
-				bracketMatching(),
-				indentOnInput(),
-				markdown({
-					base: markdownLanguage,
-					codeLanguages: languages
-				}),
-				syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-				keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-				theme,
-				baseTheme,
-				EditorView.updateListener.of((update) => {
-					if (update.docChanged) {
-						const newContent = update.state.doc.toString();
-						onchange(newContent);
-					}
-				}),
-				EditorView.lineWrapping
-			]
+			extensions
 		});
 
-		view = new EditorView({
+		return new EditorView({
 			state: startState,
 			parent: editorContainer
 		});
+	}
+
+	onMount(() => {
+		previousVimMode = $settings.vimMode;
+		view = createEditor(previousVimMode);
 	});
 
 	onDestroy(() => {
 		if (view) {
 			view.destroy();
 		}
+	});
+
+	// Recreate editor only when vim mode actually changes
+	$effect(() => {
+		const newVimMode = $settings.vimMode;
+		if (previousVimMode !== null && previousVimMode !== newVimMode) {
+			const currentContent = view?.state.doc.toString() ?? content;
+			if (view) {
+				view.destroy();
+			}
+			view = createEditor(newVimMode);
+			if (currentContent !== content) {
+				view.dispatch({
+					changes: {
+						from: 0,
+						to: view.state.doc.length,
+						insert: currentContent
+					},
+					annotations: externalUpdate.of(true)
+				});
+			}
+		}
+		previousVimMode = newVimMode;
 	});
 
 	// Update editor content when prop changes externally
@@ -123,7 +165,8 @@
 					from: 0,
 					to: view.state.doc.length,
 					insert: content
-				}
+				},
+				annotations: externalUpdate.of(true)
 			});
 		}
 	});

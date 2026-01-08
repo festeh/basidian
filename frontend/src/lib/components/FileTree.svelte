@@ -1,9 +1,68 @@
 <script lang="ts">
-	import { rootNodes, isLoading } from '$lib/stores/filesystem';
+	import { rootNodes, isLoading, filesystemActions, selectedNode } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
+	import ContextMenu from './ContextMenu.svelte';
+
+	interface Props {
+		onCreateFile: () => void;
+		onCreateFolder: () => void;
+	}
+
+	let { onCreateFile, onCreateFolder }: Props = $props();
+
+	let contextMenu = $state<{ x: number; y: number } | null>(null);
+	let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+
+	function handleContextMenu(e: MouseEvent) {
+		e.preventDefault();
+		contextMenu = { x: e.clientX, y: e.clientY };
+	}
+
+	function handleTouchStart(e: TouchEvent) {
+		const touch = e.touches[0];
+		longPressTimer = setTimeout(() => {
+			contextMenu = { x: touch.clientX, y: touch.clientY };
+		}, 500);
+	}
+
+	function handleTouchEnd() {
+		if (longPressTimer) {
+			clearTimeout(longPressTimer);
+			longPressTimer = null;
+		}
+	}
+
+	function closeContextMenu() {
+		contextMenu = null;
+	}
+
+	async function handleDelete() {
+		const node = $selectedNode;
+		if (!node) return;
+
+		const confirmed = confirm(`Delete "${node.name}"?`);
+		if (confirmed) {
+			await filesystemActions.deleteNode(node);
+		}
+	}
+
+	const menuItems = $derived([
+		{ label: 'New File', action: () => onCreateFile() },
+		{ label: 'New Folder', action: () => onCreateFolder() },
+		...($selectedNode
+			? [{ label: 'Delete', action: () => handleDelete(), danger: true }]
+			: [])
+	]);
 </script>
 
-<div class="file-tree">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	class="file-tree"
+	oncontextmenu={handleContextMenu}
+	ontouchstart={handleTouchStart}
+	ontouchend={handleTouchEnd}
+	ontouchmove={handleTouchEnd}
+>
 	{#if $isLoading}
 		<div class="loading">
 			<div class="spinner"></div>
@@ -19,6 +78,15 @@
 		{/each}
 	{/if}
 </div>
+
+{#if contextMenu}
+	<ContextMenu
+		x={contextMenu.x}
+		y={contextMenu.y}
+		items={menuItems}
+		onclose={closeContextMenu}
+	/>
+{/if}
 
 <style>
 	.file-tree {

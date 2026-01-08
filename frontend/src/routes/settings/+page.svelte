@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { currentThemeName } from '$lib/stores/theme';
+	import { settings } from '$lib/stores/settings';
 	import { themeList } from '$lib/themes';
 	import type { ThemeName } from '$lib/types';
 
 	function selectTheme(name: ThemeName) {
 		currentThemeName.set(name);
+	}
+
+	function toggleVimMode() {
+		settings.update((s) => ({ ...s, vimMode: !s.vimMode }));
 	}
 
 	function goBack() {
@@ -53,6 +58,19 @@
 					</button>
 				{/each}
 			</div>
+		</section>
+
+		<section>
+			<h2>Editor</h2>
+			<button class="setting-row" onclick={toggleVimMode}>
+				<div class="setting-info">
+					<span class="setting-name">Vim Mode</span>
+					<span class="setting-desc">Use vim keybindings in the editor</span>
+				</div>
+				<div class="toggle" class:active={$settings.vimMode}>
+					<div class="toggle-knob"></div>
+				</div>
+			</button>
 		</section>
 	</main>
 </div>
@@ -163,5 +181,63 @@
 
 	.check {
 		flex-shrink: 0;
+	}
+
+	.setting-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 16px;
+		background-color: var(--color-surface);
+		border: 1px solid var(--color-overlay);
+		border-radius: 12px;
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.setting-row:hover {
+		background-color: var(--color-overlay);
+	}
+
+	.setting-info {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.setting-name {
+		font-weight: 500;
+		color: var(--color-text);
+	}
+
+	.setting-desc {
+		font-size: 12px;
+		color: var(--color-subtext);
+	}
+
+	.toggle {
+		width: 44px;
+		height: 24px;
+		background-color: var(--color-overlay);
+		border-radius: 12px;
+		padding: 2px;
+		transition: background-color 0.2s;
+	}
+
+	.toggle.active {
+		background-color: var(--color-accent);
+	}
+
+	.toggle-knob {
+		width: 20px;
+		height: 20px;
+		background-color: var(--color-text);
+		border-radius: 50%;
+		transition: transform 0.2s;
+	}
+
+	.toggle.active .toggle-knob {
+		transform: translateX(20px);
 	}
 </style>

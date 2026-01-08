@@ -41,24 +41,8 @@
 				onkeydown={handleKeydown}
 			/>
 		</div>
-		<div class="actions">
-			<button class="action-btn" onclick={onCreateFile} title="New file">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 14h-3v3h-2v-3H8v-2h3v-3h2v3h3v2zm-3-7V3.5L18.5 9H13z"
-					/>
-				</svg>
-			</button>
-			<button class="action-btn" onclick={onCreateFolder} title="New folder">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-					<path
-						d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"
-					/>
-				</svg>
-			</button>
-		</div>
 	</div>
-	<FileTree />
+	<FileTree {onCreateFile} {onCreateFolder} />
 </aside>
 
 <style>
@@ -100,27 +84,5 @@
 
 	.search-container input::placeholder {
 		color: var(--color-subtext);
-	}
-
-	.actions {
-		display: flex;
-		gap: 4px;
-	}
-
-	.action-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 32px;
-		height: 32px;
-		border: none;
-		background: transparent;
-		color: var(--color-text);
-		border-radius: 8px;
-		cursor: pointer;
-	}
-
-	.action-btn:hover {
-		background-color: var(--color-overlay);
 	}
 </style>

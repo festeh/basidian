@@ -40,18 +40,12 @@
 		onkeydown={handleKeydown}
 	>
 		{#if isFolder}
-			<span class="toggle-icon" class:rotated={node.isExpanded}>
-				<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-				</svg>
-			</span>
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-secondary)">
 				<path
 					d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
 				/>
 			</svg>
 		{:else}
-			<span class="spacer"></span>
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-accent)">
 				<path
 					d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
@@ -59,6 +53,13 @@
 			</svg>
 		{/if}
 		<span class="name">{node.name}</span>
+		{#if isFolder}
+			<span class="toggle-icon" class:rotated={node.isExpanded}>
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+				</svg>
+			</span>
+		{/if}
 	</button>
 
 	{#if isFolder && node.isExpanded && hasChildren}
@@ -111,14 +112,11 @@
 		height: 20px;
 		color: var(--color-subtext);
 		transition: transform 0.15s ease;
+		transform: rotate(-90deg);
 	}
 
 	.toggle-icon.rotated {
-		transform: rotate(90deg);
-	}
-
-	.spacer {
-		width: 20px;
+		transform: rotate(0deg);
 	}
 
 	.name {

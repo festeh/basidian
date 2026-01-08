@@ -1,8 +1,11 @@
 <script lang="ts">
 	import type { FsNode } from '$lib/types';
 	import { filesystemActions } from '$lib/stores/filesystem';
+	import { createLogger } from '$lib/utils/logger';
 	import CodeMirrorEditor from './CodeMirrorEditor.svelte';
 	import MarkdownPreview from './MarkdownPreview.svelte';
+
+	const log = createLogger('Editor');
 
 	interface Props {
 		file: FsNode | null;
@@ -14,6 +17,9 @@
 	let hasUnsavedChanges = $state(false);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let mode: 'edit' | 'preview' = $state('edit');
+	let isRenaming = $state(false);
+	let renameValue = $state('');
+	let renameInput: HTMLInputElement;
 
 	// Sync content when file changes
 	$effect(() => {
@@ -47,18 +53,60 @@
 			// Keep hasUnsavedChanges true on error
 		}
 	}
+
+	function startRename() {
+		if (!file) return;
+		log.debug('startRename', { name: file.name });
+		renameValue = file.name;
+		isRenaming = true;
+		setTimeout(() => renameInput?.select(), 0);
+	}
+
+	async function commitRename() {
+		log.debug('commitRename', { file: file?.name, isRenaming, renameValue });
+		if (!file || !isRenaming) return;
+		isRenaming = false;
+
+		const newName = renameValue.trim();
+		if (!newName || newName === file.name) {
+			log.debug('rename skipped', { reason: !newName ? 'empty' : 'unchanged' });
+			return;
+		}
+
+		log.info('renaming file', { from: file.name, to: newName });
+		await filesystemActions.renameNode(file, newName);
+	}
+
+	function handleRenameKeydown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			commitRename();
+		} else if (e.key === 'Escape') {
+			isRenaming = false;
+		}
+	}
 </script>
 
 <div class="editor">
 	{#if file}
 		<div class="editor-header">
 			<div class="left">
-				<span class="filename">
-					{file.name}
-					{#if hasUnsavedChanges}
-						<span class="unsaved-dot" title="Unsaved changes"></span>
-					{/if}
-				</span>
+				{#if isRenaming}
+					<input
+						bind:this={renameInput}
+						bind:value={renameValue}
+						class="rename-input"
+						onblur={commitRename}
+						onkeydown={handleRenameKeydown}
+					/>
+				{:else}
+					<button class="filename" onclick={startRename}>
+						{file.name}
+						{#if hasUnsavedChanges}
+							<span class="unsaved-dot" title="Unsaved changes"></span>
+						{/if}
+					</button>
+				{/if}
 			</div>
 			<div class="mode-toggle">
 				<button
@@ -135,6 +183,30 @@
 		align-items: center;
 		gap: 8px;
 		font-weight: 500;
+		background: none;
+		border: none;
+		color: var(--color-text);
+		font-size: inherit;
+		padding: 4px 8px;
+		margin: -4px -8px;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+
+	.filename:hover {
+		background-color: var(--color-overlay);
+	}
+
+	.rename-input {
+		font-size: inherit;
+		font-weight: 500;
+		font-family: inherit;
+		padding: 4px 8px;
+		border: 1px solid var(--color-accent);
+		border-radius: 4px;
+		background-color: var(--color-base);
+		color: var(--color-text);
+		outline: none;
 	}
 
 	.unsaved-dot {

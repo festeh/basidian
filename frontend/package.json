@@ -34,6 +34,7 @@
 		"@codemirror/language-data": "^6.5.2",
 		"@codemirror/state": "^6.5.3",
 		"@codemirror/view": "^6.39.9",
+		"@replit/codemirror-vim": "^6.3.0",
 		"katex": "^0.16.27",
 		"markdown-it": "^14.1.0",
 		"shiki": "^3.21.0"
