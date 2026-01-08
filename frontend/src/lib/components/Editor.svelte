@@ -19,7 +19,7 @@
 	let mode: 'edit' | 'preview' = $state('edit');
 	let isRenaming = $state(false);
 	let renameValue = $state('');
-	let renameInput: HTMLInputElement;
+	let renameInput = $state<HTMLInputElement | null>(null);
 
 	// Sync content when file changes
 	$effect(() => {
