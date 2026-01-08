@@ -1,7 +1,9 @@
 <script lang="ts">
+	import type { FsNode } from '$lib/types';
 	import { rootNodes, isLoading, filesystemActions, selectedNode } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
 	import ContextMenu from './ContextMenu.svelte';
+	import ConfirmDialog from './ConfirmDialog.svelte';
 
 	interface Props {
 		onCreateFile: () => void;
@@ -11,6 +13,7 @@
 	let { onCreateFile, onCreateFolder }: Props = $props();
 
 	let contextMenu = $state<{ x: number; y: number } | null>(null);
+	let deleteTarget = $state<FsNode | null>(null);
 	let longPressTimer: ReturnType<typeof setTimeout> | null = null;
 
 	function handleContextMenu(e: MouseEvent) {
@@ -36,21 +39,26 @@
 		contextMenu = null;
 	}
 
-	async function handleDelete() {
-		const node = $selectedNode;
-		if (!node) return;
+	function handleDeleteClick() {
+		deleteTarget = $selectedNode;
+	}
 
-		const confirmed = confirm(`Delete "${node.name}"?`);
-		if (confirmed) {
-			await filesystemActions.deleteNode(node);
+	async function confirmDelete() {
+		if (deleteTarget) {
+			await filesystemActions.deleteNode(deleteTarget);
 		}
+		deleteTarget = null;
+	}
+
+	function cancelDelete() {
+		deleteTarget = null;
 	}
 
 	const menuItems = $derived([
 		{ label: 'New File', action: () => onCreateFile() },
 		{ label: 'New Folder', action: () => onCreateFolder() },
 		...($selectedNode
-			? [{ label: 'Delete', action: () => handleDelete(), danger: true }]
+			? [{ label: 'Delete', action: handleDeleteClick, danger: true }]
 			: [])
 	]);
 </script>
@@ -85,6 +93,17 @@
 		y={contextMenu.y}
 		items={menuItems}
 		onclose={closeContextMenu}
+	/>
+{/if}
+
+{#if deleteTarget}
+	<ConfirmDialog
+		title="Delete {deleteTarget.type === 'folder' ? 'Folder' : 'File'}"
+		message="Are you sure you want to delete &quot;{deleteTarget.name}&quot;? This action cannot be undone."
+		confirmLabel="Delete"
+		danger={true}
+		onconfirm={confirmDelete}
+		oncancel={cancelDelete}
 	/>
 {/if}
 
