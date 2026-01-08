@@ -3,7 +3,9 @@
 	import { currentThemeName } from '$lib/stores/theme';
 	import { settings } from '$lib/stores/settings';
 	import { themeList } from '$lib/themes';
+	import { loadedPlugins, pluginManager } from '$lib/plugins';
 	import type { ThemeName } from '$lib/types';
+	import type { LoadedPlugin } from '$lib/plugins';
 
 	function selectTheme(name: ThemeName) {
 		currentThemeName.set(name);
@@ -15,6 +17,19 @@
 
 	function goBack() {
 		goto('/');
+	}
+
+	let plugins: LoadedPlugin[] = $state([]);
+	loadedPlugins.subscribe((map) => {
+		plugins = Array.from(map.values());
+	});
+
+	async function togglePlugin(pluginId: string, enabled: boolean) {
+		if (enabled) {
+			await pluginManager.disablePlugin(pluginId);
+		} else {
+			await pluginManager.enablePlugin(pluginId);
+		}
 	}
 </script>
 
@@ -72,6 +87,30 @@
 				</div>
 			</button>
 		</section>
+
+		{#if plugins.length > 0}
+			<section>
+				<h2>Plugins</h2>
+				<div class="plugin-list">
+					{#each plugins as plugin (plugin.manifest.id)}
+						<button
+							class="setting-row"
+							onclick={() => togglePlugin(plugin.manifest.id, plugin.enabled)}
+						>
+							<div class="setting-info">
+								<span class="setting-name">{plugin.manifest.name}</span>
+								<span class="setting-desc"
+									>{plugin.manifest.description || `v${plugin.manifest.version}`}</span
+								>
+							</div>
+							<div class="toggle" class:active={plugin.enabled}>
+								<div class="toggle-knob"></div>
+							</div>
+						</button>
+					{/each}
+				</div>
+			</section>
+		{/if}
 	</main>
 </div>
 
@@ -116,6 +155,10 @@
 	main {
 		padding: 24px;
 		max-width: 600px;
+	}
+
+	section + section {
+		margin-top: 24px;
 	}
 
 	section h2 {
@@ -239,5 +282,11 @@
 
 	.toggle.active .toggle-knob {
 		transform: translateX(20px);
+	}
+
+	.plugin-list {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 	}
 </style>
