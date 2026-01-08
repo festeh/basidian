@@ -1,0 +1,70 @@
+:root {
+	/* Default theme (Catppuccin Mocha) */
+	--color-base: #1e1e2e;
+	--color-mantle: #181825;
+	--color-surface: #313244;
+	--color-overlay: #45475a;
+	--color-text: #cdd6f4;
+	--color-subtext: #a6adc8;
+	--color-accent: #89b4fa;
+	--color-secondary: #f5c2e7;
+	--color-error: #f38ba8;
+	--color-success: #a6e3a1;
+
+	color-scheme: dark;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	font-family:
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		Roboto,
+		'Helvetica Neue',
+		Arial,
+		sans-serif;
+	background-color: var(--color-base);
+	color: var(--color-text);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-overlay);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--color-subtext);
+}
+
+/* Button reset */
+button {
+	font-family: inherit;
+}
+
+/* Input reset */
+input,
+textarea {
+	font-family: inherit;
+}

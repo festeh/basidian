@@ -8,7 +8,7 @@ default:
 
 # Run backend server
 backend:
-    cd backend && uv run basidian-server serve
+    cd backend && uv run basidian-server serve --http=0.0.0.0:8090
 
 # Run backend with hot reload
 backend-dev:
@@ -18,58 +18,34 @@ backend-dev:
 deps-backend:
     cd backend && uv sync
 
-# ============== Frontend ==============
+# ============== Frontend (Tauri) ==============
 
-# Run frontend on Linux (uses .env for remote backend)
-run:
-    cd frontend && just run-linux
+# Run Tauri app in development mode
+tauri-dev:
+    cd frontend && npm run tauri:dev
 
-# Run frontend on Android (uses .env for remote backend)
-run-android:
-    cd frontend && just run-android
-
-# Run frontend on Linux pointing to local backend
-run-local:
-    cd frontend && flutter run -d linux \
-        --dart-define=BACKEND_URL=http://localhost:8090/api \
-        --dart-define=TRANSCRIPTION_URL=http://localhost:8091
-
-# Build Linux release
-build-linux:
-    cd frontend && just build-linux
-
-# Build Android APK
-build-android:
-    cd frontend && just build-android-apk
+# Build Tauri app for production
+tauri-build:
+    cd frontend && npm run tauri:build
 
 # Install frontend dependencies
 deps-frontend:
-    cd frontend && flutter pub get
+    cd frontend && npm install
+
+# Type check frontend
+check:
+    cd frontend && npm run check
 
 # ============== Local Development ==============
 
-# Run backend + frontend locally (Linux)
+# Run backend + frontend locally
 dev:
     #!/usr/bin/env bash
     set -euo pipefail
     trap 'kill 0' EXIT
     (cd backend && uv run basidian-server serve --http=0.0.0.0:8090) &
     sleep 2
-    cd frontend && flutter run -d linux \
-        --dart-define=BACKEND_URL=http://localhost:8090/api \
-        --dart-define=TRANSCRIPTION_URL=http://localhost:8091
-    wait
-
-# Run backend + frontend locally (Android emulator)
-dev-android:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    trap 'kill 0' EXIT
-    (cd backend && uv run basidian-server serve --http=0.0.0.0:8090) &
-    sleep 2
-    cd frontend && flutter run \
-        --dart-define=BACKEND_URL=http://10.0.2.2:8090/api \
-        --dart-define=TRANSCRIPTION_URL=http://10.0.2.2:8091
+    cd frontend && VITE_BACKEND_URL=http://localhost:8090/api npm run tauri:dev
     wait
 
 # ============== Utilities ==============
@@ -79,21 +55,13 @@ deps: deps-frontend deps-backend
 
 # Clean all build artifacts
 clean:
-    cd frontend && flutter clean
+    rm -rf frontend/build frontend/src-tauri/target
     rm -rf backend/.venv backend/dist backend/build
-
-# Run frontend tests
-test:
-    cd frontend && flutter test
 
 # Format code
 fmt:
-    cd frontend && dart format .
+    cd frontend && npx prettier --write .
 
-# Analyze code
+# Lint code
 lint:
-    cd frontend && flutter analyze
-
-# Show Flutter devices
-devices:
-    flutter devices
+    cd frontend && npm run check

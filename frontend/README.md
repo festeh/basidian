@@ -1,16 +1,41 @@
-# frontend
+# Basidian Frontend
 
-A new Flutter project.
+A second brain note-taking app built with Tauri v2 + Svelte 5.
 
-## Getting Started
+## Stack
 
-This project is a starting point for a Flutter application.
+- **Frontend**: Svelte 5 + SvelteKit + TypeScript
+- **Desktop**: Tauri v2 (Rust)
+- **Tooling**: Vite, mise (Rust + Node)
 
-A few resources to get you started if this is your first Flutter project:
+## Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Install system dependencies (Arch Linux):
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+sudo pacman -S webkit2gtk-4.1 libappindicator-gtk3
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run Tauri app in dev mode
+npm run tauri:dev
+```
+
+Or from root directory:
+
+```bash
+just dev  # Starts backend + frontend
+```
+
+## Building
+
+```bash
+npm run tauri:build
+```
+
+Output will be in `src-tauri/target/release/bundle/`.
