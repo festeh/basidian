@@ -212,7 +212,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final controller = TextEditingController();
     final provider = context.read<FilesystemProvider>();
 
-    // Default to creating in /daily folder or root
     String parentPath = '/';
     if (provider.selectedNode?.isFolder == true) {
       parentPath = provider.selectedNode!.path;

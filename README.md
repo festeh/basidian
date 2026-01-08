@@ -4,9 +4,8 @@ A beautiful second brain application built with Flutter (frontend) and Python/Fa
 
 ## Features
 
-- Create and edit daily notes
-- Tree-like filesystem for organizing files
-- Browse notes by date
+- Tree-like filesystem for organizing notes and files
+- Voice recording with automatic transcription
 - Search across all your notes
 - Clean, minimalist interface
 - Cross-platform (Android, iOS, Web, Desktop)
@@ -58,7 +57,6 @@ Or manually:
 - `GET /api/notes/{id}` - Get a specific note
 - `PUT /api/notes/{id}` - Update a note
 - `DELETE /api/notes/{id}` - Delete a note
-- `GET /api/notes/date/{date}` - Get notes for a specific date
 - `GET /api/search?q={query}` - Search notes
 
 **Filesystem:**
@@ -67,12 +65,6 @@ Or manually:
 - `POST /api/fs/node` - Create file/folder
 - `PUT /api/fs/node/{id}` - Update node
 - `DELETE /api/fs/node/{id}` - Delete node
-
-**Daily Notes:**
-- `GET /api/daily` - List all daily notes by year
-- `GET /api/daily/{date}` - Get/create daily note
-- `PUT /api/daily/{date}` - Update daily note
-- `DELETE /api/daily/{date}` - Delete daily note
 
 ## Project Structure
 
@@ -88,8 +80,7 @@ basidian/
 │   │   ├── models.py
 │   │   └── handlers/
 │   │       ├── notes.py
-│   │       ├── filesystem.py
-│   │       └── daily.py
+│   │       └── filesystem.py
 │   └── pb_data/
 │       └── data.db
 └── frontend/               # Flutter app
