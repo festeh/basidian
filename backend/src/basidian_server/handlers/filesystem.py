@@ -28,7 +28,6 @@ def _row_to_node(row) -> FsNode:
         path=row["path"],
         parent_path=row["parent_path"],
         content=row["content"],
-        is_daily=bool(row["is_daily"]),
         sort_order=row["sort_order"],
         created_at=created,
         updated_at=updated,
@@ -146,7 +145,7 @@ async def create_node(req: FsNodeRequest) -> FsNode:
     await db.db.execute(
         """
         INSERT INTO fs_nodes (id, type, name, path, parent_path, content, is_daily, sort_order, created, updated)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
         """,
         (
             node_id,
@@ -155,7 +154,6 @@ async def create_node(req: FsNodeRequest) -> FsNode:
             node_path,
             parent_path,
             req.content,
-            req.is_daily,
             req.sort_order,
             now,
             now,
@@ -171,7 +169,6 @@ async def create_node(req: FsNodeRequest) -> FsNode:
         path=node_path,
         parent_path=parent_path,
         content=req.content,
-        is_daily=req.is_daily,
         sort_order=req.sort_order,
         created_at=now,
         updated_at=now,

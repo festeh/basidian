@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../models/fs_node.dart';
 import '../services/filesystem_provider.dart';
 import '../services/audio_service.dart';
@@ -398,42 +397,6 @@ class _FileEditorScreenState extends State<FileEditorScreen> {
               ),
             ),
           ),
-
-          // Daily note indicator
-          if (_currentFile!.isDaily)
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: Spacing.sm,
-                vertical: Spacing.xs,
-              ),
-              decoration: BoxDecoration(
-                color: colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(Radii.sm),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.event_note,
-                    size: IconSizes.sm,
-                    color: colorScheme.primary,
-                  ),
-                  SizedBox(width: Spacing.xs),
-                  Text(
-                    _currentFile!.dailyDate != null
-                        ? DateFormat('MMM d, yyyy').format(_currentFile!.dailyDate!)
-                        : 'Daily Note',
-                    style: TextStyle(
-                      fontSize: TypeScale.xs,
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          SizedBox(width: Spacing.md),
 
           // Actions (for embedded mode)
           if (widget.embedded) ..._buildActions(colorScheme),

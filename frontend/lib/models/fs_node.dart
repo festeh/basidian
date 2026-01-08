@@ -7,7 +7,6 @@ class FsNode {
   final String path;
   final String parentPath;
   final String? content;
-  final bool isDaily;
   final int sortOrder;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -24,7 +23,6 @@ class FsNode {
     required this.path,
     required this.parentPath,
     this.content,
-    this.isDaily = false,
     this.sortOrder = 0,
     this.createdAt,
     this.updatedAt,
@@ -43,22 +41,6 @@ class FsNode {
 
   bool get isMarkdown => extension == 'md';
 
-  // Helper to generate daily note path
-  static String dailyPath(DateTime date) {
-    return '/daily/${date.toIso8601String().substring(0, 10)}.md';
-  }
-
-  // Extract date from daily note path
-  DateTime? get dailyDate {
-    if (!isDaily) return null;
-    final regex = RegExp(r'/daily/(\d{4}-\d{2}-\d{2})\.md');
-    final match = regex.firstMatch(path);
-    if (match != null) {
-      return DateTime.parse(match.group(1)!);
-    }
-    return null;
-  }
-
   factory FsNode.fromJson(Map<String, dynamic> json) {
     return FsNode(
       id: json['id'] as String?,
@@ -67,7 +49,6 @@ class FsNode {
       path: json['path'] ?? '',
       parentPath: json['parent_path'] ?? '/',
       content: json['content'] as String?,
-      isDaily: json['is_daily'] ?? false,
       sortOrder: (json['sort_order'] ?? 0).toInt(),
       createdAt: json['created_at'] != null && json['created_at'] != ''
           ? DateTime.parse(json['created_at']).toLocal()
@@ -86,7 +67,6 @@ class FsNode {
       'path': path,
       'parent_path': parentPath,
       if (content != null) 'content': content,
-      'is_daily': isDaily,
       'sort_order': sortOrder,
     };
   }
@@ -97,7 +77,6 @@ class FsNode {
       'name': name,
       'parent_path': parentPath,
       if (content != null) 'content': content,
-      'is_daily': isDaily,
       'sort_order': sortOrder,
     };
   }
@@ -109,7 +88,6 @@ class FsNode {
     String? path,
     String? parentPath,
     String? content,
-    bool? isDaily,
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -124,7 +102,6 @@ class FsNode {
       path: path ?? this.path,
       parentPath: parentPath ?? this.parentPath,
       content: content ?? this.content,
-      isDaily: isDaily ?? this.isDaily,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -154,7 +131,6 @@ class FsNode {
     required String name,
     required String parentPath,
     String? content,
-    bool isDaily = false,
     int sortOrder = 0,
   }) {
     return FsNode(
@@ -163,7 +139,6 @@ class FsNode {
       path: parentPath == '/' ? '/$name' : '$parentPath/$name',
       parentPath: parentPath,
       content: content,
-      isDaily: isDaily,
       sortOrder: sortOrder,
     );
   }

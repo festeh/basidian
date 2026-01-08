@@ -195,9 +195,9 @@ class _SidebarWidgetState extends State<SidebarWidget> {
               ),
               const SizedBox(height: Spacing.sm),
               TextButton.icon(
-                onPressed: () => provider.getTodayNote(),
+                onPressed: () => _showNewFileDialog(context),
                 icon: const Icon(Icons.add),
-                label: const Text('Create today\'s note'),
+                label: const Text('Create a note'),
               ),
             ],
           ),
@@ -249,7 +249,7 @@ class _SidebarWidgetState extends State<SidebarWidget> {
             return ListTile(
               dense: true,
               leading: Icon(
-                node.isDaily ? Icons.event_note : Icons.description,
+                node.isFolder ? Icons.folder : Icons.description,
                 size: IconSizes.sm,
               ),
               title: Text(

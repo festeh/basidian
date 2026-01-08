@@ -294,21 +294,27 @@ class _HomeScreenState extends State<HomeScreen> {
             languageCode: languageCode,
           );
 
-          // Create a new daily note with transcribed text
-          final now = DateTime.now();
-          final dailyNote = await provider.getDailyNote(now);
+          // Append to current file or create a new one
+          final timestamp = TimeOfDay.now().format(context);
+          final currentFile = provider.currentFile;
 
-          if (dailyNote != null && mounted) {
-            // Append transcription to daily note
-            final existingContent = dailyNote.content ?? '';
-            final timestamp = TimeOfDay.now().format(context);
+          if (currentFile != null && mounted) {
+            // Append transcription to current file
+            final existingContent = currentFile.content ?? '';
             final newContent = existingContent.isEmpty
                 ? '## $timestamp\n\n$transcribedText'
                 : '$existingContent\n\n## $timestamp\n\n$transcribedText';
 
-            final updatedNote = dailyNote.copyWith(content: newContent);
+            final updatedNote = currentFile.copyWith(content: newContent);
             await provider.updateNode(updatedNote);
-            provider.openFile(updatedNote);
+          } else if (mounted) {
+            // Create a new note with transcription
+            final now = DateTime.now();
+            final fileName = 'note-${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.md';
+            final newFile = await provider.createFile('/', fileName, content: '## $timestamp\n\n$transcribedText');
+            if (newFile != null) {
+              provider.openFile(newFile);
+            }
           }
 
           setState(() {

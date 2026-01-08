@@ -373,32 +373,6 @@ class ApiService {
     }
   }
 
-  static Future<FsNode> getOrCreateDailyNote(DateTime date) async {
-    final dateString = date.toIso8601String().substring(0, 10);
-    final url = '$baseUrl/daily/$dateString';
-
-    logger.d('getOrCreateDailyNote: GET $url');
-
-    try {
-      final response = await http.get(Uri.parse(url));
-      logger.d('getOrCreateDailyNote: response ${response.statusCode}');
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        logger.i('getOrCreateDailyNote: success for $dateString');
-        return FsNode.fromJson(json.decode(response.body));
-      } else {
-        logger.e('getOrCreateDailyNote: failed ${response.statusCode}: ${response.body}');
-        throw Exception('Failed to get/create daily note: ${response.statusCode}\n${response.body}');
-      }
-    } on SocketException catch (e) {
-      logger.e('getOrCreateDailyNote: SocketException', error: e);
-      throw Exception('Network error: Cannot connect to server at $url\nDetails: ${e.message}');
-    } catch (e) {
-      logger.e('getOrCreateDailyNote: unexpected error', error: e);
-      throw Exception('Unexpected error while getting daily note: $e');
-    }
-  }
-
   static Future<Map<String, dynamic>> migrateToFilesystem() async {
     final url = '$baseUrl/migrate-to-filesystem';
 

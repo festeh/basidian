@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from . import database as db
-from .handlers import daily_router, filesystem_router, notes_router
+from .handlers import filesystem_router, notes_router
 
 # Configure loguru
 logger.remove()
@@ -63,7 +63,6 @@ def create_app(db_path: str = "./pb_data/data.db") -> FastAPI:
     # Include routers
     app.include_router(notes_router)
     app.include_router(filesystem_router)
-    app.include_router(daily_router)
 
     return app
 

@@ -129,16 +129,10 @@ class FileTreeItem extends StatelessWidget {
 
   IconData _getNodeIcon() {
     if (node.isFolder) {
-      if (node.path == '/daily') {
-        return Icons.calendar_today;
-      }
       return node.isExpanded ? Icons.folder_open : Icons.folder;
     }
 
     // File icons
-    if (node.isDaily) {
-      return Icons.event_note;
-    }
     if (node.isMarkdown) {
       return Icons.description;
     }
@@ -149,14 +143,7 @@ class FileTreeItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (node.isFolder) {
-      if (node.path == '/daily') {
-        return theme.colorScheme.primary;
-      }
       return theme.colorScheme.secondary;
-    }
-
-    if (node.isDaily) {
-      return theme.colorScheme.primary;
     }
 
     return theme.colorScheme.onSurface.withValues(alpha: 0.7);

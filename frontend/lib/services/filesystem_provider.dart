@@ -12,7 +12,6 @@ class FilesystemProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLoadingFile = false;
   String? _errorMessage;
-  DateTime _selectedDate = DateTime.now();
 
   // Getters
   List<FsNode> get rootNodes => _rootNodes;
@@ -22,7 +21,6 @@ class FilesystemProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isLoadingFile => _isLoadingFile;
   String? get errorMessage => _errorMessage;
-  DateTime get selectedDate => _selectedDate;
 
   FilesystemProvider() {
     _loadExpandedState();
@@ -278,48 +276,6 @@ class FilesystemProvider extends ChangeNotifier {
       _errorMessage = e.toString();
       notifyListeners();
     }
-  }
-
-  // Get or create today's daily note
-  Future<FsNode?> getTodayNote() async {
-    return getDailyNote(DateTime.now());
-  }
-
-  // Get or create a daily note for a specific date
-  Future<FsNode?> getDailyNote(DateTime date) async {
-    _isLoadingFile = true;
-    _errorMessage = null;
-    notifyListeners();
-
-    try {
-      final note = await ApiService.getOrCreateDailyNote(date);
-      _currentFile = note;
-      _selectedNode = note;
-      _selectedDate = date;
-
-      // Ensure the tree is refreshed to include the new note
-      await loadTree();
-
-      // Expand the /daily folder
-      _expandedPaths.add('/daily');
-      _applyExpandedState();
-      _saveExpandedState();
-
-      _isLoadingFile = false;
-      notifyListeners();
-      return note;
-    } catch (e) {
-      _errorMessage = e.toString();
-      _isLoadingFile = false;
-      notifyListeners();
-      return null;
-    }
-  }
-
-  // Set selected date (for date picker integration)
-  void setSelectedDate(DateTime date) {
-    _selectedDate = date;
-    notifyListeners();
   }
 
   // Search files
