@@ -12,7 +12,6 @@
 
 	let content = $state('');
 	let hasUnsavedChanges = $state(false);
-	let isSaving = $state(false);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let mode: 'edit' | 'preview' = $state('edit');
 
@@ -36,17 +35,16 @@
 	}
 
 	async function save() {
-		if (!file || !hasUnsavedChanges || isSaving) return;
+		if (!file || !hasUnsavedChanges) return;
 
-		isSaving = true;
 		try {
 			await filesystemActions.updateNode({
 				...file,
 				content
 			});
 			hasUnsavedChanges = false;
-		} finally {
-			isSaving = false;
+		} catch {
+			// Keep hasUnsavedChanges true on error
 		}
 	}
 </script>
@@ -61,9 +59,6 @@
 						<span class="unsaved-dot" title="Unsaved changes"></span>
 					{/if}
 				</span>
-				{#if isSaving}
-					<span class="saving">Saving...</span>
-				{/if}
 			</div>
 			<div class="mode-toggle">
 				<button
@@ -147,11 +142,6 @@
 		height: 8px;
 		background-color: var(--color-secondary);
 		border-radius: 50%;
-	}
-
-	.saving {
-		font-size: 12px;
-		color: var(--color-subtext);
 	}
 
 	.mode-toggle {
