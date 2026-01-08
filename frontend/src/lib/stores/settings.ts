@@ -1,11 +1,8 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
+import type { Settings } from '$lib/types';
 
 const STORAGE_KEY = 'basidian-settings';
-
-export interface Settings {
-	vimMode: boolean;
-}
 
 const DEFAULT_SETTINGS: Settings = {
 	vimMode: false

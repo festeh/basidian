@@ -1,0 +1,9 @@
+{
+	"id": "hello-world",
+	"name": "Hello World",
+	"version": "1.0.0",
+	"description": "Example plugin demonstrating the Basidian plugin system",
+	"author": "Basidian",
+	"main": "index.ts",
+	"hooks": ["onLoad", "onUnload", "onFileOpen", "onFileSave"]
+}

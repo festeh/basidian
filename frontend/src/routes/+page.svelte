@@ -5,6 +5,7 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Editor from '$lib/components/Editor.svelte';
 	import Modal from '$lib/components/Modal.svelte';
+	import StatusBar from '$lib/components/StatusBar.svelte';
 	import {
 		filesystemActions,
 		currentFile,
@@ -92,6 +93,8 @@
 			{/if}
 		</main>
 	</div>
+
+	<StatusBar />
 </div>
 
 <!-- Create File Modal -->

@@ -62,3 +62,7 @@ export type ThemeName =
 	| 'nord'
 	| 'dracula'
 	| 'gruvbox-dark';
+
+export interface Settings {
+	vimMode: boolean;
+}
