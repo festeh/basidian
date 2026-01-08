@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import '../services/filesystem_provider.dart';
 import '../services/audio_service.dart';
 import '../services/asr_settings_provider.dart';
@@ -103,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildTopBar(BuildContext context, ColorScheme colorScheme, bool isNarrow) {
-    return Padding(
+    final content = Padding(
       padding: EdgeInsets.symmetric(
         horizontal: Spacing.md,
         vertical: Spacing.sm,
@@ -158,6 +161,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+
+    // Make top bar draggable on desktop
+    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+      return DragToMoveArea(child: content);
+    }
+    return content;
   }
 
   Widget _buildFab(BuildContext context, ColorScheme colorScheme) {
