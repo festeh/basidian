@@ -29,6 +29,11 @@
 			handleClick();
 		}
 	}
+
+	function handleContextMenu() {
+		// Select node on right-click so context menu shows correct options
+		filesystemActions.selectNode(node);
+	}
 </script>
 
 <div class="tree-item">
@@ -38,6 +43,7 @@
 		style="padding-left: {depth * 16 + 8}px"
 		onclick={handleClick}
 		onkeydown={handleKeydown}
+		oncontextmenu={handleContextMenu}
 	>
 		{#if isFolder}
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-secondary)">
