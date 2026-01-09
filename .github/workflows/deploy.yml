@@ -55,6 +55,9 @@ jobs:
           cd /root/basidian/backend
           /root/.local/bin/uv sync
 
+          # Create data directory if it doesn't exist
+          mkdir -p /root/basidian/backend/pb_data
+
           # Create systemd service file
           sudo tee /etc/systemd/system/basidian.service > /dev/null <<EOF
           [Unit]
