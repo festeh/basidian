@@ -3,7 +3,7 @@
 	import { currentThemeName } from '$lib/stores/theme';
 	import { settings } from '$lib/stores/settings';
 	import { themeList } from '$lib/themes';
-	import { loadedPlugins, pluginManager } from '$lib/plugins';
+	import { loadedPlugins, pluginManager, uiRegistry, type SettingsTab } from '$lib/plugins';
 	import type { ThemeName } from '$lib/types';
 	import type { LoadedPlugin } from '$lib/plugins';
 
@@ -23,6 +23,9 @@
 	loadedPlugins.subscribe((map) => {
 		plugins = Array.from(map.values());
 	});
+
+	let settingsTabs: SettingsTab[] = $state([]);
+	uiRegistry.settingsTabs.subscribe((tabs) => (settingsTabs = tabs));
 
 	async function togglePlugin(pluginId: string, enabled: boolean) {
 		if (enabled) {
@@ -111,6 +114,16 @@
 				</div>
 			</section>
 		{/if}
+
+		{#each settingsTabs as tab (tab.id)}
+			{@const Component = tab.component}
+			<section>
+				<h2>{tab.title}</h2>
+				<div class="plugin-settings">
+					<Component />
+				</div>
+			</section>
+		{/each}
 	</main>
 </div>
 
@@ -288,5 +301,12 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
+	}
+
+	.plugin-settings {
+		background: var(--color-surface);
+		border: 1px solid var(--color-overlay);
+		border-radius: 12px;
+		padding: 16px;
 	}
 </style>

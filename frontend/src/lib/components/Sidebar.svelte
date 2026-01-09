@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { filesystemActions } from '$lib/stores/filesystem';
+	import { uiRegistry, type UISlotItem } from '$lib/plugins';
 	import FileTree from './FileTree.svelte';
 
 	interface Props {
@@ -11,6 +12,9 @@
 
 	let searchQuery = $state('');
 	let isSearching = $state(false);
+	let sidebarActions: UISlotItem[] = $state([]);
+
+	uiRegistry.sidebarActions.subscribe((items) => (sidebarActions = items));
 
 	async function handleSearch() {
 		if (!searchQuery.trim()) return;
@@ -41,6 +45,14 @@
 				onkeydown={handleKeydown}
 			/>
 		</div>
+		{#if sidebarActions.length > 0}
+			<div class="sidebar-actions">
+				{#each sidebarActions as item (item.id)}
+					{@const Component = item.component}
+					<Component {...item.props} />
+				{/each}
+			</div>
+		{/if}
 	</div>
 	<FileTree {onCreateFile} {onCreateFolder} />
 </aside>
@@ -84,5 +96,11 @@
 
 	.search-container input::placeholder {
 		color: var(--color-subtext);
+	}
+
+	.sidebar-actions {
+		display: flex;
+		align-items: center;
+		gap: 4px;
 	}
 </style>

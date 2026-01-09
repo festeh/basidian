@@ -82,6 +82,11 @@ export interface PluginUI {
 		title: string,
 		component: PluginComponent
 	) => () => void;
+	registerSidebarAction: (
+		component: PluginComponent,
+		props?: Record<string, unknown>,
+		order?: number
+	) => () => void;
 	registerSettingsTab: (
 		id: string,
 		title: string,

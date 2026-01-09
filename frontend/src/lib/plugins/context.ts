@@ -80,6 +80,11 @@ export function createPluginContext(
 				uiRegistry.registerStatusBarItem(manifest.id, component, props),
 			registerSidebarPanel: (id: string, title: string, component: PluginComponent) =>
 				uiRegistry.registerSidebarPanel(manifest.id, id, title, component),
+			registerSidebarAction: (
+				component: PluginComponent,
+				props?: Record<string, unknown>,
+				order?: number
+			) => uiRegistry.registerSidebarAction(manifest.id, component, props, order),
 			registerSettingsTab: (id: string, title: string, component: PluginComponent) =>
 				uiRegistry.registerSettingsTab(manifest.id, id, title, component),
 			registerEditorToolbarItem: (component: PluginComponent, props?: Record<string, unknown>) =>

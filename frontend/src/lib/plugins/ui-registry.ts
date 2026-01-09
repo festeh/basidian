@@ -33,6 +33,7 @@ function createUIRegistry() {
 	const statusBarItems = writable<UISlotItem[]>([]);
 	const editorToolbarItems = writable<UISlotItem[]>([]);
 	const sidebarPanels = writable<SidebarPanel[]>([]);
+	const sidebarActions = writable<UISlotItem[]>([]);
 	const settingsTabs = writable<SettingsTab[]>([]);
 	const notifications = writable<Notification[]>([]);
 
@@ -40,6 +41,7 @@ function createUIRegistry() {
 		statusBarItems: { subscribe: statusBarItems.subscribe },
 		editorToolbarItems: { subscribe: editorToolbarItems.subscribe },
 		sidebarPanels: { subscribe: sidebarPanels.subscribe },
+		sidebarActions: { subscribe: sidebarActions.subscribe },
 		settingsTabs: { subscribe: settingsTabs.subscribe },
 		notifications: { subscribe: notifications.subscribe },
 
@@ -80,6 +82,22 @@ function createUIRegistry() {
 			};
 		},
 
+		registerSidebarAction(
+			pluginId: string,
+			component: PluginComponent,
+			props?: Record<string, unknown>,
+			order?: number
+		) {
+			const id = `${pluginId}-sidebar-action-${Date.now()}`;
+			sidebarActions.update((items) => {
+				const newItems = [...items, { id, pluginId, component, props, order }];
+				return newItems.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+			});
+			return () => {
+				sidebarActions.update((items) => items.filter((i) => i.id !== id));
+			};
+		},
+
 		registerSettingsTab(
 			pluginId: string,
 			id: string,
@@ -109,6 +127,7 @@ function createUIRegistry() {
 			statusBarItems.update((items) => items.filter((i) => i.pluginId !== pluginId));
 			editorToolbarItems.update((items) => items.filter((i) => i.pluginId !== pluginId));
 			sidebarPanels.update((panels) => panels.filter((p) => p.pluginId !== pluginId));
+			sidebarActions.update((items) => items.filter((i) => i.pluginId !== pluginId));
 			settingsTabs.update((tabs) => tabs.filter((t) => t.pluginId !== pluginId));
 		}
 	};
