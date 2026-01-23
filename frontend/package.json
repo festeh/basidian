@@ -35,6 +35,7 @@
 		"@codemirror/state": "^6.5.3",
 		"@codemirror/view": "^6.39.9",
 		"@replit/codemirror-vim": "^6.3.0",
+		"@tauri-apps/plugin-fs": "^2.4.5",
 		"katex": "^0.16.27",
 		"markdown-it": "^14.1.0",
 		"shiki": "^3.21.0"

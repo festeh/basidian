@@ -1,6 +1,9 @@
+import json
 import sys
+import tempfile
 import time
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import click
 import uvicorn
@@ -11,7 +14,7 @@ from loguru import logger
 from . import database as db
 from .handlers import filesystem_router, notes_router
 
-# Configure loguru
+# Configure loguru - stderr output
 logger.remove()
 logger.add(
     sys.stderr,
@@ -19,6 +22,28 @@ logger.add(
     level="DEBUG",
     colorize=True,
 )
+
+# Configure loguru - JSON file output
+LOG_DIR = Path(tempfile.gettempdir()) / "basidian"
+LOG_DIR.mkdir(exist_ok=True)
+LOG_FILE = LOG_DIR / "backend.log"
+
+
+def json_sink(message):
+    record = message.record
+    entry = {
+        "ts": record["time"].isoformat(),
+        "level": record["level"].name.lower(),
+        "module": record["name"],
+        "msg": record["message"],
+    }
+    if record["extra"]:
+        entry["data"] = record["extra"]
+    with open(LOG_FILE, "a") as f:
+        f.write(json.dumps(entry) + "\n")
+
+
+logger.add(json_sink, level="DEBUG")
 
 
 def create_app(db_path: str = "./pb_data/data.db") -> FastAPI:
@@ -88,6 +113,7 @@ def serve(http: str, db_path: str):
         port = int(parts[1]) if len(parts) > 1 else 8090
 
     logger.info(f"Server starting on {host}:{port}")
+    logger.info(f"Logs: {LOG_FILE}")
     app = create_app(db_path)
     uvicorn.run(app, host=host, port=port)
 

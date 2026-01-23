@@ -1,3 +1,5 @@
+import { writeTextFile, mkdir, exists, BaseDirectory } from '@tauri-apps/plugin-fs';
+
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 interface LogEntry {
@@ -25,6 +27,10 @@ const LEVEL_STYLES: Record<LogLevel, string> = {
 class Logger {
 	private minLevel: LogLevel = 'debug';
 	private enabled = true;
+	private logQueue: string[] = [];
+	private flushTimeout: ReturnType<typeof setTimeout> | null = null;
+	private isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
+	private logDirReady = false;
 
 	setLevel(level: LogLevel) {
 		this.minLevel = level;
@@ -46,6 +52,57 @@ class Logger {
 		return `[${module}]`;
 	}
 
+	private async ensureLogDir() {
+		if (!this.isTauri || this.logDirReady) return;
+		try {
+			const dirExists = await exists('basidian', { baseDir: BaseDirectory.Temp });
+			if (!dirExists) {
+				await mkdir('basidian', { baseDir: BaseDirectory.Temp, recursive: true });
+			}
+			this.logDirReady = true;
+		} catch {
+			// Ignore errors - file logging will silently fail
+		}
+	}
+
+	private async flushToFile() {
+		if (this.logQueue.length === 0 || !this.isTauri) return;
+
+		const lines = this.logQueue.join('');
+		this.logQueue = [];
+
+		try {
+			await this.ensureLogDir();
+			await writeTextFile('basidian/frontend.log', lines, {
+				baseDir: BaseDirectory.Temp,
+				append: true
+			});
+		} catch {
+			// Ignore errors - console logging still works
+		}
+	}
+
+	private queueLogEntry(level: LogLevel, module: string, message: string, data?: unknown) {
+		const entry: Record<string, unknown> = {
+			ts: new Date().toISOString(),
+			level,
+			module,
+			msg: message
+		};
+		if (data !== undefined) {
+			entry.data = data;
+		}
+		this.logQueue.push(JSON.stringify(entry) + '\n');
+
+		// Batch writes - flush every 100ms
+		if (!this.flushTimeout) {
+			this.flushTimeout = setTimeout(() => {
+				this.flushTimeout = null;
+				this.flushToFile();
+			}, 100);
+		}
+	}
+
 	private log(level: LogLevel, module: string, message: string, data?: unknown) {
 		if (!this.shouldLog(level)) return;
 
@@ -65,6 +122,9 @@ class Logger {
 		} else {
 			console[level === 'debug' ? 'log' : level](prefix, style, message);
 		}
+
+		// Queue for file output
+		this.queueLogEntry(level, module, message, data);
 
 		return entry;
 	}
