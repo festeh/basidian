@@ -48,6 +48,13 @@ dev:
     cd frontend && VITE_BACKEND_URL=http://localhost:8090/api mise exec -- npm run tauri:dev
     wait
 
+# Run frontend with live backend (requires LIVE_BACKEND_URL in .env)
+dev-live:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source .env
+    cd frontend && VITE_BACKEND_URL="$LIVE_BACKEND_URL" mise exec -- npm run tauri:dev
+
 # ============== Utilities ==============
 
 # Install all dependencies
