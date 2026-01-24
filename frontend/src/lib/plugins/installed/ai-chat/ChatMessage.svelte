@@ -59,14 +59,14 @@
   }
 
   .message.user .message-content {
-    background: var(--color-accent, #007aff);
-    color: white;
+    background: var(--color-accent);
+    color: var(--color-base);
     border-bottom-right-radius: 4px;
   }
 
   .message.assistant .message-content {
-    background: var(--color-surface, #f0f0f0);
-    color: var(--color-text-primary, #333);
+    background: var(--color-surface);
+    color: var(--color-text);
     border-bottom-left-radius: 4px;
   }
 
@@ -89,15 +89,15 @@
 
   .timestamp {
     font-size: 11px;
-    color: var(--color-text-tertiary, #999);
+    color: var(--color-subtext);
   }
 
   .error-badge {
     font-size: 10px;
     padding: 2px 6px;
     border-radius: 4px;
-    background: var(--color-error, #ff3b30);
-    color: white;
+    background: var(--color-error);
+    color: var(--color-base);
   }
 
   /* Typing indicator */
@@ -111,7 +111,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--color-text-tertiary, #999);
+    background: var(--color-subtext);
     animation: typing 1.4s infinite ease-in-out;
   }
 

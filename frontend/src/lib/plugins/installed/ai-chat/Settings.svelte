@@ -231,12 +231,12 @@
     gap: 8px;
     font-size: 13px;
     font-weight: 600;
-    color: var(--color-text-primary, #333);
+    color: var(--color-text);
   }
 
   .value-display {
     font-weight: normal;
-    color: var(--color-text-secondary, #666);
+    color: var(--color-subtext);
   }
 
   .setting-group select,
@@ -245,10 +245,10 @@
   .setting-group input[type="number"],
   .setting-group textarea {
     padding: 8px 12px;
-    border: 1px solid var(--color-border, #e0e0e0);
+    border: 1px solid var(--color-overlay);
     border-radius: 6px;
-    background: var(--color-background, #fff);
-    color: var(--color-text-primary, #333);
+    background: var(--color-surface);
+    color: var(--color-text);
     font-size: 14px;
     font-family: inherit;
     outline: none;
@@ -258,7 +258,7 @@
   .setting-group select:focus,
   .setting-group input:focus,
   .setting-group textarea:focus {
-    border-color: var(--color-accent, #007aff);
+    border-color: var(--color-accent);
   }
 
   .setting-group input[type="range"] {
@@ -274,11 +274,11 @@
   .setting-hint {
     margin: 0;
     font-size: 12px;
-    color: var(--color-text-tertiary, #999);
+    color: var(--color-subtext);
   }
 
   .setting-hint a {
-    color: var(--color-accent, #007aff);
+    color: var(--color-accent);
     text-decoration: none;
   }
 
@@ -302,17 +302,17 @@
     justify-content: center;
     width: 36px;
     padding: 0;
-    border: 1px solid var(--color-border, #e0e0e0);
+    border: 1px solid var(--color-overlay);
     border-radius: 6px;
-    background: var(--color-surface, #f5f5f5);
-    color: var(--color-text-secondary, #666);
+    background: var(--color-surface);
+    color: var(--color-subtext);
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .toggle-visibility:hover {
-    background: var(--color-surface-hover, #e8e8e8);
-    color: var(--color-text-primary, #333);
+    background: var(--color-overlay);
+    color: var(--color-text);
   }
 
   .api-key-actions {
@@ -326,8 +326,8 @@
     padding: 6px 12px;
     border: none;
     border-radius: 6px;
-    background: var(--color-accent, #007aff);
-    color: white;
+    background: var(--color-accent);
+    color: var(--color-base);
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
@@ -335,7 +335,7 @@
   }
 
   .validate-button:hover:not(:disabled) {
-    opacity: 0.9;
+    filter: brightness(1.1);
   }
 
   .validate-button:disabled {
@@ -353,12 +353,12 @@
   }
 
   .validation-badge.valid {
-    background: var(--color-success-light, rgba(52, 199, 89, 0.1));
-    color: var(--color-success, #34c759);
+    background: rgba(166, 227, 161, 0.2);
+    color: var(--color-success);
   }
 
   .validation-badge.invalid {
-    background: var(--color-error-light, rgba(255, 59, 48, 0.1));
-    color: var(--color-error, #ff3b30);
+    background: rgba(243, 139, 168, 0.2);
+    color: var(--color-error);
   }
 </style>

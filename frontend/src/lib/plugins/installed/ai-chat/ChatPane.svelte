@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { closeChatPane, getContext } from './index';
   import { getProvider } from './providers';
   import {
@@ -27,7 +28,12 @@
 
   // Load conversations on mount
   $effect(() => {
-    loadConversations();
+    untrack(() => {
+      const log = getContext()?.log;
+      log?.info('ChatPane mounted');
+      loadConversations();
+      log?.debug('ChatPane loadConversations completed');
+    });
   });
 
   // Auto-scroll to bottom when messages change
@@ -394,9 +400,9 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--color-background, #fff);
-    border-left: 1px solid var(--color-border, #e0e0e0);
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+    background: var(--color-base);
+    border-left: 1px solid var(--color-overlay);
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
     z-index: 1000;
   }
 
@@ -405,8 +411,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--color-border, #e0e0e0);
-    background: var(--color-surface, #f5f5f5);
+    border-bottom: 1px solid var(--color-overlay);
+    background: var(--color-mantle);
   }
 
   .header-left,
@@ -420,7 +426,7 @@
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-text-primary, #333);
+    color: var(--color-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -437,14 +443,14 @@
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: var(--color-text-secondary, #666);
+    color: var(--color-subtext);
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .icon-button:hover {
-    background: var(--color-surface-hover, rgba(0, 0, 0, 0.05));
-    color: var(--color-text-primary, #333);
+    background: var(--color-surface);
+    color: var(--color-text);
   }
 
   /* Conversation list */
@@ -454,9 +460,9 @@
     left: 0;
     width: 100%;
     max-height: 300px;
-    background: var(--color-background, #fff);
-    border-bottom: 1px solid var(--color-border, #e0e0e0);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: var(--color-base);
+    border-bottom: 1px solid var(--color-overlay);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 10;
     overflow: hidden;
     display: flex;
@@ -467,8 +473,8 @@
     padding: 8px 16px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--color-text-secondary, #666);
-    border-bottom: 1px solid var(--color-border, #e0e0e0);
+    color: var(--color-subtext);
+    border-bottom: 1px solid var(--color-overlay);
   }
 
   .conversation-list-items {
@@ -486,16 +492,16 @@
   }
 
   .conversation-item:hover {
-    background: var(--color-surface-hover, rgba(0, 0, 0, 0.03));
+    background: var(--color-surface);
   }
 
   .conversation-item.active {
-    background: var(--color-accent-light, rgba(0, 122, 255, 0.1));
+    background: var(--color-overlay);
   }
 
   .conversation-title {
     font-size: 13px;
-    color: var(--color-text-primary, #333);
+    color: var(--color-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -512,7 +518,7 @@
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: var(--color-text-tertiary, #999);
+    color: var(--color-subtext);
     cursor: pointer;
     opacity: 0;
     transition: all 0.15s ease;
@@ -523,15 +529,15 @@
   }
 
   .delete-button:hover {
-    background: var(--color-error-light, rgba(255, 59, 48, 0.1));
-    color: var(--color-error, #ff3b30);
+    background: rgba(243, 139, 168, 0.2);
+    color: var(--color-error);
   }
 
   .empty-list {
     padding: 20px;
     text-align: center;
     font-size: 13px;
-    color: var(--color-text-tertiary, #999);
+    color: var(--color-subtext);
   }
 
   /* Messages */
@@ -550,7 +556,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: var(--color-text-tertiary, #999);
+    color: var(--color-subtext);
   }
 
   .empty-state p {
@@ -568,10 +574,10 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 16px;
-    background: var(--color-error-light, rgba(255, 59, 48, 0.1));
-    border-top: 1px solid var(--color-error, #ff3b30);
+    background: rgba(243, 139, 168, 0.15);
+    border-top: 1px solid var(--color-error);
     font-size: 13px;
-    color: var(--color-error, #ff3b30);
+    color: var(--color-error);
   }
 
   .error-actions {
@@ -583,8 +589,8 @@
     padding: 4px 10px;
     border: none;
     border-radius: 4px;
-    background: var(--color-error, #ff3b30);
-    color: white;
+    background: var(--color-error);
+    color: var(--color-base);
     font-size: 12px;
     cursor: pointer;
     transition: opacity 0.15s ease;
@@ -600,17 +606,17 @@
     align-items: flex-end;
     gap: 8px;
     padding: 12px 16px;
-    border-top: 1px solid var(--color-border, #e0e0e0);
-    background: var(--color-surface, #f5f5f5);
+    border-top: 1px solid var(--color-overlay);
+    background: var(--color-mantle);
   }
 
   .input-area textarea {
     flex: 1;
     padding: 10px 12px;
-    border: 1px solid var(--color-border, #e0e0e0);
+    border: 1px solid var(--color-overlay);
     border-radius: 8px;
-    background: var(--color-background, #fff);
-    color: var(--color-text-primary, #333);
+    background: var(--color-surface);
+    color: var(--color-text);
     font-size: 14px;
     font-family: inherit;
     resize: none;
@@ -621,7 +627,7 @@
   }
 
   .input-area textarea:focus {
-    border-color: var(--color-accent, #007aff);
+    border-color: var(--color-accent);
   }
 
   .input-area textarea:disabled {
@@ -638,14 +644,14 @@
     padding: 0;
     border: none;
     border-radius: 8px;
-    background: var(--color-accent, #007aff);
-    color: white;
+    background: var(--color-accent);
+    color: var(--color-base);
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .send-button:hover:not(:disabled) {
-    background: var(--color-accent-hover, #0066d6);
+    filter: brightness(1.1);
   }
 
   .send-button:disabled {

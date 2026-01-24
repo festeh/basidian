@@ -1,22 +1,32 @@
 <script lang="ts">
-  import { toggleChatPane, chatPaneOpen } from './index';
+  import { toggleChatPane, chatPaneOpen, getContext } from './index';
   import ChatPane from './ChatPane.svelte';
 
   let isOpen = $state(false);
 
   // Subscribe to chat pane state
   $effect(() => {
+    const log = getContext()?.log;
+    log?.debug('ChatButton effect running');
     const unsubscribe = chatPaneOpen.subscribe((value) => {
+      log?.debug('chatPaneOpen changed', { value });
       isOpen = value;
     });
     return unsubscribe;
   });
+
+  function handleClick() {
+    const log = getContext()?.log;
+    log?.info('AI Chat button clicked');
+    toggleChatPane();
+    log?.info('AI Chat toggleChatPane completed');
+  }
 </script>
 
 <button
   class="chat-button"
   class:active={isOpen}
-  onclick={toggleChatPane}
+  onclick={handleClick}
   title="AI Chat"
   aria-label="Toggle AI Chat"
 >

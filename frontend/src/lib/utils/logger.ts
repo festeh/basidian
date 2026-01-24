@@ -29,8 +29,11 @@ class Logger {
 	private enabled = true;
 	private logQueue: string[] = [];
 	private flushTimeout: ReturnType<typeof setTimeout> | null = null;
-	private isTauri = typeof window !== 'undefined' && '__TAURI__' in window;
 	private logDirReady = false;
+
+	private get isTauri(): boolean {
+		return typeof window !== 'undefined' && '__TAURI__' in window;
+	}
 
 	setLevel(level: LogLevel) {
 		this.minLevel = level;
@@ -94,13 +97,8 @@ class Logger {
 		}
 		this.logQueue.push(JSON.stringify(entry) + '\n');
 
-		// Batch writes - flush every 100ms
-		if (!this.flushTimeout) {
-			this.flushTimeout = setTimeout(() => {
-				this.flushTimeout = null;
-				this.flushToFile();
-			}, 100);
-		}
+		// Flush immediately (no batching)
+		this.flushToFile();
 	}
 
 	private log(level: LogLevel, module: string, message: string, data?: unknown) {
