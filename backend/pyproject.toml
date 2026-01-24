@@ -13,11 +13,13 @@ dependencies = [
     "aiosqlite>=0.20.0",
     "click>=8.1.0",
     "loguru>=0.7.3",
+    "httpx>=0.27.0",
 ]
 
 [project.scripts]
 basidian-server = "basidian_server.main:cli"
 bscli = "basidian_server.bscli:cli"
+basync = "basidian_server.basync:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.11,<0.10.0"]
