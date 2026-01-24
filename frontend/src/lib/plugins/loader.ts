@@ -34,6 +34,8 @@ class PluginManager {
 				eager: true,
 				import: 'default'
 			});
+			// Pre-load Svelte components so Vite can extract their CSS
+			import.meta.glob('./installed/**/*.svelte', { eager: true });
 
 			for (const [manifestPath, manifest] of Object.entries(manifestModules)) {
 				const pluginDir = manifestPath.replace('/manifest.json', '');
