@@ -152,6 +152,9 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+		padding-top: var(--safe-area-inset-top);
+		padding-left: var(--safe-area-inset-left);
+		padding-right: var(--safe-area-inset-right);
 	}
 
 	.divider.horizontal {

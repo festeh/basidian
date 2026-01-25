@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { currentTheme, applyTheme } from '$lib/stores/theme';
 	import { pluginManager } from '$lib/plugins';
+	import { applySafeAreaInsets } from '$lib/utils/safe-area';
 	import '../app.css';
 
 	let { children } = $props();
@@ -11,6 +12,8 @@
 		applyTheme($currentTheme);
 		// Initialize plugin system
 		pluginManager.initialize();
+		// Apply native safe area insets on mobile
+		applySafeAreaInsets();
 	});
 
 	$effect(() => {

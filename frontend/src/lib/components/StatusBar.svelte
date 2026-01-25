@@ -37,8 +37,9 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		height: 24px;
+		min-height: 24px;
 		padding: 0 12px;
+		padding-bottom: var(--safe-area-inset-bottom);
 		background: var(--color-mantle);
 		border-top: 1px solid var(--color-surface);
 		font-size: 12px;
@@ -54,8 +55,8 @@
 
 	.notifications {
 		position: fixed;
-		bottom: 32px;
-		right: 16px;
+		bottom: calc(32px + var(--safe-area-inset-bottom));
+		right: calc(16px + var(--safe-area-inset-right));
 		display: flex;
 		flex-direction: column;
 		gap: 8px;

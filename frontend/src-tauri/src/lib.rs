@@ -2,6 +2,13 @@
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
+        .setup(|app| {
+            #[cfg(mobile)]
+            {
+                app.handle().plugin(tauri_plugin_safe_area_insets::init())?;
+            }
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

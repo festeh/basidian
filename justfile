@@ -57,9 +57,9 @@ dev-live:
 
 # ============== Android ==============
 
-# Build Android APK
+# Build Android APK (ARM64)
 android-build:
-    cd frontend && mise exec -- npm run tauri android build
+    cd frontend && mise exec -- npm run tauri android build -- --target aarch64
 
 # Run Android app in development mode
 android-dev:
@@ -68,6 +68,20 @@ android-dev:
 # Initialize Android project (run once)
 android-init:
     cd frontend && mise exec -- npm run tauri android init
+
+# Build and deploy Android APK to pCloud
+deploy-phone: android-build
+    #!/usr/bin/env bash
+    set -euo pipefail
+    APK_PATH="frontend/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk"
+    DEST_DIR="$HOME/pCloudDrive/android-apps/basidian"
+    if [[ ! -f "$APK_PATH" ]]; then
+        echo "Error: APK not found at $APK_PATH"
+        exit 1
+    fi
+    mkdir -p "$DEST_DIR"
+    cp "$APK_PATH" "$DEST_DIR/basidian.apk"
+    echo "Deployed to $DEST_DIR/basidian.apk"
 
 # ============== Utilities ==============
 
