@@ -31,6 +31,10 @@
 		goto('/settings');
 	}
 
+	function openInfo() {
+		goto('/info');
+	}
+
 	function openCreateFileModal() {
 		newItemName = '';
 		showCreateFileModal = true;
@@ -75,7 +79,7 @@
 </script>
 
 <div class="app">
-	<TopBar {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} />
+	<TopBar {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
 	<div class="divider horizontal"></div>
 
 	<div class="content">
