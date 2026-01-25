@@ -9,84 +9,53 @@ import type { Plugin, PluginContext } from '$lib/plugins/types';
 import { initStorage } from './storage';
 import ChatButton from './ChatButton.svelte';
 import Settings from './Settings.svelte';
-import { writable, type Writable } from 'svelte/store';
+import { setContext, closeChatPane } from './state';
 
-// Shared state for chat pane visibility
-export const chatPaneOpen: Writable<boolean> = writable(false);
-
-// Plugin context reference
-let ctx: PluginContext | null = null;
+// Re-export state for external consumers
+export { chatPaneOpen, toggleChatPane, openChatPane, closeChatPane, getContext } from './state';
 
 // Unregister functions for cleanup
 let unregisterSidebarAction: (() => void) | null = null;
 let unregisterSettingsTab: (() => void) | null = null;
 
-/**
- * Toggle the chat pane open/closed.
- */
-export function toggleChatPane(): void {
-  chatPaneOpen.update((open) => !open);
-}
-
-/**
- * Open the chat pane.
- */
-export function openChatPane(): void {
-  chatPaneOpen.set(true);
-}
-
-/**
- * Close the chat pane.
- */
-export function closeChatPane(): void {
-  chatPaneOpen.set(false);
-}
-
-/**
- * Get the plugin context.
- */
-export function getContext(): PluginContext | null {
-  return ctx;
-}
-
 const plugin: Plugin = {
-  async onLoad(context: PluginContext) {
-    ctx = context;
-    ctx.log.info('AI Chat plugin loading...');
+	async onLoad(context: PluginContext) {
+		setContext(context);
+		context.log.info('AI Chat plugin loading...');
 
-    // Initialize storage with plugin's storage API
-    initStorage(ctx.storage);
+		// Initialize storage with plugin's storage API
+		initStorage(context.storage);
 
-    // Register sidebar action button (appears below search bar)
-    unregisterSidebarAction = ctx.ui.registerSidebarAction(ChatButton);
+		// Register sidebar action button (appears below search bar)
+		unregisterSidebarAction = context.ui.registerSidebarAction(ChatButton);
 
-    // Register settings tab
-    unregisterSettingsTab = ctx.ui.registerSettingsTab(
-      'ai-chat',
-      'AI Chat',
-      Settings
-    );
+		// Register settings tab
+		unregisterSettingsTab = context.ui.registerSettingsTab(
+			'ai-chat',
+			'AI Chat',
+			Settings
+		);
 
-    ctx.log.info('AI Chat plugin loaded!');
-  },
+		context.log.info('AI Chat plugin loaded!');
+	},
 
-  async onUnload(context: PluginContext) {
-    context.log.info('AI Chat plugin unloading...');
+	async onUnload(context: PluginContext) {
+		context.log.info('AI Chat plugin unloading...');
 
-    // Close chat pane if open
-    closeChatPane();
+		// Close chat pane if open
+		closeChatPane();
 
-    // Unregister UI components
-    unregisterSidebarAction?.();
-    unregisterSettingsTab?.();
+		// Unregister UI components
+		unregisterSidebarAction?.();
+		unregisterSettingsTab?.();
 
-    // Clear references
-    unregisterSidebarAction = null;
-    unregisterSettingsTab = null;
-    ctx = null;
+		// Clear references
+		unregisterSidebarAction = null;
+		unregisterSettingsTab = null;
+		setContext(null);
 
-    context.log.info('AI Chat plugin unloaded!');
-  },
+		context.log.info('AI Chat plugin unloaded!');
+	},
 };
 
 export default plugin;

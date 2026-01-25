@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getSettings, saveSettings, type DailyNotesSettings } from './index';
+	import { getSettings, saveSettings, type DailyNotesSettings } from './state';
 
 	let settings: DailyNotesSettings = $state(getSettings());
 

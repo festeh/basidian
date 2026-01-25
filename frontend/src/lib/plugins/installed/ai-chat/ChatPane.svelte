@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { closeChatPane, getContext } from './index';
+  import { closeChatPane, getContext } from './state';
   import { getProvider } from './providers';
   import {
     getSettings,

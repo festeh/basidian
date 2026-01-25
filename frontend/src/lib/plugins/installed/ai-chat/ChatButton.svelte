@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { toggleChatPane, chatPaneOpen, getContext } from './index';
+  import { toggleChatPane, chatPaneOpen, getContext } from './state';
   import ChatPane from './ChatPane.svelte';
 
   let isOpen = $state(false);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { openOrCreateDaily, getDailyNotesForMonth } from './index';
+	import { openOrCreateDaily, getDailyNotesForMonth } from './state';
 	import { rootNodes } from '$lib/stores/filesystem';
 
 	let showCalendar = $state(false);

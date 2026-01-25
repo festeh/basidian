@@ -55,10 +55,49 @@ dev-live:
     source .env
     cd frontend && VITE_BACKEND_URL="$LIVE_BACKEND_URL" mise exec -- npm run tauri:dev
 
+# ============== Android ==============
+
+# Build Android APK
+android-build:
+    cd frontend && mise exec -- npm run tauri android build
+
+# Run Android app in development mode
+android-dev:
+    cd frontend && mise exec -- npm run tauri android dev
+
+# Initialize Android project (run once)
+android-init:
+    cd frontend && mise exec -- npm run tauri android init
+
 # ============== Utilities ==============
 
 # Install all dependencies
 deps: deps-frontend deps-backend
+
+# Install basidian to ~/.local/bin and create desktop entry for rofi (idempotent)
+install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    BINARY="{{justfile_directory()}}/frontend/src-tauri/target/release/basidian"
+    if [[ ! -f "$BINARY" ]]; then
+        echo "Error: Binary not found. Run 'just tauri-build' first."
+        exit 1
+    fi
+    mkdir -p ~/.local/bin
+    ln -sf "$BINARY" ~/.local/bin/basidian
+    echo "Linked basidian to ~/.local/bin/basidian"
+    mkdir -p ~/.local/share/applications
+    printf '%s\n' \
+        "[Desktop Entry]" \
+        "Name=Basidian" \
+        "Comment=A second brain note-taking application" \
+        "Exec=basidian" \
+        "Icon=basidian" \
+        "Terminal=false" \
+        "Type=Application" \
+        "Categories=Office;Productivity;" \
+        > ~/.local/share/applications/basidian.desktop
+    echo "Created ~/.local/share/applications/basidian.desktop"
 
 # Clean all build artifacts
 clean:

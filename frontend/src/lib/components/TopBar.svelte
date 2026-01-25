@@ -49,8 +49,6 @@
 				</svg>
 			{/if}
 		</button>
-
-		<h1 class="title">Basidian</h1>
 	</div>
 
 	<div class="right">
@@ -119,12 +117,6 @@
 		display: flex;
 		align-items: center;
 		gap: 8px;
-	}
-
-	.title {
-		font-size: 18px;
-		font-weight: bold;
-		margin-left: 8px;
 	}
 
 	.icon-btn {
