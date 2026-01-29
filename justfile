@@ -22,11 +22,11 @@ deps-backend:
 
 # Run Tauri app in development mode
 tauri-dev:
-    cd frontend && mise exec -- npm run tauri:dev
+    cd frontend && VITE_PLATFORM=desktop mise exec -- npm run tauri:dev
 
 # Build Tauri app for production
 tauri-build:
-    cd frontend && mise exec -- npm run tauri:build
+    cd frontend && VITE_PLATFORM=desktop mise exec -- npm run tauri:build
 
 # Install frontend dependencies
 deps-frontend:
@@ -45,7 +45,7 @@ dev:
     trap 'kill 0' EXIT
     (cd backend && uv run basidian-server serve --http=0.0.0.0:8090) &
     sleep 2
-    cd frontend && VITE_BACKEND_URL=http://localhost:8090/api mise exec -- npm run tauri:dev
+    cd frontend && VITE_PLATFORM=desktop VITE_BACKEND_URL=http://localhost:8090/api mise exec -- npm run tauri:dev
     wait
 
 # Run frontend with live backend (requires LIVE_BACKEND_URL in .env)
@@ -53,17 +53,17 @@ dev-live:
     #!/usr/bin/env bash
     set -euo pipefail
     source .env
-    cd frontend && VITE_BACKEND_URL="$LIVE_BACKEND_URL" mise exec -- npm run tauri:dev
+    cd frontend && VITE_PLATFORM=desktop VITE_BACKEND_URL="$LIVE_BACKEND_URL" mise exec -- npm run tauri:dev
 
 # ============== Android ==============
 
 # Build Android APK (ARM64)
 android-build:
-    cd frontend && mise exec -- npm run tauri android build -- --target aarch64
+    cd frontend && VITE_PLATFORM=mobile mise exec -- npm run tauri android build -- --target aarch64
 
 # Run Android app in development mode
 android-dev:
-    cd frontend && mise exec -- npm run tauri android dev
+    cd frontend && VITE_PLATFORM=mobile mise exec -- npm run tauri android dev
 
 # Initialize Android project (run once)
 android-init:
