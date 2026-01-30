@@ -1,6 +1,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import { closeChatPane, getContext } from './state';
+  import { isMobile } from '$lib/stores/platform';
   import { getProvider } from './providers';
   import {
     getSettings,
@@ -263,7 +264,7 @@
   }
 </script>
 
-<div class="chat-pane">
+<div class="chat-pane" class:mobile={isMobile}>
   <header class="chat-header">
     <div class="header-left">
       <button
@@ -672,10 +673,7 @@
     }
   }
 
-  /* Responsive */
-  @media (max-width: 480px) {
-    .chat-pane {
-      width: 100%;
-    }
+  .chat-pane.mobile {
+    width: 100%;
   }
 </style>
