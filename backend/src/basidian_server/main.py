@@ -11,7 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from . import database as db
+from .db import close_db, init_db
 from .handlers import filesystem_router, notes_router
 
 # Configure loguru - stderr output
@@ -51,17 +51,15 @@ def create_app(db_path: str = "./pb_data/data.db") -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        # Startup: Initialize database
-        await db.init(db_path)
+        await init_db(app, db_path)
         logger.info(f"Database initialized: {db_path}")
         yield
-        # Shutdown: Close database
-        await db.close()
+        await close_db(app)
         logger.info("Database connection closed")
 
     app = FastAPI(title="Basidian Backend", lifespan=lifespan)
 
-    # CORS - allow all origins (same as Go)
+    # CORS - allow all origins
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],

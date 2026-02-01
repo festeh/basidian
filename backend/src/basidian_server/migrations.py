@@ -1,32 +1,12 @@
-import secrets
-from typing import Optional
+"""Database schema migrations."""
 
 import aiosqlite
 
-db: Optional[aiosqlite.Connection] = None
 
-
-async def init(db_path: str) -> None:
-    """Initialize database connection and run migrations."""
-    global db
-    db = await aiosqlite.connect(db_path)
-    db.row_factory = aiosqlite.Row
-    await run_migrations()
-
-
-async def close() -> None:
-    """Close database connection."""
-    global db
-    if db:
-        await db.close()
-        db = None
-
-
-async def run_migrations() -> None:
+async def run_migrations(db: aiosqlite.Connection) -> None:
     """Create tables and indexes if they don't exist."""
-    assert db is not None
 
-    # Notes table (exact schema from Go)
+    # Notes table
     await db.execute("""
         CREATE TABLE IF NOT EXISTS notes (
             id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
@@ -38,7 +18,7 @@ async def run_migrations() -> None:
         )
     """)
 
-    # fs_nodes table (exact schema from Go)
+    # fs_nodes table
     await db.execute("""
         CREATE TABLE IF NOT EXISTS fs_nodes (
             id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
@@ -54,7 +34,7 @@ async def run_migrations() -> None:
         )
     """)
 
-    # Indexes (same as Go)
+    # Indexes
     await db.execute(
         "CREATE UNIQUE INDEX IF NOT EXISTS idx_fs_nodes_path ON fs_nodes (path)"
     )
@@ -66,8 +46,3 @@ async def run_migrations() -> None:
     )
     await db.execute("CREATE INDEX IF NOT EXISTS idx_notes_date ON notes (date)")
     await db.commit()
-
-
-def generate_id() -> str:
-    """Generate random ID similar to PocketBase format (16-char hex string)."""
-    return secrets.token_hex(8)

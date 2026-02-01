@@ -1,10 +1,12 @@
 from datetime import datetime
 
-from fastapi import APIRouter, HTTPException, Query
+import aiosqlite
+from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
-from .. import database as db
-from ..models import Note, NoteRequest
+from basidian.models import Note, NoteRequest
+
+from ..db import generate_id, get_db
 
 router = APIRouter()
 
@@ -24,12 +26,11 @@ def _row_to_note(row) -> Note:
 
 
 @router.get("/api/notes")
-async def get_notes() -> list[Note]:
+async def get_notes(db: aiosqlite.Connection = Depends(get_db)) -> list[Note]:
     """Fetch all notes ordered by date descending."""
     logger.info("GetNotes: Fetching all notes")
 
-    assert db.db is not None
-    async with db.db.execute("""
+    async with db.execute("""
         SELECT id, title, content, date, created, updated
         FROM notes
         ORDER BY date DESC
@@ -42,23 +43,23 @@ async def get_notes() -> list[Note]:
 
 
 @router.post("/api/notes", status_code=201)
-async def create_note(req: NoteRequest) -> Note:
+async def create_note(
+    req: NoteRequest, db: aiosqlite.Connection = Depends(get_db)
+) -> Note:
     """Create a new note."""
-    assert db.db is not None
-
-    note_id = db.generate_id()
+    note_id = generate_id()
     now = datetime.now().isoformat()
 
     date = req.date if req.date else datetime.now().strftime("%Y-%m-%d")
 
-    await db.db.execute(
+    await db.execute(
         """
         INSERT INTO notes (id, title, content, date, created, updated)
         VALUES (?, ?, ?, ?, ?, ?)
         """,
         (note_id, req.title, req.content, date, now, now),
     )
-    await db.db.commit()
+    await db.commit()
 
     logger.info(f"CreateNote: Created note {note_id}")
     return Note(
@@ -72,11 +73,11 @@ async def create_note(req: NoteRequest) -> Note:
 
 
 @router.get("/api/notes/{note_id}")
-async def get_note(note_id: str) -> Note:
+async def get_note(
+    note_id: str, db: aiosqlite.Connection = Depends(get_db)
+) -> Note:
     """Get a single note by ID."""
-    assert db.db is not None
-
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, title, content, date, created, updated
         FROM notes
@@ -93,12 +94,12 @@ async def get_note(note_id: str) -> Note:
 
 
 @router.put("/api/notes/{note_id}")
-async def update_note(note_id: str, req: NoteRequest) -> Note:
+async def update_note(
+    note_id: str, req: NoteRequest, db: aiosqlite.Connection = Depends(get_db)
+) -> Note:
     """Update an existing note."""
-    assert db.db is not None
-
     # Check if note exists
-    async with db.db.execute(
+    async with db.execute(
         "SELECT 1 FROM notes WHERE id = ?", (note_id,)
     ) as cursor:
         if await cursor.fetchone() is None:
@@ -106,7 +107,7 @@ async def update_note(note_id: str, req: NoteRequest) -> Note:
 
     now = datetime.now().isoformat()
 
-    await db.db.execute(
+    await db.execute(
         """
         UPDATE notes
         SET title = ?, content = ?, date = ?, updated = ?
@@ -114,10 +115,10 @@ async def update_note(note_id: str, req: NoteRequest) -> Note:
         """,
         (req.title, req.content, req.date, now, note_id),
     )
-    await db.db.commit()
+    await db.commit()
 
     # Fetch updated record
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, title, content, date, created, updated
         FROM notes WHERE id = ?
@@ -131,25 +132,27 @@ async def update_note(note_id: str, req: NoteRequest) -> Note:
 
 
 @router.delete("/api/notes/{note_id}", status_code=204)
-async def delete_note(note_id: str) -> None:
+async def delete_note(
+    note_id: str, db: aiosqlite.Connection = Depends(get_db)
+) -> None:
     """Delete a note."""
-    assert db.db is not None
-
     # Check if note exists
-    async with db.db.execute(
+    async with db.execute(
         "SELECT 1 FROM notes WHERE id = ?", (note_id,)
     ) as cursor:
         if await cursor.fetchone() is None:
             raise HTTPException(status_code=404, detail="Note not found")
 
-    await db.db.execute("DELETE FROM notes WHERE id = ?", (note_id,))
-    await db.db.commit()
+    await db.execute("DELETE FROM notes WHERE id = ?", (note_id,))
+    await db.commit()
 
     logger.info(f"DeleteNote: Deleted note {note_id}")
 
 
 @router.get("/api/notes/date/{date}")
-async def get_notes_by_date(date: str) -> list[Note]:
+async def get_notes_by_date(
+    date: str, db: aiosqlite.Connection = Depends(get_db)
+) -> list[Note]:
     """Get notes for a specific date."""
     # Validate date format
     try:
@@ -159,8 +162,7 @@ async def get_notes_by_date(date: str) -> list[Note]:
             status_code=400, detail="Invalid date format. Use YYYY-MM-DD"
         )
 
-    assert db.db is not None
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, title, content, date, created, updated
         FROM notes
@@ -175,13 +177,14 @@ async def get_notes_by_date(date: str) -> list[Note]:
 
 
 @router.get("/api/search")
-async def search_notes(q: str = Query(..., min_length=1)) -> list[Note]:
+async def search_notes(
+    q: str = Query(..., min_length=1),
+    db: aiosqlite.Connection = Depends(get_db),
+) -> list[Note]:
     """Search notes by title or content."""
-    assert db.db is not None
-
     search_pattern = f"%{q}%"
 
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, title, content, date, created, updated
         FROM notes

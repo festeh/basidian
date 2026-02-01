@@ -1,11 +1,13 @@
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query
+import aiosqlite
+from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
-from .. import database as db
-from ..models import FsNode, FsNodeRequest, MoveRequest
+from basidian.models import FsNode, FsNodeRequest, MoveRequest
+
+from ..db import generate_id, get_db
 
 router = APIRouter()
 
@@ -35,14 +37,15 @@ def _row_to_node(row) -> FsNode:
 
 
 @router.get("/api/fs/tree")
-async def get_tree(parent_path: Optional[str] = None) -> list[FsNode]:
+async def get_tree(
+    parent_path: Optional[str] = None,
+    db: aiosqlite.Connection = Depends(get_db),
+) -> list[FsNode]:
     """Get filesystem tree structure."""
     logger.info("GetTree: Fetching filesystem tree")
 
-    assert db.db is not None
-
     if parent_path:
-        async with db.db.execute(
+        async with db.execute(
             """
             SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
             FROM fs_nodes
@@ -53,7 +56,7 @@ async def get_tree(parent_path: Optional[str] = None) -> list[FsNode]:
         ) as cursor:
             rows = await cursor.fetchall()
     else:
-        async with db.db.execute("""
+        async with db.execute("""
             SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
             FROM fs_nodes
             ORDER BY type DESC, sort_order ASC, name ASC
@@ -66,11 +69,12 @@ async def get_tree(parent_path: Optional[str] = None) -> list[FsNode]:
 
 
 @router.get("/api/fs/node")
-async def get_node(path: str = Query(...)) -> FsNode:
+async def get_node(
+    path: str = Query(...),
+    db: aiosqlite.Connection = Depends(get_db),
+) -> FsNode:
     """Get a single node by path."""
-    assert db.db is not None
-
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
         FROM fs_nodes
@@ -87,11 +91,12 @@ async def get_node(path: str = Query(...)) -> FsNode:
 
 
 @router.get("/api/fs/node/{node_id}")
-async def get_node_by_id(node_id: str) -> FsNode:
+async def get_node_by_id(
+    node_id: str,
+    db: aiosqlite.Connection = Depends(get_db),
+) -> FsNode:
     """Get a single node by ID."""
-    assert db.db is not None
-
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
         FROM fs_nodes
@@ -108,10 +113,11 @@ async def get_node_by_id(node_id: str) -> FsNode:
 
 
 @router.post("/api/fs/node", status_code=201)
-async def create_node(req: FsNodeRequest) -> FsNode:
+async def create_node(
+    req: FsNodeRequest,
+    db: aiosqlite.Connection = Depends(get_db),
+) -> FsNode:
     """Create a new file or folder."""
-    assert db.db is not None
-
     if req.type not in ("folder", "file"):
         raise HTTPException(status_code=400, detail="Type must be 'folder' or 'file'")
 
@@ -122,7 +128,7 @@ async def create_node(req: FsNodeRequest) -> FsNode:
 
     # Check if parent exists (unless parent is root)
     if parent_path != "/":
-        async with db.db.execute(
+        async with db.execute(
             "SELECT 1 FROM fs_nodes WHERE path = ? AND type = 'folder'",
             (parent_path,),
         ) as cursor:
@@ -133,16 +139,16 @@ async def create_node(req: FsNodeRequest) -> FsNode:
     node_path = _build_path(parent_path, req.name)
 
     # Check if path already exists
-    async with db.db.execute(
+    async with db.execute(
         "SELECT 1 FROM fs_nodes WHERE path = ?", (node_path,)
     ) as cursor:
         if await cursor.fetchone() is not None:
             raise HTTPException(status_code=409, detail="Path already exists")
 
-    node_id = db.generate_id()
+    node_id = generate_id()
     now = datetime.now().isoformat()
 
-    await db.db.execute(
+    await db.execute(
         """
         INSERT INTO fs_nodes (id, type, name, path, parent_path, content, is_daily, sort_order, created, updated)
         VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
@@ -159,7 +165,7 @@ async def create_node(req: FsNodeRequest) -> FsNode:
             now,
         ),
     )
-    await db.db.commit()
+    await db.commit()
 
     logger.info(f"CreateNode: Created {req.type} at {node_path}")
     return FsNode(
@@ -176,12 +182,14 @@ async def create_node(req: FsNodeRequest) -> FsNode:
 
 
 @router.put("/api/fs/node/{node_id}")
-async def update_node(node_id: str, req: FsNodeRequest) -> FsNode:
+async def update_node(
+    node_id: str,
+    req: FsNodeRequest,
+    db: aiosqlite.Connection = Depends(get_db),
+) -> FsNode:
     """Update an existing node."""
-    assert db.db is not None
-
     # Check if node exists and get current values
-    async with db.db.execute(
+    async with db.execute(
         "SELECT type, name, content FROM fs_nodes WHERE id = ?",
         (node_id,),
     ) as cursor:
@@ -200,7 +208,7 @@ async def update_node(node_id: str, req: FsNodeRequest) -> FsNode:
 
     now = datetime.now().isoformat()
 
-    await db.db.execute(
+    await db.execute(
         """
         UPDATE fs_nodes
         SET name = ?, content = ?, sort_order = ?, updated = ?
@@ -208,10 +216,10 @@ async def update_node(node_id: str, req: FsNodeRequest) -> FsNode:
         """,
         (new_name, new_content, req.sort_order, now, node_id),
     )
-    await db.db.commit()
+    await db.commit()
 
     # Fetch updated node
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
         FROM fs_nodes WHERE id = ?
@@ -224,12 +232,13 @@ async def update_node(node_id: str, req: FsNodeRequest) -> FsNode:
 
 
 @router.delete("/api/fs/node/{node_id}", status_code=204)
-async def delete_node(node_id: str) -> None:
+async def delete_node(
+    node_id: str,
+    db: aiosqlite.Connection = Depends(get_db),
+) -> None:
     """Delete a node (and children if folder)."""
-    assert db.db is not None
-
     # Get node info
-    async with db.db.execute(
+    async with db.execute(
         "SELECT path, type FROM fs_nodes WHERE id = ?",
         (node_id,),
     ) as cursor:
@@ -243,25 +252,27 @@ async def delete_node(node_id: str) -> None:
 
     # If it's a folder, delete all children first
     if node_type == "folder":
-        await db.db.execute(
+        await db.execute(
             "DELETE FROM fs_nodes WHERE path LIKE ?",
             (f"{node_path}/%",),
         )
 
     # Delete the node itself
-    await db.db.execute("DELETE FROM fs_nodes WHERE id = ?", (node_id,))
-    await db.db.commit()
+    await db.execute("DELETE FROM fs_nodes WHERE id = ?", (node_id,))
+    await db.commit()
 
     logger.info(f"DeleteNode: Deleted {node_path}")
 
 
 @router.post("/api/fs/move/{node_id}")
-async def move_node(node_id: str, req: MoveRequest) -> FsNode:
+async def move_node(
+    node_id: str,
+    req: MoveRequest,
+    db: aiosqlite.Connection = Depends(get_db),
+) -> FsNode:
     """Move or rename a node."""
-    assert db.db is not None
-
     # Get current node info
-    async with db.db.execute(
+    async with db.execute(
         "SELECT path, name, parent_path, type FROM fs_nodes WHERE id = ?",
         (node_id,),
     ) as cursor:
@@ -281,7 +292,7 @@ async def move_node(node_id: str, req: MoveRequest) -> FsNode:
 
     # Check if new path already exists
     if new_path != old_path:
-        async with db.db.execute(
+        async with db.execute(
             "SELECT 1 FROM fs_nodes WHERE path = ?", (new_path,)
         ) as cursor:
             if await cursor.fetchone() is not None:
@@ -292,7 +303,7 @@ async def move_node(node_id: str, req: MoveRequest) -> FsNode:
     now = datetime.now().isoformat()
 
     # Update the node
-    await db.db.execute(
+    await db.execute(
         """
         UPDATE fs_nodes
         SET name = ?, path = ?, parent_path = ?, updated = ?
@@ -303,7 +314,7 @@ async def move_node(node_id: str, req: MoveRequest) -> FsNode:
 
     # If it's a folder, update all children paths
     if node_type == "folder":
-        async with db.db.execute(
+        async with db.execute(
             "SELECT id, path, parent_path FROM fs_nodes WHERE path LIKE ?",
             (f"{old_path}/%",),
         ) as cursor:
@@ -318,17 +329,17 @@ async def move_node(node_id: str, req: MoveRequest) -> FsNode:
             if child_old_parent == old_path:
                 child_new_parent = new_path
 
-            await db.db.execute(
+            await db.execute(
                 """
                 UPDATE fs_nodes SET path = ?, parent_path = ?, updated = ? WHERE id = ?
                 """,
                 (child_new_path, child_new_parent, now, child["id"]),
             )
 
-    await db.db.commit()
+    await db.commit()
 
     # Fetch updated node
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
         FROM fs_nodes WHERE id = ?
@@ -342,13 +353,14 @@ async def move_node(node_id: str, req: MoveRequest) -> FsNode:
 
 
 @router.get("/api/fs/search")
-async def search_files(q: str = Query(..., min_length=1)) -> list[FsNode]:
+async def search_files(
+    q: str = Query(..., min_length=1),
+    db: aiosqlite.Connection = Depends(get_db),
+) -> list[FsNode]:
     """Search for files containing the query."""
-    assert db.db is not None
-
     search_pattern = f"%{q}%"
 
-    async with db.db.execute(
+    async with db.execute(
         """
         SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
         FROM fs_nodes

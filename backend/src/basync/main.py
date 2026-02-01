@@ -7,8 +7,10 @@ from typing import Optional
 
 import click
 
-from .basync_client import BasidianClient, FsNode
-from .basync_config import BasyncConfig, load_config
+from basidian.client import BasidianClient
+from basidian.models import FsNode
+
+from .config import BasyncConfig, load_config
 
 
 def should_include(path: str, include: list[str], exclude: list[str]) -> bool:
