@@ -8,7 +8,7 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import StatusBar from '$lib/components/StatusBar.svelte';
 	import { filesystemActions, currentFile, isLoadingFile } from '$lib/stores/filesystem';
-	import { createPageState } from '$lib/page-shared';
+	import { createPageState } from '$lib/page-shared.svelte';
 
 	const page = createPageState();
 
