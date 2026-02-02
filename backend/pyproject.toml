@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-basidian-server = "basidian_server.main:cli"
+basidian-server = "server.main:cli"
 bscli = "bscli.main:cli"
 basync = "basync.main:cli"
 

@@ -7,8 +7,8 @@ from typing import Optional
 
 import click
 
-from basidian.client import BasidianClient
-from basidian.models import FsNode
+from client import BasidianClient
+from models import FsNode
 
 from .config import BasyncConfig, load_config
 
