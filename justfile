@@ -57,9 +57,12 @@ dev-live:
 
 # ============== Android ==============
 
-# Build Android APK (ARM64)
+# Build Android APK (ARM64) with live backend
 android-build:
-    cd frontend && VITE_PLATFORM=mobile mise exec -- npm run tauri android build -- --target aarch64
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source .env
+    cd frontend && VITE_PLATFORM=mobile VITE_BACKEND_URL="$LIVE_BACKEND_URL" mise exec -- npm run tauri android build -- --target aarch64 --debug
 
 # Run Android app in development mode
 android-dev:
@@ -73,7 +76,7 @@ android-init:
 deploy-phone: android-build
     #!/usr/bin/env bash
     set -euo pipefail
-    APK_PATH="frontend/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk"
+    APK_PATH="frontend/src-tauri/gen/android/app/build/outputs/apk/universal/debug/app-universal-debug.apk"
     DEST_DIR="$HOME/pCloudDrive/android-apps/basidian"
     if [[ ! -f "$APK_PATH" ]]; then
         echo "Error: APK not found at $APK_PATH"
