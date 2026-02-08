@@ -26,4 +26,5 @@ TypeScript 5.x, Svelte 5 (runes): Follow standard conventions
 - 001-ai-chat: Added TypeScript 5.x, Svelte 5 (runes) + Svelte 5, existing plugin system (PluginContext, ui-registry)
 
 <!-- MANUAL ADDITIONS START -->
+Design docs are in arch/. See arch/00_MAP.md for an index.
 <!-- MANUAL ADDITIONS END -->
