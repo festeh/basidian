@@ -32,12 +32,11 @@
 
 <div class="app">
 	<TopBarDesktop {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
-	<div class="divider horizontal"></div>
 
 	<div class="content">
-		{#if !sidebarCollapsed}
+		<div class="sidebar-wrapper" class:collapsed={sidebarCollapsed}>
 			<Sidebar onCreateFile={page.openCreateFileModal} onCreateFolder={page.openCreateFolderModal} />
-		{/if}
+		</div>
 
 		<main class="main">
 			{#if $isLoadingFile}
@@ -45,7 +44,11 @@
 					<div class="spinner"></div>
 				</div>
 			{:else}
-				<Editor file={$currentFile} />
+				{#key $currentFile?.id}
+					<div class="editor-fade">
+						<Editor file={$currentFile} />
+					</div>
+				{/key}
 			{/if}
 		</main>
 	</div>
@@ -109,21 +112,41 @@
 		padding-right: var(--safe-area-inset-right);
 	}
 
-	.divider.horizontal {
-		height: 1px;
-		background-color: var(--color-overlay);
-	}
-
 	.content {
 		display: flex;
 		flex: 1;
 		overflow: hidden;
 	}
 
+	.sidebar-wrapper {
+		width: 280px;
+		overflow: hidden;
+		transition: width 0.25s ease;
+	}
+
+	.sidebar-wrapper.collapsed {
+		width: 0;
+	}
+
 	.main {
 		display: flex;
 		flex: 1;
 		overflow: hidden;
+	}
+
+	.editor-fade {
+		display: flex;
+		flex: 1;
+		animation: fade-in 0.15s ease;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	.loading {

@@ -37,10 +37,10 @@
 	const theme = EditorView.theme({
 		'&': {
 			height: '100%',
-			fontSize: '14px'
+			fontSize: 'var(--font-size-base)'
 		},
 		'.cm-content': {
-			fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+			fontFamily: 'var(--font-mono)',
 			padding: '16px 0'
 		},
 		'.cm-line': {

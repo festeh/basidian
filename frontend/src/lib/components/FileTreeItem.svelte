@@ -102,12 +102,8 @@
 	}
 
 	.item-row.selected {
-		background-color: var(--color-accent);
-		color: var(--color-base);
-	}
-
-	.item-row.selected :global(svg) {
-		fill: var(--color-base);
+		background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
+		border-left: 3px solid var(--color-accent);
 	}
 
 	.toggle-icon {

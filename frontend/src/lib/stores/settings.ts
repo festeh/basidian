@@ -5,7 +5,9 @@ import type { Settings } from '$lib/types';
 const STORAGE_KEY = 'basidian-settings';
 
 const DEFAULT_SETTINGS: Settings = {
-	vimMode: false
+	vimMode: false,
+	fontSize: 14,
+	accentColor: null
 };
 
 function loadSettings(): Settings {

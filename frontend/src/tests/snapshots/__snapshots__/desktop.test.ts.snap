@@ -131,90 +131,170 @@ exports[`PageDesktop snapshots > empty state — sidebar with no files, editor p
     <!---->
      
     <div
-      class="divider horizontal svelte-chipbn"
-    />
-     
-    <div
       class="content svelte-chipbn"
     >
-      <aside
-        class="sidebar svelte-129hoe0"
+      <div
+        class="sidebar-wrapper svelte-chipbn"
       >
-        <div
-          class="header svelte-129hoe0"
+        <aside
+          class="sidebar svelte-129hoe0"
         >
           <div
-            class="search-container svelte-129hoe0"
+            class="header svelte-129hoe0"
           >
-            <svg
-              fill="var(--color-subtext)"
-              height="16"
-              viewBox="0 0 24 24"
-              width="16"
+            <div
+              class="search-container svelte-129hoe0"
             >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+              <svg
+                fill="var(--color-subtext)"
+                height="16"
+                viewBox="0 0 24 24"
+                width="16"
+              >
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+               
+              <input
+                class="svelte-129hoe0"
+                placeholder="Search..."
+                type="text"
               />
-            </svg>
+            </div>
              
-            <input
-              class="svelte-129hoe0"
-              placeholder="Search..."
-              type="text"
-            />
+            <!---->
+          </div>
+           
+          <div
+            class="file-tree svelte-124nk1e"
+          >
+            <div
+              class="loading svelte-124nk1e"
+            >
+              <div
+                class="spinner svelte-124nk1e"
+              />
+            </div>
+            <!---->
           </div>
            
           <!---->
-        </div>
-         
-        <div
-          class="file-tree svelte-124nk1e"
-        >
-          <div
-            class="loading svelte-124nk1e"
-          >
-            <div
-              class="spinner svelte-124nk1e"
-            />
-          </div>
+           
           <!---->
-        </div>
-         
+          <!---->
+        </aside>
         <!---->
-         
-        <!---->
-        <!---->
-      </aside>
-      <!---->
+      </div>
        
       <main
         class="main svelte-chipbn"
       >
+        <!---->
         <div
-          class="editor svelte-1ctqrjb"
+          class="editor-fade svelte-chipbn"
         >
           <div
-            class="empty-state svelte-1ctqrjb"
+            class="editor svelte-1ctqrjb"
           >
-            <svg
-              fill="var(--color-overlay)"
-              height="64"
-              viewBox="0 0 24 24"
-              width="64"
+            <div
+              class="empty-state svelte-1ctqrjb"
             >
-              <path
-                d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"
-              />
-            </svg>
-             
-            <p
-              class="svelte-1ctqrjb"
-            >
-              Select a file to edit
-            </p>
+              <div
+                class="node-graph svelte-1ctqrjb"
+              >
+                <svg
+                  class="svelte-1ctqrjb"
+                  height="140"
+                  viewBox="0 0 180 140"
+                  width="180"
+                >
+                  <line
+                    class="svelte-1ctqrjb"
+                    stroke="var(--color-overlay)"
+                    stroke-width="1.5"
+                    x1="90"
+                    x2="40"
+                    y1="50"
+                    y2="100"
+                  />
+                  <line
+                    class="svelte-1ctqrjb"
+                    stroke="var(--color-overlay)"
+                    stroke-width="1.5"
+                    x1="90"
+                    x2="140"
+                    y1="50"
+                    y2="100"
+                  />
+                  <line
+                    class="svelte-1ctqrjb"
+                    stroke="var(--color-overlay)"
+                    stroke-width="1.5"
+                    x1="90"
+                    x2="90"
+                    y1="50"
+                    y2="20"
+                  />
+                  <line
+                    class="svelte-1ctqrjb"
+                    stroke="var(--color-overlay)"
+                    stroke-dasharray="4 4"
+                    stroke-width="1.5"
+                    x1="40"
+                    x2="140"
+                    y1="100"
+                    y2="100"
+                  />
+                  <circle
+                    class="node node-center svelte-1ctqrjb"
+                    cx="90"
+                    cy="50"
+                    fill="var(--color-accent)"
+                    r="8"
+                  />
+                  <circle
+                    class="node node-left svelte-1ctqrjb"
+                    cx="40"
+                    cy="100"
+                    fill="var(--color-secondary)"
+                    r="6"
+                  />
+                  <circle
+                    class="node node-right svelte-1ctqrjb"
+                    cx="140"
+                    cy="100"
+                    fill="var(--color-secondary)"
+                    r="6"
+                  />
+                  <circle
+                    class="node node-top svelte-1ctqrjb"
+                    cx="90"
+                    cy="20"
+                    fill="var(--color-accent)"
+                    opacity="0.6"
+                    r="5"
+                  />
+                </svg>
+              </div>
+               
+              <p
+                class="empty-title svelte-1ctqrjb"
+              >
+                Your knowledge awaits
+              </p>
+               
+              <p
+                class="empty-hint svelte-1ctqrjb"
+              >
+                Open a file from the sidebar to start editing
+              </p>
+            </div>
+            <!---->
           </div>
           <!---->
         </div>
+        
         <!---->
       </main>
     </div>
@@ -382,61 +462,61 @@ exports[`PageDesktop snapshots > loading state — spinner shown in editor area 
     <!---->
      
     <div
-      class="divider horizontal svelte-chipbn"
-    />
-     
-    <div
       class="content svelte-chipbn"
     >
-      <aside
-        class="sidebar svelte-129hoe0"
+      <div
+        class="sidebar-wrapper svelte-chipbn"
       >
-        <div
-          class="header svelte-129hoe0"
+        <aside
+          class="sidebar svelte-129hoe0"
         >
           <div
-            class="search-container svelte-129hoe0"
+            class="header svelte-129hoe0"
           >
-            <svg
-              fill="var(--color-subtext)"
-              height="16"
-              viewBox="0 0 24 24"
-              width="16"
+            <div
+              class="search-container svelte-129hoe0"
             >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+              <svg
+                fill="var(--color-subtext)"
+                height="16"
+                viewBox="0 0 24 24"
+                width="16"
+              >
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+               
+              <input
+                class="svelte-129hoe0"
+                placeholder="Search..."
+                type="text"
               />
-            </svg>
+            </div>
              
-            <input
-              class="svelte-129hoe0"
-              placeholder="Search..."
-              type="text"
-            />
+            <!---->
+          </div>
+           
+          <div
+            class="file-tree svelte-124nk1e"
+          >
+            <div
+              class="loading svelte-124nk1e"
+            >
+              <div
+                class="spinner svelte-124nk1e"
+              />
+            </div>
+            <!---->
           </div>
            
           <!---->
-        </div>
-         
-        <div
-          class="file-tree svelte-124nk1e"
-        >
-          <div
-            class="loading svelte-124nk1e"
-          >
-            <div
-              class="spinner svelte-124nk1e"
-            />
-          </div>
+           
           <!---->
-        </div>
-         
+          <!---->
+        </aside>
         <!---->
-         
-        <!---->
-        <!---->
-      </aside>
-      <!---->
+      </div>
        
       <main
         class="main svelte-chipbn"
@@ -615,374 +695,385 @@ exports[`PageDesktop snapshots > note open — sidebar with file tree, editor sh
     <!---->
      
     <div
-      class="divider horizontal svelte-chipbn"
-    />
-     
-    <div
       class="content svelte-chipbn"
     >
-      <aside
-        class="sidebar svelte-129hoe0"
+      <div
+        class="sidebar-wrapper svelte-chipbn"
       >
-        <div
-          class="header svelte-129hoe0"
+        <aside
+          class="sidebar svelte-129hoe0"
         >
           <div
-            class="search-container svelte-129hoe0"
+            class="header svelte-129hoe0"
           >
-            <svg
-              fill="var(--color-subtext)"
-              height="16"
-              viewBox="0 0 24 24"
-              width="16"
+            <div
+              class="search-container svelte-129hoe0"
             >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+              <svg
+                fill="var(--color-subtext)"
+                height="16"
+                viewBox="0 0 24 24"
+                width="16"
+              >
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+               
+              <input
+                class="svelte-129hoe0"
+                placeholder="Search..."
+                type="text"
               />
-            </svg>
+            </div>
              
-            <input
-              class="svelte-129hoe0"
-              placeholder="Search..."
-              type="text"
-            />
+            <!---->
+          </div>
+           
+          <div
+            class="file-tree svelte-124nk1e"
+          >
+            <div
+              class="loading svelte-124nk1e"
+            >
+              <div
+                class="spinner svelte-124nk1e"
+              />
+            </div>
+            <!---->
           </div>
            
           <!---->
-        </div>
-         
-        <div
-          class="file-tree svelte-124nk1e"
-        >
-          <div
-            class="loading svelte-124nk1e"
-          >
-            <div
-              class="spinner svelte-124nk1e"
-            />
-          </div>
+           
           <!---->
-        </div>
-         
+          <!---->
+        </aside>
         <!---->
-         
-        <!---->
-        <!---->
-      </aside>
-      <!---->
+      </div>
        
       <main
         class="main svelte-chipbn"
       >
+        <!---->
         <div
-          class="editor svelte-1ctqrjb"
+          class="editor-fade svelte-chipbn"
         >
           <div
-            class="editor-header svelte-1ctqrjb"
+            class="editor svelte-1ctqrjb"
           >
             <div
-              class="left svelte-1ctqrjb"
+              class="editor-header svelte-1ctqrjb"
             >
-              <button
-                class="filename svelte-1ctqrjb"
+              <div
+                class="left svelte-1ctqrjb"
               >
-                Meeting Notes.md 
+                <button
+                  class="filename svelte-1ctqrjb"
+                >
+                  Meeting Notes.md 
+                  <!---->
+                </button>
                 <!---->
-              </button>
-              <!---->
+              </div>
+               
+              <div
+                class="mode-toggle svelte-1ctqrjb"
+              >
+                <button
+                  class="toggle-btn svelte-1ctqrjb active"
+                >
+                  <svg
+                    class="svelte-1ctqrjb"
+                    fill="currentColor"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      class="svelte-1ctqrjb"
+                      d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                    />
+                  </svg>
+                   Edit
+                </button>
+                 
+                <button
+                  class="toggle-btn svelte-1ctqrjb"
+                >
+                  <svg
+                    class="svelte-1ctqrjb"
+                    fill="currentColor"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      class="svelte-1ctqrjb"
+                      d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                    />
+                  </svg>
+                   Preview
+                </button>
+              </div>
             </div>
              
             <div
-              class="mode-toggle svelte-1ctqrjb"
-            >
-              <button
-                class="toggle-btn svelte-1ctqrjb active"
-              >
-                <svg
-                  fill="currentColor"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  width="16"
-                >
-                  <path
-                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                  />
-                </svg>
-                 Edit
-              </button>
-               
-              <button
-                class="toggle-btn svelte-1ctqrjb"
-              >
-                <svg
-                  fill="currentColor"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  width="16"
-                >
-                  <path
-                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-                  />
-                </svg>
-                 Preview
-              </button>
-            </div>
-          </div>
-           
-          <div
-            class="editor-body svelte-1ctqrjb"
-          >
-            <div
-              class="codemirror-container svelte-9m8fhl"
+              class="editor-body svelte-1ctqrjb"
             >
               <div
-                class="cm-editor ͼ1 ͼ2 ͼp"
+                class="codemirror-container svelte-9m8fhl"
               >
                 <div
-                  aria-live="polite"
-                  class="cm-announced"
-                />
-                <div
-                  class="cm-scroller"
-                  tabindex="-1"
+                  class="cm-editor ͼ1 ͼ2 ͼp"
                 >
                   <div
-                    aria-hidden="true"
-                    class="cm-gutters cm-gutters-before"
-                    style="min-height: 196px; position: sticky;"
-                  >
-                    <div
-                      class="cm-gutter cm-lineNumbers"
-                    >
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 0px; visibility: hidden; pointer-events: none;"
-                      >
-                        99
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.099476439790577px;"
-                      >
-                        1
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        2
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14.659685863874346px;"
-                      >
-                        3
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        4
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.465968586387435px;"
-                      >
-                        5
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 16.418848167539267px;"
-                      >
-                        6
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.319371727748692px;"
-                      >
-                        7
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        8
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.099476439790577px;"
-                      >
-                        9
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        10
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.979057591623036px;"
-                      >
-                        11
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 16.272251308900522px;"
-                      >
-                        12
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.832460732984293px;"
-                      >
-                        13
-                      </div>
-                    </div>
-                  </div>
+                    aria-live="polite"
+                    class="cm-announced"
+                  />
                   <div
-                    aria-multiline="true"
-                    autocapitalize="off"
-                    autocorrect="off"
-                    class="cm-content cm-lineWrapping"
-                    contenteditable="true"
-                    data-language="markdown"
-                    role="textbox"
-                    spellcheck="false"
-                    style="tab-size: 4;"
-                    translate="no"
-                    writingsuggestions="false"
+                    class="cm-scroller"
+                    tabindex="-1"
                   >
                     <div
-                      class="cm-line cm-activeLine"
+                      aria-hidden="true"
+                      class="cm-gutters cm-gutters-before"
+                      style="min-height: 196px; position: sticky;"
                     >
-                      <span
-                        class="ͼ7 ͼ5"
+                      <div
+                        class="cm-gutter cm-lineNumbers"
                       >
-                        #
-                      </span>
-                      <span
-                        class="ͼ7"
-                      >
-                         Meeting Notes
-                      </span>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 0px; visibility: hidden; pointer-events: none;"
+                        >
+                          99
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.099476439790577px;"
+                        >
+                          1
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          2
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14.659685863874346px;"
+                        >
+                          3
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          4
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.465968586387435px;"
+                        >
+                          5
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 16.418848167539267px;"
+                        >
+                          6
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.319371727748692px;"
+                        >
+                          7
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          8
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.099476439790577px;"
+                        >
+                          9
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          10
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.979057591623036px;"
+                        >
+                          11
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 16.272251308900522px;"
+                        >
+                          12
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.832460732984293px;"
+                        >
+                          13
+                        </div>
+                      </div>
                     </div>
                     <div
-                      class="cm-line"
+                      aria-multiline="true"
+                      autocapitalize="off"
+                      autocorrect="off"
+                      class="cm-content cm-lineWrapping"
+                      contenteditable="true"
+                      data-language="markdown"
+                      role="textbox"
+                      spellcheck="false"
+                      style="tab-size: 4;"
+                      translate="no"
+                      writingsuggestions="false"
                     >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ7 ͼ5"
+                      <div
+                        class="cm-line cm-activeLine"
                       >
-                        ##
-                      </span>
-                      <span
-                        class="ͼ7"
+                        <span
+                          class="ͼ7 ͼ5"
+                        >
+                          #
+                        </span>
+                        <span
+                          class="ͼ7"
+                        >
+                           Meeting Notes
+                        </span>
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                         Agenda
-                      </span>
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        -
-                      </span>
-                       Review Q1 progress
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <span
+                          class="ͼ7 ͼ5"
+                        >
+                          ##
+                        </span>
+                        <span
+                          class="ͼ7"
+                        >
+                           Agenda
+                        </span>
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        -
-                      </span>
-                       Discuss new plugin architecture
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        -
-                      </span>
-                       Plan next sprint
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ7 ͼ5"
+                        <span
+                          class="ͼ5"
+                        >
+                          -
+                        </span>
+                         Review Q1 progress
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        ##
-                      </span>
-                      <span
-                        class="ͼ7"
+                        <span
+                          class="ͼ5"
+                        >
+                          -
+                        </span>
+                         Discuss new plugin architecture
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                         Action Items
-                      </span>
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <span
+                          class="ͼ5"
+                        >
+                          -
+                        </span>
+                         Plan next sprint
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        1.
-                      </span>
-                       Update roadmap by Friday
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        2.
-                      </span>
-                       Create PR for search feature
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <span
+                          class="ͼ7 ͼ5"
+                        >
+                          ##
+                        </span>
+                        <span
+                          class="ͼ7"
+                        >
+                           Action Items
+                        </span>
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        3.
-                      </span>
-                       Schedule design review
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
+                      >
+                        <span
+                          class="ͼ5"
+                        >
+                          1.
+                        </span>
+                         Update roadmap by Friday
+                      </div>
+                      <div
+                        class="cm-line"
+                      >
+                        <span
+                          class="ͼ5"
+                        >
+                          2.
+                        </span>
+                         Create PR for search feature
+                      </div>
+                      <div
+                        class="cm-line"
+                      >
+                        <span
+                          class="ͼ5"
+                        >
+                          3.
+                        </span>
+                         Schedule design review
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <!---->
             </div>
             <!---->
           </div>
           <!---->
         </div>
+        
         <!---->
       </main>
     </div>

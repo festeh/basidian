@@ -65,7 +65,8 @@
 		min-width: 200px;
 		max-width: 400px;
 		background-color: var(--color-mantle);
-		border-right: 1px solid var(--color-overlay);
+		box-shadow: var(--shadow-sidebar);
+		z-index: 1;
 	}
 
 	.header {

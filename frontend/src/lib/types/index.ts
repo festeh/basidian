@@ -65,4 +65,6 @@ export type ThemeName =
 
 export interface Settings {
 	vimMode: boolean;
+	fontSize: number;
+	accentColor: string | null;
 }

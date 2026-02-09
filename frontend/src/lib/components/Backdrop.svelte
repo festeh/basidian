@@ -15,5 +15,15 @@
 		inset: 0;
 		background: rgba(0, 0, 0, 0.5);
 		z-index: 99;
+		animation: backdrop-fade 0.2s ease;
+	}
+
+	@keyframes backdrop-fade {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 </style>

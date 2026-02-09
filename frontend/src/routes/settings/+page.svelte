@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { currentThemeName } from '$lib/stores/theme';
+	import { currentThemeName, currentTheme } from '$lib/stores/theme';
 	import { settings } from '$lib/stores/settings';
 	import { themeList } from '$lib/themes';
 	import { loadedPlugins, pluginManager, uiRegistry, type SettingsTab } from '$lib/plugins';
@@ -13,6 +13,20 @@
 
 	function toggleVimMode() {
 		settings.update((s) => ({ ...s, vimMode: !s.vimMode }));
+	}
+
+	function updateFontSize(e: Event) {
+		const value = parseInt((e.target as HTMLInputElement).value);
+		settings.update((s) => ({ ...s, fontSize: value }));
+	}
+
+	function updateAccentColor(e: Event) {
+		const value = (e.target as HTMLInputElement).value;
+		settings.update((s) => ({ ...s, accentColor: value }));
+	}
+
+	function resetAccentColor() {
+		settings.update((s) => ({ ...s, accentColor: null }));
 	}
 
 	function goBack() {
@@ -75,6 +89,49 @@
 						{/if}
 					</button>
 				{/each}
+			</div>
+		</section>
+
+		<section>
+			<h2>Font Size</h2>
+			<div class="setting-row static">
+				<div class="setting-info">
+					<span class="setting-name">Base font size</span>
+					<span class="setting-desc">Affects editor and UI text</span>
+				</div>
+				<div class="font-size-control">
+					<input
+						type="range"
+						min="12"
+						max="20"
+						step="1"
+						value={$settings.fontSize}
+						oninput={updateFontSize}
+						class="range-slider"
+					/>
+					<span class="font-size-value">{$settings.fontSize}px</span>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<h2>Accent Color</h2>
+			<div class="setting-row static">
+				<div class="setting-info">
+					<span class="setting-name">Custom accent color</span>
+					<span class="setting-desc">{$settings.accentColor ? 'Custom color active' : 'Using theme default'}</span>
+				</div>
+				<div class="accent-color-control">
+					<input
+						type="color"
+						value={$settings.accentColor || $currentTheme.colors.accent}
+						oninput={updateAccentColor}
+						class="color-picker"
+					/>
+					{#if $settings.accentColor}
+						<button class="reset-btn" onclick={resetAccentColor}>Reset</button>
+					{/if}
+				</div>
 			</div>
 		</section>
 
@@ -312,5 +369,74 @@
 		border: 1px solid var(--color-overlay);
 		border-radius: 12px;
 		padding: 16px;
+	}
+
+	.setting-row.static {
+		cursor: default;
+	}
+
+	.setting-row.static:hover {
+		background-color: var(--color-surface);
+	}
+
+	.font-size-control {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.range-slider {
+		width: 120px;
+		accent-color: var(--color-accent);
+		cursor: pointer;
+	}
+
+	.font-size-value {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--color-text);
+		min-width: 36px;
+		text-align: right;
+	}
+
+	.accent-color-control {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.color-picker {
+		width: 36px;
+		height: 36px;
+		border: 2px solid var(--color-overlay);
+		border-radius: 8px;
+		padding: 2px;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.color-picker::-webkit-color-swatch-wrapper {
+		padding: 0;
+	}
+
+	.color-picker::-webkit-color-swatch {
+		border: none;
+		border-radius: 4px;
+	}
+
+	.reset-btn {
+		padding: 6px 12px;
+		font-size: 12px;
+		font-weight: 500;
+		border: 1px solid var(--color-overlay);
+		border-radius: 6px;
+		background: transparent;
+		color: var(--color-subtext);
+		cursor: pointer;
+	}
+
+	.reset-btn:hover {
+		background-color: var(--color-overlay);
+		color: var(--color-text);
 	}
 </style>

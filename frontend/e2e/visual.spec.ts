@@ -88,8 +88,8 @@ test.describe('Desktop', () => {
 		await openMeetingNotes(page);
 		// Click the sidebar toggle button
 		await page.locator('button[title="Hide sidebar"]').click();
-		// Sidebar should be gone
-		await expect(page.locator('.sidebar')).not.toBeVisible();
+		// Sidebar wrapper should be collapsed (width transitions to 0)
+		await expect(page.locator('.sidebar-wrapper')).toHaveClass(/collapsed/);
 		await expect(page).toHaveScreenshot('desktop-sidebar-collapsed.png');
 	});
 });

@@ -44,7 +44,6 @@
 
 <div class="app">
 	<TopBarMobile onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
-	<div class="divider horizontal"></div>
 
 	<div class="content">
 		<main class="main">
@@ -123,11 +122,6 @@
 		padding-top: var(--safe-area-inset-top);
 		padding-left: var(--safe-area-inset-left);
 		padding-right: var(--safe-area-inset-right);
-	}
-
-	.divider.horizontal {
-		height: 1px;
-		background-color: var(--color-overlay);
 	}
 
 	.content {

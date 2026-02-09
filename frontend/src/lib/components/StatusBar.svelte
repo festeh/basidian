@@ -41,7 +41,7 @@
 		padding: 0 12px;
 		padding-bottom: var(--safe-area-inset-bottom);
 		background: var(--color-mantle);
-		border-top: 1px solid var(--color-surface);
+		box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
 		font-size: 12px;
 		color: var(--color-subtext);
 	}

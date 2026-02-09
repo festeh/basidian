@@ -44,6 +44,7 @@
 		"@codemirror/language-data": "^6.5.2",
 		"@codemirror/state": "^6.5.3",
 		"@codemirror/view": "^6.39.9",
+		"@fontsource-variable/plus-jakarta-sans": "^5.2.8",
 		"@replit/codemirror-vim": "^6.3.0",
 		"@tauri-apps/plugin-fs": "^2.4.5",
 		"katex": "^0.16.27",

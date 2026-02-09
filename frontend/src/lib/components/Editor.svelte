@@ -144,12 +144,20 @@
 		</div>
 	{:else}
 		<div class="empty-state">
-			<svg width="64" height="64" viewBox="0 0 24 24" fill="var(--color-overlay)">
-				<path
-					d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"
-				/>
-			</svg>
-			<p>Select a file to edit</p>
+			<div class="node-graph">
+				<svg width="180" height="140" viewBox="0 0 180 140">
+					<line x1="90" y1="50" x2="40" y2="100" stroke="var(--color-overlay)" stroke-width="1.5" />
+					<line x1="90" y1="50" x2="140" y2="100" stroke="var(--color-overlay)" stroke-width="1.5" />
+					<line x1="90" y1="50" x2="90" y2="20" stroke="var(--color-overlay)" stroke-width="1.5" />
+					<line x1="40" y1="100" x2="140" y2="100" stroke="var(--color-overlay)" stroke-width="1.5" stroke-dasharray="4 4" />
+					<circle cx="90" cy="50" r="8" fill="var(--color-accent)" class="node node-center" />
+					<circle cx="40" cy="100" r="6" fill="var(--color-secondary)" class="node node-left" />
+					<circle cx="140" cy="100" r="6" fill="var(--color-secondary)" class="node node-right" />
+					<circle cx="90" cy="20" r="5" fill="var(--color-accent)" class="node node-top" opacity="0.6" />
+				</svg>
+			</div>
+			<p class="empty-title">Your knowledge awaits</p>
+			<p class="empty-hint">Open a file from the sidebar to start editing</p>
 		</div>
 	{/if}
 </div>
@@ -168,8 +176,9 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 8px 16px;
-		border-bottom: 1px solid var(--color-overlay);
 		background-color: var(--color-surface);
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+		z-index: 1;
 	}
 
 	.left {
@@ -261,11 +270,52 @@
 		align-items: center;
 		justify-content: center;
 		flex: 1;
-		gap: 16px;
+		gap: 12px;
 		color: var(--color-subtext);
 	}
 
-	.empty-state p {
+	.node-graph {
+		margin-bottom: 8px;
+	}
+
+	.node {
+		animation: float 4s ease-in-out infinite;
+	}
+
+	.node-center {
+		animation-delay: 0s;
+	}
+
+	.node-left {
+		animation-delay: -1s;
+	}
+
+	.node-right {
+		animation-delay: -2s;
+	}
+
+	.node-top {
+		animation-delay: -3s;
+	}
+
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-4px);
+		}
+	}
+
+	.empty-title {
+		font-size: 18px;
+		font-weight: 600;
+		color: var(--color-text);
+		margin: 0;
+	}
+
+	.empty-hint {
+		font-size: 13px;
 		margin: 0;
 	}
 </style>
