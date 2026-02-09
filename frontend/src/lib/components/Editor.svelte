@@ -176,8 +176,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 8px 16px;
-		background-color: var(--color-surface);
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+		background-color: var(--color-base);
 		z-index: 1;
 	}
 

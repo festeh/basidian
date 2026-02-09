@@ -98,8 +98,7 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 8px 12px;
-		background-color: var(--color-surface);
-		box-shadow: var(--shadow-topbar);
+		background-color: var(--color-base);
 		z-index: 2;
 		user-select: none;
 		-webkit-user-select: none;

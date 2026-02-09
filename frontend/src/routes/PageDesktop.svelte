@@ -31,12 +31,12 @@
 </script>
 
 <div class="app">
-	<TopBarDesktop {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
+	<div class="sidebar-wrapper" class:collapsed={sidebarCollapsed}>
+		<Sidebar onCreateFile={page.openCreateFileModal} onCreateFolder={page.openCreateFolderModal} />
+	</div>
 
-	<div class="content">
-		<div class="sidebar-wrapper" class:collapsed={sidebarCollapsed}>
-			<Sidebar onCreateFile={page.openCreateFileModal} onCreateFolder={page.openCreateFolderModal} />
-		</div>
+	<div class="right-panel">
+		<TopBarDesktop {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
 
 		<main class="main">
 			{#if $isLoadingFile}
@@ -51,9 +51,9 @@
 				{/key}
 			{/if}
 		</main>
-	</div>
 
-	<StatusBar />
+		<StatusBar />
+	</div>
 </div>
 
 <!-- Create File Modal -->
@@ -105,17 +105,11 @@
 <style>
 	.app {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		height: 100vh;
 		padding-top: var(--safe-area-inset-top);
 		padding-left: var(--safe-area-inset-left);
 		padding-right: var(--safe-area-inset-right);
-	}
-
-	.content {
-		display: flex;
-		flex: 1;
-		overflow: hidden;
 	}
 
 	.sidebar-wrapper {
@@ -126,6 +120,13 @@
 
 	.sidebar-wrapper.collapsed {
 		width: 0;
+	}
+
+	.right-panel {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		overflow: hidden;
 	}
 
 	.main {

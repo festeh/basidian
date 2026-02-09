@@ -40,8 +40,7 @@
 		min-height: 24px;
 		padding: 0 12px;
 		padding-bottom: var(--safe-area-inset-bottom);
-		background: var(--color-mantle);
-		box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
+		background: var(--color-base);
 		font-size: 12px;
 		color: var(--color-subtext);
 	}

@@ -65,7 +65,6 @@
 		min-width: 200px;
 		max-width: 400px;
 		background-color: var(--color-mantle);
-		box-shadow: var(--shadow-sidebar);
 		z-index: 1;
 	}
 
