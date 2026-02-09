@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import TopBarDesktop from '$lib/components/TopBarDesktop.svelte';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Editor from '$lib/components/Editor.svelte';
 	import Modal from '$lib/components/Modal.svelte';
@@ -36,8 +35,6 @@
 	</div>
 
 	<div class="right-panel">
-		<TopBarDesktop onOpenSettings={openSettings} onOpenInfo={openInfo} />
-
 		<main class="main">
 			{#if $isLoadingFile}
 				<div class="loading">
@@ -46,7 +43,7 @@
 			{:else}
 				{#key $currentFile?.id}
 					<div class="editor-fade">
-						<Editor file={$currentFile} {sidebarCollapsed} onToggleSidebar={toggleSidebar} />
+						<Editor file={$currentFile} {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
 					</div>
 				{/key}
 			{/if}
