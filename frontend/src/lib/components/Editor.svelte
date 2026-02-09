@@ -9,9 +9,11 @@
 
 	interface Props {
 		file: FsNode | null;
+		sidebarCollapsed?: boolean;
+		onToggleSidebar?: () => void;
 	}
 
-	let { file }: Props = $props();
+	let { file, sidebarCollapsed = false, onToggleSidebar }: Props = $props();
 
 	let content = $state('');
 	let hasUnsavedChanges = $state(false);
@@ -91,6 +93,23 @@
 	{#if file}
 		<div class="editor-header">
 			<div class="left">
+				{#if onToggleSidebar}
+					<button
+						class="toggle-sidebar-btn"
+						onclick={onToggleSidebar}
+						title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+					>
+						{#if sidebarCollapsed}
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+							</svg>
+						{:else}
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+							</svg>
+						{/if}
+					</button>
+				{/if}
 				{#if isRenaming}
 					<input
 						bind:this={renameInput}
@@ -183,7 +202,25 @@
 	.left {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 8px;
+	}
+
+	.toggle-sidebar-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border: none;
+		background: transparent;
+		color: var(--color-subtext);
+		border-radius: 6px;
+		cursor: pointer;
+	}
+
+	.toggle-sidebar-btn:hover {
+		background-color: var(--color-overlay);
+		color: var(--color-text);
 	}
 
 	.filename {

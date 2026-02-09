@@ -3,13 +3,11 @@
 	import TopBar from './TopBar.svelte';
 
 	interface Props {
-		sidebarCollapsed: boolean;
-		onToggleSidebar: () => void;
 		onOpenSettings: () => void;
 		onOpenInfo: () => void;
 	}
 
-	let { sidebarCollapsed, onToggleSidebar, onOpenSettings, onOpenInfo }: Props = $props();
+	let { onOpenSettings, onOpenInfo }: Props = $props();
 
 	const appWindow = getCurrentWindow();
 
@@ -34,24 +32,7 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div class="topbar" onmousedown={startDragging} role="banner">
-	<div class="left">
-		<button
-			class="icon-btn"
-			onmousedown={(e) => e.stopPropagation()}
-			onclick={onToggleSidebar}
-			title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
-		>
-			{#if sidebarCollapsed}
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-				</svg>
-			{:else}
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-				</svg>
-			{/if}
-		</button>
-	</div>
+	<div class="drag-spacer"></div>
 
 	<div class="right">
 		<TopBar {onOpenSettings} {onOpenInfo} />
@@ -96,36 +77,22 @@
 	.topbar {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		padding: 8px 12px;
+		justify-content: flex-end;
+		padding: 4px 4px 0;
 		background-color: var(--color-base);
 		z-index: 2;
 		user-select: none;
 		-webkit-user-select: none;
 	}
 
-	.left,
+	.drag-spacer {
+		flex: 1;
+	}
+
 	.right {
 		display: flex;
 		align-items: center;
 		gap: 8px;
-	}
-
-	.icon-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 32px;
-		height: 32px;
-		border: none;
-		background: transparent;
-		color: var(--color-text);
-		border-radius: 8px;
-		cursor: pointer;
-	}
-
-	.icon-btn:hover {
-		background-color: var(--color-overlay);
 	}
 
 	.window-controls {

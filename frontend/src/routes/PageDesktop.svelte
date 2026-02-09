@@ -36,7 +36,7 @@
 	</div>
 
 	<div class="right-panel">
-		<TopBarDesktop {sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSettings={openSettings} onOpenInfo={openInfo} />
+		<TopBarDesktop onOpenSettings={openSettings} onOpenInfo={openInfo} />
 
 		<main class="main">
 			{#if $isLoadingFile}
@@ -46,7 +46,7 @@
 			{:else}
 				{#key $currentFile?.id}
 					<div class="editor-fade">
-						<Editor file={$currentFile} />
+						<Editor file={$currentFile} {sidebarCollapsed} onToggleSidebar={toggleSidebar} />
 					</div>
 				{/key}
 			{/if}
