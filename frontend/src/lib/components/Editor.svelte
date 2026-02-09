@@ -4,14 +4,19 @@
 	import { createLogger } from '$lib/utils/logger';
 	import CodeMirrorEditor from './CodeMirrorEditor.svelte';
 	import MarkdownPreview from './MarkdownPreview.svelte';
+	import TopBar from './TopBar.svelte';
 
 	const log = createLogger('Editor');
 
 	interface Props {
 		file: FsNode | null;
+		sidebarCollapsed?: boolean;
+		onToggleSidebar?: () => void;
+		onOpenSettings?: () => void;
+		onOpenInfo?: () => void;
 	}
 
-	let { file }: Props = $props();
+	let { file, sidebarCollapsed = false, onToggleSidebar, onOpenSettings, onOpenInfo }: Props = $props();
 
 	let content = $state('');
 	let hasUnsavedChanges = $state(false);
@@ -91,6 +96,23 @@
 	{#if file}
 		<div class="editor-header">
 			<div class="left">
+				{#if onToggleSidebar}
+					<button
+						class="toggle-sidebar-btn"
+						onclick={onToggleSidebar}
+						title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+					>
+						{#if sidebarCollapsed}
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+							</svg>
+						{:else}
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+							</svg>
+						{/if}
+					</button>
+				{/if}
 				{#if isRenaming}
 					<input
 						bind:this={renameInput}
@@ -108,31 +130,36 @@
 					</button>
 				{/if}
 			</div>
-			<div class="mode-toggle">
-				<button
-					class="toggle-btn"
-					class:active={mode === 'edit'}
-					onclick={() => (mode = 'edit')}
-				>
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-						<path
-							d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-						/>
-					</svg>
-					Edit
-				</button>
-				<button
-					class="toggle-btn"
-					class:active={mode === 'preview'}
-					onclick={() => (mode = 'preview')}
-				>
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-						<path
-							d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-						/>
-					</svg>
-					Preview
-				</button>
+			<div class="right">
+				<div class="mode-toggle">
+					<button
+						class="toggle-btn"
+						class:active={mode === 'edit'}
+						onclick={() => (mode = 'edit')}
+					>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+							<path
+								d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+							/>
+						</svg>
+						Edit
+					</button>
+					<button
+						class="toggle-btn"
+						class:active={mode === 'preview'}
+						onclick={() => (mode = 'preview')}
+					>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+							<path
+								d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+							/>
+						</svg>
+						Preview
+					</button>
+				</div>
+				{#if onOpenInfo && onOpenSettings}
+					<TopBar {onOpenSettings} {onOpenInfo} />
+				{/if}
 			</div>
 		</div>
 		<div class="editor-body">
@@ -143,6 +170,34 @@
 			{/if}
 		</div>
 	{:else}
+		{#if onOpenInfo || onOpenSettings}
+			<div class="editor-header empty-header">
+				<div class="left">
+					{#if onToggleSidebar}
+						<button
+							class="toggle-sidebar-btn"
+							onclick={onToggleSidebar}
+							title={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+						>
+							{#if sidebarCollapsed}
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+								</svg>
+							{:else}
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+								</svg>
+							{/if}
+						</button>
+					{/if}
+				</div>
+				<div class="header-actions">
+					{#if onOpenInfo && onOpenSettings}
+						<TopBar {onOpenSettings} {onOpenInfo} />
+					{/if}
+				</div>
+			</div>
+		{/if}
 		<div class="empty-state">
 			<div class="node-graph">
 				<svg width="180" height="140" viewBox="0 0 180 140">
@@ -176,15 +231,33 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 8px 16px;
-		background-color: var(--color-surface);
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+		background-color: var(--color-base);
 		z-index: 1;
 	}
 
-	.left {
+	.left,
+	.right {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: 8px;
+	}
+
+	.toggle-sidebar-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border: none;
+		background: transparent;
+		color: var(--color-subtext);
+		border-radius: 6px;
+		cursor: pointer;
+	}
+
+	.toggle-sidebar-btn:hover {
+		background-color: var(--color-overlay);
+		color: var(--color-text);
 	}
 
 	.filename {
@@ -231,6 +304,13 @@
 		background-color: var(--color-mantle);
 		padding: 4px;
 		border-radius: 8px;
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		margin-left: 8px;
 	}
 
 	.toggle-btn {
