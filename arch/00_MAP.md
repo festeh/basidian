@@ -10,10 +10,13 @@
 | 04 | [Plugin System](04_plugin_system.md) | Frontend UI slots and lifecycle hooks, backend composable classes |
 | 05 | [CLI Tools](05_cli_tools.md) | basidian-server, bscli, basync — all HTTP-based |
 | 06 | [Frontend UI](06_frontend_ui.md) | Svelte 5 components, theming, CodeMirror editor, Tauri integration |
+| 07 | [Testing](07_testing.md) | Vitest HTML snapshots + Playwright visual screenshots, no backend required |
 
 ## Decision Records
 
-No ADRs recorded yet.
+| # | ADR | Status | Date |
+|---|-----|--------|------|
+| 001 | [Two-tier frontend testing](adr/001_two_tier_testing.md) | Accepted | 2026-02-09 |
 
 ## Specs
 
@@ -25,3 +28,4 @@ No ADRs recorded yet.
 | [003-mobile-desktop-layout-components](specs/003-mobile-desktop-layout-components/spec.md) | Yes | [Yes](specs/003-mobile-desktop-layout-components/plan.md) |
 | [004-decompose-server](specs/004-decompose-server-into-server-code-and-cli-apps/plan.md) | No | [Yes](specs/004-decompose-server-into-server-code-and-cli-apps/plan.md) |
 | [005-daily-notes-plugin](specs/005-extend-basidian-client-with-today-note-plugin-for-/plan.md) | No | [Yes](specs/005-extend-basidian-client-with-today-note-plugin-for-/plan.md) |
+| [006-snapshot-tests](specs/006-snapshot-tests-for-desktop-mobile-screens/plan.md) | No | [Yes](specs/006-snapshot-tests-for-desktop-mobile-screens/plan.md) |
