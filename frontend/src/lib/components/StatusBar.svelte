@@ -1,11 +1,16 @@
 <script lang="ts">
 	import PluginSlot from '$lib/plugins/PluginSlot.svelte';
-	import { uiRegistry, type Notification } from '$lib/plugins';
+	import { uiRegistry, type Notification, type UISlotItem } from '$lib/plugins';
 
 	let notifications: Notification[] = $state([]);
+	let statusBarItems: UISlotItem[] = $state([]);
 	uiRegistry.notifications.subscribe((value) => (notifications = value));
+	uiRegistry.statusBarItems.subscribe((value) => (statusBarItems = value));
+
+	const hasContent = $derived(statusBarItems.length > 0);
 </script>
 
+{#if hasContent}
 <div class="status-bar">
 	<div class="status-left">
 		<PluginSlot slot="statusBar" />
@@ -14,6 +19,7 @@
 		<!-- Core status items can go here -->
 	</div>
 </div>
+{/if}
 
 <!-- Notifications -->
 {#if notifications.length > 0}
