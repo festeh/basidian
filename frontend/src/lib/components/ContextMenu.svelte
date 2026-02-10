@@ -72,27 +72,27 @@
 <style>
 	.context-menu {
 		position: fixed;
-		z-index: 1000;
+		z-index: var(--z-modal);
 		min-width: 160px;
-		padding: 4px;
+		padding: var(--space-tight);
 		background-color: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		border-radius: var(--radius-rounded);
+		box-shadow: var(--shadow-raised);
 	}
 
 	.menu-item {
 		display: flex;
 		align-items: center;
 		width: 100%;
-		padding: 8px 12px;
+		padding: var(--space-compact) var(--space-cozy);
 		border: none;
 		background: transparent;
 		color: var(--color-text);
-		font-size: 14px;
+		font-size: var(--text-body);
 		text-align: left;
 		cursor: pointer;
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 	}
 
 	.menu-item:hover {

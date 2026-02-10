@@ -230,16 +230,16 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 8px 16px;
+		padding: var(--space-compact) var(--space-comfortable);
 		background-color: var(--color-base);
-		z-index: 1;
+		z-index: var(--z-raised);
 	}
 
 	.left,
 	.right {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.toggle-sidebar-btn {
@@ -251,7 +251,7 @@
 		border: none;
 		background: transparent;
 		color: var(--color-subtext);
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		cursor: pointer;
 	}
 
@@ -263,15 +263,15 @@
 	.filename {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-compact);
 		font-weight: 500;
 		background: none;
 		border: none;
 		color: var(--color-text);
 		font-size: inherit;
-		padding: 4px 8px;
-		margin: -4px -8px;
-		border-radius: 4px;
+		padding: var(--space-tight) var(--space-compact);
+		margin: calc(-1 * var(--space-tight)) calc(-1 * var(--space-compact));
+		border-radius: var(--radius-subtle);
 		cursor: pointer;
 	}
 
@@ -283,9 +283,9 @@
 		font-size: inherit;
 		font-weight: 500;
 		font-family: inherit;
-		padding: 4px 8px;
+		padding: var(--space-tight) var(--space-compact);
 		border: 1px solid var(--color-accent);
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 		background-color: var(--color-base);
 		color: var(--color-text);
 		outline: none;
@@ -300,30 +300,30 @@
 
 	.mode-toggle {
 		display: flex;
-		gap: 4px;
+		gap: var(--space-tight);
 		background-color: var(--color-mantle);
-		padding: 4px;
-		border-radius: 8px;
+		padding: var(--space-tight);
+		border-radius: var(--radius-rounded);
 	}
 
 	.header-actions {
 		display: flex;
 		align-items: center;
-		gap: 4px;
-		margin-left: 8px;
+		gap: var(--space-tight);
+		margin-left: var(--space-compact);
 	}
 
 	.toggle-btn {
 		display: flex;
 		align-items: center;
-		gap: 6px;
-		padding: 6px 12px;
+		gap: var(--space-snug);
+		padding: var(--space-snug) var(--space-cozy);
 		border: none;
 		background: transparent;
 		color: var(--color-subtext);
-		font-size: 13px;
+		font-size: var(--text-detail);
 		font-weight: 500;
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		cursor: pointer;
 		transition:
 			background-color 0.15s,
@@ -350,12 +350,12 @@
 		align-items: center;
 		justify-content: center;
 		flex: 1;
-		gap: 12px;
+		gap: var(--space-cozy);
 		color: var(--color-subtext);
 	}
 
 	.node-graph {
-		margin-bottom: 8px;
+		margin-bottom: var(--space-compact);
 	}
 
 	.node {
@@ -388,14 +388,14 @@
 	}
 
 	.empty-title {
-		font-size: 18px;
+		font-size: var(--text-heading);
 		font-weight: 600;
 		color: var(--color-text);
 		margin: 0;
 	}
 
 	.empty-hint {
-		font-size: 13px;
+		font-size: var(--text-detail);
 		margin: 0;
 	}
 </style>

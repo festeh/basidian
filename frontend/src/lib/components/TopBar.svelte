@@ -38,7 +38,7 @@
 		border: none;
 		background: transparent;
 		color: var(--color-text);
-		border-radius: 8px;
+		border-radius: var(--radius-rounded);
 		cursor: pointer;
 	}
 

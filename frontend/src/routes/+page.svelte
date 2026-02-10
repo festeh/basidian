@@ -14,12 +14,12 @@
 	/* Modal form styles (shared globally) */
 	:global(.input) {
 		width: 100%;
-		padding: 12px;
+		padding: var(--space-cozy);
 		border: 1px solid var(--color-overlay);
-		border-radius: 8px;
+		border-radius: var(--radius-rounded);
 		background-color: var(--color-base);
 		color: var(--color-text);
-		font-size: 14px;
+		font-size: var(--text-body);
 		outline: none;
 	}
 
@@ -30,8 +30,8 @@
 	:global(.btn) {
 		padding: 10px 20px;
 		border: none;
-		border-radius: 8px;
-		font-size: 14px;
+		border-radius: var(--radius-rounded);
+		font-size: var(--text-body);
 		font-weight: 500;
 		cursor: pointer;
 		transition: background-color 0.15s;

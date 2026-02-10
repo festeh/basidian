@@ -74,18 +74,18 @@
 	.settings {
 		display: flex;
 		flex-direction: column;
-		gap: 20px;
+		gap: var(--space-spacious);
 	}
 
 	.setting-item {
 		display: flex;
 		flex-direction: column;
-		gap: 6px;
+		gap: var(--space-snug);
 	}
 
 	label,
 	.label {
-		font-size: 13px;
+		font-size: var(--text-detail);
 		font-weight: 500;
 		color: var(--color-text);
 	}
@@ -94,9 +94,9 @@
 		padding: 10px 12px;
 		background: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		color: var(--color-text);
-		font-size: 13px;
+		font-size: var(--text-detail);
 	}
 
 	input:focus {
@@ -106,7 +106,7 @@
 
 	.format-options {
 		display: flex;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.format-option {
@@ -114,9 +114,9 @@
 		padding: 10px 12px;
 		background: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		color: var(--color-subtext);
-		font-size: 12px;
+		font-size: var(--text-label);
 		cursor: pointer;
 		transition: all 0.15s;
 	}

@@ -216,20 +216,20 @@
   .settings {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--space-spacious);
   }
 
   .setting-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-snug);
   }
 
   .setting-group label {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
+    gap: var(--space-compact);
+    font-size: var(--text-detail);
     font-weight: 600;
     color: var(--color-text);
   }
@@ -244,12 +244,12 @@
   .setting-group input[type="password"],
   .setting-group input[type="number"],
   .setting-group textarea {
-    padding: 8px 12px;
+    padding: var(--space-compact) var(--space-cozy);
     border: 1px solid var(--color-overlay);
-    border-radius: 6px;
+    border-radius: var(--radius-default);
     background: var(--color-surface);
     color: var(--color-text);
-    font-size: 14px;
+    font-size: var(--text-body);
     font-family: inherit;
     outline: none;
     transition: border-color 0.15s ease;
@@ -273,7 +273,7 @@
 
   .setting-hint {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--text-label);
     color: var(--color-subtext);
   }
 
@@ -289,7 +289,7 @@
   /* API Key Input */
   .api-key-input {
     display: flex;
-    gap: 4px;
+    gap: var(--space-tight);
   }
 
   .api-key-input input {
@@ -303,7 +303,7 @@
     width: 36px;
     padding: 0;
     border: 1px solid var(--color-overlay);
-    border-radius: 6px;
+    border-radius: var(--radius-default);
     background: var(--color-surface);
     color: var(--color-subtext);
     cursor: pointer;
@@ -319,16 +319,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 4px;
+    margin-top: var(--space-tight);
   }
 
   .validate-button {
-    padding: 6px 12px;
+    padding: var(--space-snug) var(--space-cozy);
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-default);
     background: var(--color-accent);
     color: var(--color-base);
-    font-size: 12px;
+    font-size: var(--text-label);
     font-weight: 500;
     cursor: pointer;
     transition: opacity 0.15s ease;
@@ -346,9 +346,9 @@
   .validation-badge {
     display: inline-flex;
     align-items: center;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    padding: var(--space-tight) var(--space-compact);
+    border-radius: var(--radius-subtle);
+    font-size: var(--text-label);
     font-weight: 500;
   }
 

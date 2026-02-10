@@ -107,7 +107,7 @@
 
 <style>
 	.markdown-preview {
-		padding: 16px 24px;
+		padding: var(--space-comfortable) var(--space-loose);
 		overflow-y: auto;
 		height: 100%;
 		line-height: 1.7;
@@ -163,7 +163,7 @@
 	.markdown-preview :global(code:not(pre code)) {
 		background-color: var(--color-surface);
 		padding: 0.2em 0.4em;
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 		font-family: var(--font-mono);
 		font-size: 0.9em;
 	}
@@ -171,8 +171,8 @@
 	/* Code blocks (shiki) */
 	.markdown-preview :global(pre) {
 		margin: 1em 0;
-		padding: 16px;
-		border-radius: 8px;
+		padding: var(--space-comfortable);
+		border-radius: var(--radius-rounded);
 		overflow-x: auto;
 		font-family: var(--font-mono);
 		font-size: var(--font-size-base);
@@ -249,7 +249,7 @@
 	.markdown-preview :global(img) {
 		max-width: 100%;
 		height: auto;
-		border-radius: 8px;
+		border-radius: var(--radius-rounded);
 	}
 
 	/* Math */

@@ -78,7 +78,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		padding: 4px 4px 0;
+		padding: var(--space-tight) var(--space-tight) 0;
 		background-color: var(--color-base);
 		z-index: 2;
 		user-select: none;
@@ -92,12 +92,12 @@
 	.right {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.window-controls {
 		display: flex;
-		margin-left: 12px;
+		margin-left: var(--space-cozy);
 	}
 
 	.window-btn {

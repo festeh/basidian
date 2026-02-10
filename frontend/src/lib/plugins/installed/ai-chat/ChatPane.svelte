@@ -404,14 +404,14 @@
     background: var(--color-base);
     border-left: 1px solid var(--color-overlay);
     box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: var(--z-modal);
   }
 
   .chat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: var(--space-cozy) var(--space-comfortable);
     border-bottom: 1px solid var(--color-overlay);
     background: var(--color-mantle);
   }
@@ -420,12 +420,12 @@
   .header-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-compact);
   }
 
   .chat-title {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--text-body);
     font-weight: 600;
     color: var(--color-text);
     white-space: nowrap;
@@ -442,7 +442,7 @@
     height: 28px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-subtle);
     background: transparent;
     color: var(--color-subtext);
     cursor: pointer;
@@ -463,16 +463,16 @@
     max-height: 300px;
     background: var(--color-base);
     border-bottom: 1px solid var(--color-overlay);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    z-index: 10;
+    box-shadow: var(--shadow-raised);
+    z-index: var(--z-sticky);
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
   .conversation-list-header {
-    padding: 8px 16px;
-    font-size: 12px;
+    padding: var(--space-compact) var(--space-comfortable);
+    font-size: var(--text-label);
     font-weight: 600;
     color: var(--color-subtext);
     border-bottom: 1px solid var(--color-overlay);
@@ -501,7 +501,7 @@
   }
 
   .conversation-title {
-    font-size: 13px;
+    font-size: var(--text-detail);
     color: var(--color-text);
     white-space: nowrap;
     overflow: hidden;
@@ -517,7 +517,7 @@
     height: 24px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-subtle);
     background: transparent;
     color: var(--color-subtext);
     cursor: pointer;
@@ -535,9 +535,9 @@
   }
 
   .empty-list {
-    padding: 20px;
+    padding: var(--space-spacious);
     text-align: center;
-    font-size: 13px;
+    font-size: var(--text-detail);
     color: var(--color-subtext);
   }
 
@@ -545,7 +545,7 @@
   .messages {
     flex: 1;
     overflow-y: auto;
-    padding: 16px;
+    padding: var(--space-comfortable);
     display: flex;
     flex-direction: column;
   }
@@ -565,8 +565,8 @@
   }
 
   .empty-state .hint {
-    font-size: 12px;
-    margin-top: 4px;
+    font-size: var(--text-label);
+    margin-top: var(--space-tight);
   }
 
   /* Error banner */
@@ -577,22 +577,22 @@
     padding: 10px 16px;
     background: rgba(243, 139, 168, 0.15);
     border-top: 1px solid var(--color-error);
-    font-size: 13px;
+    font-size: var(--text-detail);
     color: var(--color-error);
   }
 
   .error-actions {
     display: flex;
-    gap: 8px;
+    gap: var(--space-compact);
   }
 
   .error-actions button {
     padding: 4px 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-subtle);
     background: var(--color-error);
     color: var(--color-base);
-    font-size: 12px;
+    font-size: var(--text-label);
     cursor: pointer;
     transition: opacity 0.15s ease;
   }
@@ -605,8 +605,8 @@
   .input-area {
     display: flex;
     align-items: flex-end;
-    gap: 8px;
-    padding: 12px 16px;
+    gap: var(--space-compact);
+    padding: var(--space-cozy) var(--space-comfortable);
     border-top: 1px solid var(--color-overlay);
     background: var(--color-mantle);
   }
@@ -615,10 +615,10 @@
     flex: 1;
     padding: 10px 12px;
     border: 1px solid var(--color-overlay);
-    border-radius: 8px;
+    border-radius: var(--radius-rounded);
     background: var(--color-surface);
     color: var(--color-text);
-    font-size: 14px;
+    font-size: var(--text-body);
     font-family: inherit;
     resize: none;
     min-height: 40px;
@@ -644,7 +644,7 @@
     height: 40px;
     padding: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-rounded);
     background: var(--color-accent);
     color: var(--color-base);
     cursor: pointer;

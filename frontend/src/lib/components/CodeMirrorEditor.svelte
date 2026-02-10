@@ -41,16 +41,16 @@
 		},
 		'.cm-content': {
 			fontFamily: 'var(--font-mono)',
-			padding: '16px 0'
+			padding: 'var(--space-comfortable) 0'
 		},
 		'.cm-line': {
-			padding: '0 16px'
+			padding: '0 var(--space-comfortable)'
 		},
 		'.cm-gutters': {
 			backgroundColor: 'var(--color-mantle)',
 			color: 'var(--color-subtext)',
 			border: 'none',
-			paddingRight: '8px'
+			paddingRight: 'var(--space-compact)'
 		},
 		'.cm-activeLineGutter': {
 			backgroundColor: 'var(--color-surface)'

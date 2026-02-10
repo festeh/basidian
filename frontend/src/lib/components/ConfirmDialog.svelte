@@ -68,33 +68,33 @@
 	.overlay {
 		position: fixed;
 		inset: 0;
-		z-index: 1000;
+		z-index: var(--z-modal);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: rgba(0, 0, 0, 0.5);
+		background-color: var(--color-backdrop);
 	}
 
 	.dialog {
 		min-width: 300px;
 		max-width: 400px;
-		padding: 24px;
+		padding: var(--space-loose);
 		background-color: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 12px;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+		border-radius: var(--radius-prominent);
+		box-shadow: var(--shadow-floating);
 	}
 
 	h2 {
-		margin: 0 0 12px;
-		font-size: 18px;
+		margin: 0 0 var(--space-cozy);
+		font-size: var(--text-heading);
 		font-weight: 600;
 		color: var(--color-text);
 	}
 
 	p {
-		margin: 0 0 24px;
-		font-size: 14px;
+		margin: 0 0 var(--space-loose);
+		font-size: var(--text-body);
 		color: var(--color-subtext);
 		line-height: 1.5;
 	}
@@ -102,14 +102,14 @@
 	.actions {
 		display: flex;
 		justify-content: flex-end;
-		gap: 12px;
+		gap: var(--space-cozy);
 	}
 
 	.btn {
-		padding: 8px 16px;
+		padding: var(--space-compact) var(--space-comfortable);
 		border: none;
-		border-radius: 6px;
-		font-size: 14px;
+		border-radius: var(--radius-default);
+		font-size: var(--text-body);
 		font-weight: 500;
 		cursor: pointer;
 		transition: background-color 0.15s;

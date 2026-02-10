@@ -164,7 +164,7 @@
 		left: var(--safe-area-inset-left);
 		bottom: 0;
 		width: 280px;
-		z-index: 100;
+		z-index: var(--z-overlay);
 		animation: slide-in 0.2s ease-out;
 	}
 

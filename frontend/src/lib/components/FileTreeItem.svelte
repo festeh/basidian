@@ -85,16 +85,16 @@
 	.item-row {
 		display: flex;
 		align-items: center;
-		gap: 6px;
+		gap: var(--space-snug);
 		width: 100%;
-		padding: 6px 8px;
+		padding: var(--space-snug) var(--space-compact);
 		border: none;
 		background: transparent;
 		color: var(--color-text);
 		text-align: left;
 		cursor: pointer;
-		border-radius: 6px;
-		font-size: 14px;
+		border-radius: var(--radius-default);
+		font-size: var(--text-body);
 	}
 
 	.item-row:hover {

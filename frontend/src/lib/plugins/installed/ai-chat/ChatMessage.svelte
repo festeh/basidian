@@ -40,7 +40,7 @@
     display: flex;
     flex-direction: column;
     max-width: 85%;
-    margin-bottom: 12px;
+    margin-bottom: var(--space-cozy);
   }
 
   .message.user {
@@ -53,7 +53,7 @@
 
   .message-content {
     padding: 10px 14px;
-    border-radius: 12px;
+    border-radius: var(--radius-prominent);
     word-wrap: break-word;
     white-space: pre-wrap;
   }
@@ -61,13 +61,13 @@
   .message.user .message-content {
     background: var(--color-accent);
     color: var(--color-base);
-    border-bottom-right-radius: 4px;
+    border-bottom-right-radius: var(--radius-subtle);
   }
 
   .message.assistant .message-content {
     background: var(--color-surface);
     color: var(--color-text);
-    border-bottom-left-radius: 4px;
+    border-bottom-left-radius: var(--radius-subtle);
   }
 
   .message-content p {
@@ -78,9 +78,9 @@
   .message-meta {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 4px;
-    padding: 0 4px;
+    gap: var(--space-snug);
+    margin-top: var(--space-tight);
+    padding: 0 var(--space-tight);
   }
 
   .message.user .message-meta {
@@ -93,9 +93,9 @@
   }
 
   .error-badge {
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-size: var(--text-caption);
+    padding: var(--space-hairline) var(--space-snug);
+    border-radius: var(--radius-subtle);
     background: var(--color-error);
     color: var(--color-base);
   }
@@ -103,8 +103,8 @@
   /* Typing indicator */
   .typing-indicator {
     display: flex;
-    gap: 4px;
-    padding: 4px 0;
+    gap: var(--space-tight);
+    padding: var(--space-tight) 0;
   }
 
   .dot {

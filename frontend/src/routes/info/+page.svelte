@@ -68,15 +68,15 @@
 	header {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 16px;
-		padding-top: calc(16px + var(--safe-area-inset-top));
+		gap: var(--space-cozy);
+		padding: var(--space-comfortable);
+		padding-top: calc(var(--space-comfortable) + var(--safe-area-inset-top));
 		background-color: var(--color-surface);
 		border-bottom: 1px solid var(--color-overlay);
 	}
 
 	header h1 {
-		font-size: 20px;
+		font-size: var(--text-title);
 		font-weight: 600;
 	}
 
@@ -89,7 +89,7 @@
 		border: none;
 		background: transparent;
 		color: var(--color-text);
-		border-radius: 8px;
+		border-radius: var(--radius-rounded);
 		cursor: pointer;
 	}
 
@@ -98,24 +98,24 @@
 	}
 
 	main {
-		padding: 24px;
+		padding: var(--space-loose);
 		max-width: 600px;
 	}
 
 	section + section {
-		margin-top: 24px;
+		margin-top: var(--space-loose);
 	}
 
 	section h2 {
-		font-size: 16px;
+		font-size: var(--text-subheading);
 		color: var(--color-accent);
-		margin-bottom: 16px;
+		margin-bottom: var(--space-comfortable);
 	}
 
 	.info-list {
 		background-color: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 12px;
+		border-radius: var(--radius-prominent);
 		overflow: hidden;
 	}
 
@@ -123,7 +123,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 16px;
+		padding: var(--space-comfortable);
 	}
 
 	.info-row + .info-row {
@@ -132,17 +132,17 @@
 
 	.info-label {
 		color: var(--color-subtext);
-		font-size: 14px;
+		font-size: var(--text-body);
 	}
 
 	.info-value {
 		color: var(--color-text);
-		font-size: 14px;
+		font-size: var(--text-body);
 		font-weight: 500;
 	}
 
 	.info-value.monospace {
 		font-family: monospace;
-		font-size: 13px;
+		font-size: var(--text-detail);
 	}
 </style>

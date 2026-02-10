@@ -197,15 +197,15 @@
 	header {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 16px;
-		padding-top: calc(16px + var(--safe-area-inset-top));
+		gap: var(--space-cozy);
+		padding: var(--space-comfortable);
+		padding-top: calc(var(--space-comfortable) + var(--safe-area-inset-top));
 		background-color: var(--color-surface);
 		border-bottom: 1px solid var(--color-overlay);
 	}
 
 	header h1 {
-		font-size: 20px;
+		font-size: var(--text-title);
 		font-weight: 600;
 	}
 
@@ -218,7 +218,7 @@
 		border: none;
 		background: transparent;
 		color: var(--color-text);
-		border-radius: 8px;
+		border-radius: var(--radius-rounded);
 		cursor: pointer;
 	}
 
@@ -227,34 +227,34 @@
 	}
 
 	main {
-		padding: 24px;
+		padding: var(--space-loose);
 		max-width: 600px;
 	}
 
 	section + section {
-		margin-top: 24px;
+		margin-top: var(--space-loose);
 	}
 
 	section h2 {
-		font-size: 16px;
+		font-size: var(--text-subheading);
 		color: var(--color-accent);
-		margin-bottom: 16px;
+		margin-bottom: var(--space-comfortable);
 	}
 
 	.theme-grid {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.theme-card {
 		display: flex;
 		align-items: center;
-		gap: 16px;
-		padding: 16px;
+		gap: var(--space-comfortable);
+		padding: var(--space-comfortable);
 		background-color: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 12px;
+		border-radius: var(--radius-prominent);
 		cursor: pointer;
 		text-align: left;
 	}
@@ -270,13 +270,13 @@
 
 	.preview-colors {
 		display: flex;
-		gap: 4px;
+		gap: var(--space-tight);
 	}
 
 	.color {
 		width: 24px;
 		height: 24px;
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 		border: 1px solid var(--color-overlay);
 	}
 
@@ -292,7 +292,7 @@
 	}
 
 	.theme-type {
-		font-size: 12px;
+		font-size: var(--text-label);
 		color: var(--color-subtext);
 	}
 
@@ -305,10 +305,10 @@
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		padding: 16px;
+		padding: var(--space-comfortable);
 		background-color: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 12px;
+		border-radius: var(--radius-prominent);
 		cursor: pointer;
 		text-align: left;
 	}
@@ -320,7 +320,7 @@
 	.setting-info {
 		display: flex;
 		flex-direction: column;
-		gap: 2px;
+		gap: var(--space-hairline);
 	}
 
 	.setting-name {
@@ -329,7 +329,7 @@
 	}
 
 	.setting-desc {
-		font-size: 12px;
+		font-size: var(--text-label);
 		color: var(--color-subtext);
 	}
 
@@ -337,8 +337,8 @@
 		width: 44px;
 		height: 24px;
 		background-color: var(--color-overlay);
-		border-radius: 12px;
-		padding: 2px;
+		border-radius: var(--radius-prominent);
+		padding: var(--space-hairline);
 		transition: background-color 0.2s;
 	}
 
@@ -361,14 +361,14 @@
 	.plugin-list {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.plugin-settings {
 		background: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 12px;
-		padding: 16px;
+		border-radius: var(--radius-prominent);
+		padding: var(--space-comfortable);
 	}
 
 	.setting-row.static {
@@ -382,7 +382,7 @@
 	.font-size-control {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: var(--space-cozy);
 	}
 
 	.range-slider {
@@ -392,7 +392,7 @@
 	}
 
 	.font-size-value {
-		font-size: 14px;
+		font-size: var(--text-body);
 		font-weight: 500;
 		color: var(--color-text);
 		min-width: 36px;
@@ -402,15 +402,15 @@
 	.accent-color-control {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.color-picker {
 		width: 36px;
 		height: 36px;
 		border: 2px solid var(--color-overlay);
-		border-radius: 8px;
-		padding: 2px;
+		border-radius: var(--radius-rounded);
+		padding: var(--space-hairline);
 		background: transparent;
 		cursor: pointer;
 	}
@@ -421,15 +421,15 @@
 
 	.color-picker::-webkit-color-swatch {
 		border: none;
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 	}
 
 	.reset-btn {
-		padding: 6px 12px;
-		font-size: 12px;
+		padding: var(--space-snug) var(--space-cozy);
+		font-size: var(--text-label);
 		font-weight: 500;
 		border: 1px solid var(--color-overlay);
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		background: transparent;
 		color: var(--color-subtext);
 		cursor: pointer;

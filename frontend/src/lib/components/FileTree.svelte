@@ -111,14 +111,14 @@
 	.file-tree {
 		flex: 1;
 		overflow-y: auto;
-		padding: 8px;
+		padding: var(--space-compact);
 	}
 
 	.loading {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 32px;
+		padding: var(--space-wide);
 	}
 
 	.spinner {
@@ -141,7 +141,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		padding: 32px;
+		padding: var(--space-wide);
 		color: var(--color-subtext);
 		text-align: center;
 	}
@@ -151,7 +151,7 @@
 	}
 
 	.empty .hint {
-		font-size: 12px;
-		margin-top: 4px;
+		font-size: var(--text-label);
+		margin-top: var(--space-tight);
 	}
 </style>

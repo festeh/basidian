@@ -131,7 +131,7 @@
 		position: relative;
 		display: flex;
 		align-items: center;
-		gap: 4px;
+		gap: var(--space-tight);
 	}
 
 	.today-btn {
@@ -143,7 +143,7 @@
 		height: 28px;
 		background: transparent;
 		border: none;
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		color: var(--color-subtext);
 		cursor: pointer;
 		transition: all 0.15s;
@@ -155,7 +155,7 @@
 	}
 
 	.today-icon {
-		font-size: 16px;
+		font-size: var(--text-subheading);
 		font-weight: 600;
 		line-height: 1;
 	}
@@ -168,7 +168,7 @@
 		height: 28px;
 		background: transparent;
 		border: none;
-		border-radius: 6px;
+		border-radius: var(--radius-default);
 		color: var(--color-subtext);
 		cursor: pointer;
 		transition: all 0.15s;
@@ -183,13 +183,13 @@
 		position: absolute;
 		top: 100%;
 		left: 0;
-		margin-top: 8px;
-		padding: 12px;
+		margin-top: var(--space-compact);
+		padding: var(--space-cozy);
 		background: var(--color-surface);
 		border: 1px solid var(--color-overlay);
-		border-radius: 8px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-		z-index: 1000;
+		border-radius: var(--radius-rounded);
+		box-shadow: var(--shadow-subtle);
+		z-index: var(--z-modal);
 		min-width: 220px;
 	}
 
@@ -197,7 +197,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 8px;
+		margin-bottom: var(--space-compact);
 	}
 
 	.nav-btn {
@@ -208,7 +208,7 @@
 		height: 24px;
 		background: transparent;
 		border: none;
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 		color: var(--color-subtext);
 		cursor: pointer;
 	}
@@ -219,7 +219,7 @@
 	}
 
 	.month-label {
-		font-size: 12px;
+		font-size: var(--text-label);
 		font-weight: 500;
 		color: var(--color-text);
 	}
@@ -227,21 +227,21 @@
 	.weekdays {
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
-		gap: 2px;
-		margin-bottom: 4px;
+		gap: var(--space-hairline);
+		margin-bottom: var(--space-tight);
 	}
 
 	.weekdays span {
 		text-align: center;
 		font-size: 9px;
 		color: var(--color-subtext);
-		padding: 2px 0;
+		padding: var(--space-hairline) 0;
 	}
 
 	.days {
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
-		gap: 2px;
+		gap: var(--space-hairline);
 	}
 
 	.day {
@@ -249,10 +249,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 10px;
+		font-size: var(--text-caption);
 		background: transparent;
 		border: none;
-		border-radius: 4px;
+		border-radius: var(--radius-subtle);
 		color: var(--color-text);
 		cursor: pointer;
 		position: relative;

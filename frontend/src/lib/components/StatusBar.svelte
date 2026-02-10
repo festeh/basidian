@@ -44,10 +44,10 @@
 		justify-content: space-between;
 		align-items: center;
 		min-height: 24px;
-		padding: 0 12px;
+		padding: 0 var(--space-cozy);
 		padding-bottom: var(--safe-area-inset-bottom);
 		background: var(--color-base);
-		font-size: 12px;
+		font-size: var(--text-label);
 		color: var(--color-subtext);
 	}
 
@@ -55,7 +55,7 @@
 	.status-right {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+		gap: var(--space-cozy);
 	}
 
 	.notifications {
@@ -64,20 +64,20 @@
 		right: calc(16px + var(--safe-area-inset-right));
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
-		z-index: 1000;
+		gap: var(--space-compact);
+		z-index: var(--z-modal);
 	}
 
 	.notification {
 		display: flex;
 		align-items: center;
-		gap: 12px;
-		padding: 8px 12px;
-		border-radius: 6px;
+		gap: var(--space-cozy);
+		padding: var(--space-compact) var(--space-cozy);
+		border-radius: var(--radius-default);
 		background: var(--color-surface);
 		border: 1px solid var(--color-overlay);
 		color: var(--color-text);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+		box-shadow: var(--shadow-subtle);
 		animation: slide-in 0.2s ease-out;
 	}
 
@@ -99,7 +99,7 @@
 		color: var(--color-subtext);
 		cursor: pointer;
 		padding: 0;
-		font-size: 16px;
+		font-size: var(--text-subheading);
 		line-height: 1;
 	}
 

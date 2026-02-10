@@ -33,7 +33,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 8px 12px;
+		padding: var(--space-compact) var(--space-cozy);
 		background-color: var(--color-surface);
 		user-select: none;
 		-webkit-user-select: none;
@@ -43,7 +43,7 @@
 	.right {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 
 	.icon-btn {
@@ -55,7 +55,7 @@
 		border: none;
 		background: transparent;
 		color: var(--color-text);
-		border-radius: 8px;
+		border-radius: var(--radius-rounded);
 		cursor: pointer;
 	}
 

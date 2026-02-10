@@ -28,9 +28,47 @@
 	--font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 	--font-size-base: 14px;
 
+	/* Spacing */
+	--space-hairline: 2px;
+	--space-tight: 4px;
+	--space-snug: 6px;
+	--space-compact: 8px;
+	--space-cozy: 12px;
+	--space-comfortable: 16px;
+	--space-spacious: 20px;
+	--space-loose: 24px;
+	--space-wide: 32px;
+
+	/* Border radius */
+	--radius-subtle: 4px;
+	--radius-default: 6px;
+	--radius-rounded: 8px;
+	--radius-prominent: 12px;
+
+	/* Font sizes */
+	--text-caption: 10px;
+	--text-label: 12px;
+	--text-detail: 13px;
+	--text-body: 14px;
+	--text-subheading: 16px;
+	--text-heading: 18px;
+	--text-title: 20px;
+
 	/* Shadows */
 	--shadow-sidebar: 2px 0 8px rgba(0, 0, 0, 0.15);
 	--shadow-topbar: 0 2px 8px rgba(0, 0, 0, 0.12);
+	--shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.2);
+	--shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+	/* Z-index layers */
+	--z-raised: 1;
+	--z-sticky: 10;
+	--z-overlay: 100;
+	--z-modal: 1000;
+
+	/* Backdrop */
+	--color-backdrop: rgba(0, 0, 0, 0.5);
 
 	color-scheme: dark;
 }

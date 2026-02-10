@@ -31,6 +31,6 @@
 	.plugin-slot {
 		display: flex;
 		align-items: center;
-		gap: 8px;
+		gap: var(--space-compact);
 	}
 </style>
