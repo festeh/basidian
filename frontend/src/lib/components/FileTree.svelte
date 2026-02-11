@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FsNode } from '$lib/types';
-	import { rootNodes, isLoading, filesystemActions, selectedNode } from '$lib/stores/filesystem';
+	import { rootNodes, isLoading, error, filesystemActions, selectedNode } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import ConfirmDialog from './ConfirmDialog.svelte';
@@ -75,6 +75,12 @@
 		<div class="loading">
 			<div class="spinner"></div>
 		</div>
+	{:else if $error}
+		<div class="error-state">
+			<p>Could not connect to server</p>
+			<p class="hint">{$error}</p>
+			<button class="retry-btn" onclick={() => filesystemActions.loadTree()}>Retry</button>
+		</div>
 	{:else if $rootNodes.length === 0}
 		<div class="empty">
 			<p>No files yet</p>
@@ -134,6 +140,41 @@
 		to {
 			transform: rotate(360deg);
 		}
+	}
+
+	.error-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: var(--space-wide);
+		color: var(--color-subtext);
+		text-align: center;
+	}
+
+	.error-state p {
+		margin: 0;
+	}
+
+	.error-state .hint {
+		font-size: var(--text-label);
+		margin-top: var(--space-tight);
+		color: var(--color-error);
+	}
+
+	.retry-btn {
+		margin-top: var(--space-base);
+		padding: var(--space-tight) var(--space-base);
+		background: var(--color-overlay);
+		color: var(--color-text);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		cursor: pointer;
+		font-size: var(--text-body);
+	}
+
+	.retry-btn:hover {
+		background: var(--color-surface);
 	}
 
 	.empty {
