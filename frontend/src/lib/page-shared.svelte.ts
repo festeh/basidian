@@ -18,15 +18,18 @@ export function createPageState() {
 		showCreateFolderModal = true;
 	}
 
+	function getParentPath(): string {
+		const selected = get(selectedNode);
+		return selected?.type === 'folder' ? selected.path : '/';
+	}
+
 	async function createFile() {
-		if (!newItemName.trim() || isCreating) return;
+		const trimmed = newItemName.trim();
+		if (!trimmed || isCreating) return;
 
 		isCreating = true;
-		const selected = get(selectedNode);
-		const parentPath = selected?.type === 'folder' ? selected.path : '/';
-		const name = newItemName.endsWith('.md') ? newItemName : `${newItemName}.md`;
-
-		const node = await filesystemActions.createFile(parentPath, name);
+		const name = trimmed.endsWith('.md') ? trimmed : `${trimmed}.md`;
+		const node = await filesystemActions.createFile(getParentPath(), name);
 		if (node) {
 			showCreateFileModal = false;
 			await filesystemActions.openFile(node);
@@ -35,13 +38,11 @@ export function createPageState() {
 	}
 
 	async function createFolder() {
-		if (!newItemName.trim() || isCreating) return;
+		const trimmed = newItemName.trim();
+		if (!trimmed || isCreating) return;
 
 		isCreating = true;
-		const selected = get(selectedNode);
-		const parentPath = selected?.type === 'folder' ? selected.path : '/';
-
-		await filesystemActions.createFolder(parentPath, newItemName);
+		await filesystemActions.createFolder(getParentPath(), trimmed);
 		showCreateFolderModal = false;
 		isCreating = false;
 	}

@@ -49,6 +49,7 @@ async def create_note(
     """Create a new note."""
     note_id = generate_id()
     now = datetime.now().isoformat()
+    title = req.title.strip() if req.title else req.title
 
     date = req.date if req.date else datetime.now().strftime("%Y-%m-%d")
 
@@ -57,14 +58,14 @@ async def create_note(
         INSERT INTO notes (id, title, content, date, created, updated)
         VALUES (?, ?, ?, ?, ?, ?)
         """,
-        (note_id, req.title, req.content, date, now, now),
+        (note_id, title, req.content, date, now, now),
     )
     await db.commit()
 
     logger.info(f"CreateNote: Created note {note_id}")
     return Note(
         id=note_id,
-        title=req.title,
+        title=title,
         content=req.content,
         date=date,
         created_at=now,

@@ -121,7 +121,8 @@ async def create_node(
     if req.type not in ("folder", "file"):
         raise HTTPException(status_code=400, detail="Type must be 'folder' or 'file'")
 
-    if not req.name:
+    name = req.name.strip() if req.name else ""
+    if not name:
         raise HTTPException(status_code=400, detail="Name is required")
 
     parent_path = req.parent_path if req.parent_path else "/"
@@ -136,7 +137,7 @@ async def create_node(
                 raise HTTPException(status_code=400, detail="Parent folder not found")
 
     # Build the full path
-    node_path = _build_path(parent_path, req.name)
+    node_path = _build_path(parent_path, name)
 
     # Check if path already exists
     async with db.execute(
@@ -156,7 +157,7 @@ async def create_node(
         (
             node_id,
             req.type,
-            req.name,
+            name,
             node_path,
             parent_path,
             req.content,
@@ -171,7 +172,7 @@ async def create_node(
     return FsNode(
         id=node_id,
         type=req.type,
-        name=req.name,
+        name=name,
         path=node_path,
         parent_path=parent_path,
         content=req.content,
@@ -286,7 +287,7 @@ async def move_node(
     old_parent_path = row["parent_path"]
     node_type = row["type"]
 
-    new_name = req.new_name if req.new_name else old_name
+    new_name = req.new_name.strip() if req.new_name else old_name
     new_parent_path = req.new_parent_path if req.new_parent_path else old_parent_path
     new_path = _build_path(new_parent_path, new_name)
 
