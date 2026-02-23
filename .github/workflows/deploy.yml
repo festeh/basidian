@@ -39,7 +39,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "server/,basidian/,pyproject.toml,uv.lock"
+        source: "server/,basidian/,pyproject.toml,uv.lock,README.md"
         target: "/root/basidian/"
         overwrite: true
 
