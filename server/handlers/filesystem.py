@@ -5,7 +5,7 @@ import aiosqlite
 from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
-from models import FsNode, FsNodeRequest, MoveRequest
+from basidian.models import FsNode, FsNodeRequest, MoveRequest
 
 from ..db import generate_id, get_db
 

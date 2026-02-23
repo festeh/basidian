@@ -8,15 +8,15 @@ default:
 
 # Run backend server
 backend:
-    cd backend && uv run basidian-server serve --http=0.0.0.0:8090
+    uv run basidian-server serve --http=0.0.0.0:8090
 
 # Run backend with hot reload
 backend-dev:
-    cd backend && uv run uvicorn basidian_server.main:create_app --factory --reload --host 0.0.0.0 --port 8090
+    uv run uvicorn server.main:create_app --factory --reload --host 0.0.0.0 --port 8090
 
 # Install backend dependencies
 deps-backend:
-    cd backend && uv sync
+    uv sync
 
 # ============== Frontend (Tauri) ==============
 
@@ -43,7 +43,7 @@ dev:
     #!/usr/bin/env bash
     set -euo pipefail
     trap 'kill 0' EXIT
-    (cd backend && uv run basidian-server serve --http=0.0.0.0:8090) &
+    uv run basidian-server serve --http=0.0.0.0:8090 &
     sleep 2
     cd frontend && VITE_PLATFORM=desktop VITE_BACKEND_URL=http://localhost:8090/api mise exec -- npm run tauri:dev
     wait
@@ -119,7 +119,7 @@ install:
 # Clean all build artifacts
 clean:
     rm -rf frontend/build frontend/src-tauri/target
-    rm -rf backend/.venv backend/dist backend/build
+    rm -rf .venv dist build
 
 # Format code
 fmt:

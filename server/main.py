@@ -46,7 +46,7 @@ def json_sink(message):
 logger.add(json_sink, level="DEBUG")
 
 
-def create_app(db_path: str = "./pb_data/data.db") -> FastAPI:
+def create_app(db_path: str = "backend/pb_data/data.db") -> FastAPI:
     """Create the FastAPI application."""
 
     @asynccontextmanager
@@ -98,7 +98,7 @@ def cli():
 
 @cli.command()
 @click.option("--http", default=":8090", help="HTTP server address (e.g., :8090 or 0.0.0.0:8090)")
-@click.option("--db", "db_path", default="./pb_data/data.db", help="SQLite database path")
+@click.option("--db", "db_path", default="backend/pb_data/data.db", help="SQLite database path")
 def serve(http: str, db_path: str):
     """Start the Basidian backend server."""
     # Parse host:port from --http flag

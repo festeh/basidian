@@ -5,7 +5,7 @@ from typing import Optional
 
 import click
 
-from client import BasidianClient
+from basidian.client import BasidianClient
 
 
 DEFAULT_URL = "http://localhost:8090"

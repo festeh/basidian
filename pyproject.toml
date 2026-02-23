@@ -1,5 +1,5 @@
 [project]
-name = "basidian-server"
+name = "basidian"
 version = "0.1.0"
 description = "Basidian Second Brain Backend"
 readme = "README.md"
@@ -20,6 +20,9 @@ dependencies = [
 basidian-server = "server.main:cli"
 bscli = "bscli.main:cli"
 basync = "basync.main:cli"
+
+[tool.uv.build-backend]
+module-root = ""
 
 [build-system]
 requires = ["uv_build>=0.9.11,<0.10.0"]
