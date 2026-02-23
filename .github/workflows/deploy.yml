@@ -4,7 +4,10 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'backend/**'
+      - 'server/**'
+      - 'basidian/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
   workflow_dispatch:
 
 jobs:
@@ -22,26 +25,22 @@ jobs:
         username: root
         key: ${{ secrets.SSH_KEY }}
         script: |
-          # Stop the service if running
           sudo systemctl stop basidian || true
 
-          # Install uv if not present
           if ! command -v /root/.local/bin/uv &> /dev/null; then
             curl -LsSf https://astral.sh/uv/install.sh | sh
           fi
 
-          # Create directory if it doesn't exist
           sudo mkdir -p /root/basidian
 
-    - name: Copy backend code to VPS
+    - name: Copy code to VPS
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "backend/"
+        source: "server/,basidian/,pyproject.toml,uv.lock"
         target: "/root/basidian/"
-        strip_components: 0
         overwrite: true
 
     - name: Setup and start service
@@ -51,14 +50,11 @@ jobs:
         username: root
         key: ${{ secrets.SSH_KEY }}
         script: |
-          # Install Python dependencies
-          cd /root/basidian/backend
+          cd /root/basidian
           /root/.local/bin/uv sync
 
-          # Create data directory if it doesn't exist
-          mkdir -p /root/basidian/backend/pb_data
+          mkdir -p /root/basidian/data
 
-          # Create systemd service file
           sudo tee /etc/systemd/system/basidian.service > /dev/null <<EOF
           [Unit]
           Description=Basidian Backend Service
@@ -67,7 +63,7 @@ jobs:
           [Service]
           Type=simple
           User=root
-          WorkingDirectory=/root/basidian/backend
+          WorkingDirectory=/root/basidian
           ExecStart=/root/.local/bin/uv run basidian-server serve --http=127.0.0.1:9090
           Restart=always
           RestartSec=5
@@ -79,10 +75,8 @@ jobs:
           WantedBy=multi-user.target
           EOF
 
-          # Reload systemd and start service
           sudo systemctl daemon-reload
           sudo systemctl enable basidian
           sudo systemctl start basidian
 
-          # Check service status
           sudo systemctl status basidian --no-pager -l

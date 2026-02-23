@@ -40,6 +40,12 @@ class FsNodeRequest(BaseModel):
     sort_order: int = 0
 
 
+class FsNodeUpdateRequest(BaseModel):
+    name: str | None = None
+    content: str | None = None
+    sort_order: int | None = None
+
+
 class MoveRequest(BaseModel):
     new_parent_path: str = ""
     new_name: str = ""

@@ -5,7 +5,7 @@ import aiosqlite
 from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
-from basidian.models import FsNode, FsNodeRequest, MoveRequest
+from basidian.models import FsNode, FsNodeRequest, FsNodeUpdateRequest, MoveRequest
 
 from ..db import generate_id, get_db
 
@@ -185,13 +185,13 @@ async def create_node(
 @router.put("/api/fs/node/{node_id}")
 async def update_node(
     node_id: str,
-    req: FsNodeRequest,
+    req: FsNodeUpdateRequest,
     db: aiosqlite.Connection = Depends(get_db),
 ) -> FsNode:
     """Update an existing node."""
     # Check if node exists and get current values
     async with db.execute(
-        "SELECT type, name, content FROM fs_nodes WHERE id = ?",
+        "SELECT type, name, content, sort_order FROM fs_nodes WHERE id = ?",
         (node_id,),
     ) as cursor:
         row = await cursor.fetchone()
@@ -199,13 +199,9 @@ async def update_node(
     if row is None:
         raise HTTPException(status_code=404, detail="Node not found")
 
-    current_type = row["type"]
-    current_name = row["name"]
-    current_content = row["content"]
-
-    # Determine what to update
-    new_name = req.name if req.name else current_name
-    new_content = req.content if req.content or current_type == "file" else current_content
+    new_name = req.name if req.name is not None else row["name"]
+    new_content = req.content if req.content is not None else row["content"]
+    new_sort_order = req.sort_order if req.sort_order is not None else row["sort_order"]
 
     now = datetime.now().isoformat()
 
@@ -215,7 +211,7 @@ async def update_node(
         SET name = ?, content = ?, sort_order = ?, updated = ?
         WHERE id = ?
         """,
-        (new_name, new_content, req.sort_order, now, node_id),
+        (new_name, new_content, new_sort_order, now, node_id),
     )
     await db.commit()
 
