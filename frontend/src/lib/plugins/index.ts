@@ -9,7 +9,6 @@ export type {
 	PluginStores,
 	PluginActions,
 	PluginUI,
-	PluginDOM,
 	PluginStorage,
 	PluginLogger
 } from './types';

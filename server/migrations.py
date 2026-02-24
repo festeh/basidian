@@ -27,7 +27,6 @@ async def run_migrations(db: aiosqlite.Connection) -> None:
             path TEXT DEFAULT '' NOT NULL,
             parent_path TEXT DEFAULT '' NOT NULL,
             content TEXT DEFAULT '' NOT NULL,
-            is_daily BOOLEAN DEFAULT FALSE NOT NULL,
             sort_order NUMERIC DEFAULT 0 NOT NULL,
             created TEXT DEFAULT '' NOT NULL,
             updated TEXT DEFAULT '' NOT NULL
@@ -45,4 +44,11 @@ async def run_migrations(db: aiosqlite.Connection) -> None:
         "CREATE INDEX IF NOT EXISTS idx_fs_nodes_type ON fs_nodes (type)"
     )
     await db.execute("CREATE INDEX IF NOT EXISTS idx_notes_date ON notes (date)")
+
+    # Drop unused is_daily column from existing databases
+    async with db.execute("PRAGMA table_info(fs_nodes)") as cursor:
+        columns = [row[1] for row in await cursor.fetchall()]
+    if "is_daily" in columns:
+        await db.execute("ALTER TABLE fs_nodes DROP COLUMN is_daily")
+
     await db.commit()

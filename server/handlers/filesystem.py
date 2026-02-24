@@ -5,11 +5,13 @@ import aiosqlite
 from fastapi import APIRouter, Depends, HTTPException, Query
 from loguru import logger
 
-from basidian.models import FsNode, FsNodeRequest, FsNodeUpdateRequest, MoveRequest
+from core.models import FsNode, FsNodeRequest, FsNodeUpdateRequest, MoveRequest
 
 from ..db import generate_id, get_db
 
 router = APIRouter()
+
+_COLS = "id, type, name, path, parent_path, content, sort_order, created, updated"
 
 
 def _build_path(parent_path: str, name: str) -> str:
@@ -46,8 +48,8 @@ async def get_tree(
 
     if parent_path:
         async with db.execute(
-            """
-            SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+            f"""
+            SELECT {_COLS}
             FROM fs_nodes
             WHERE parent_path = ?
             ORDER BY type DESC, sort_order ASC, name ASC
@@ -56,8 +58,8 @@ async def get_tree(
         ) as cursor:
             rows = await cursor.fetchall()
     else:
-        async with db.execute("""
-            SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+        async with db.execute(f"""
+            SELECT {_COLS}
             FROM fs_nodes
             ORDER BY type DESC, sort_order ASC, name ASC
         """) as cursor:
@@ -75,8 +77,8 @@ async def get_node(
 ) -> FsNode:
     """Get a single node by path."""
     async with db.execute(
-        """
-        SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+        f"""
+        SELECT {_COLS}
         FROM fs_nodes
         WHERE path = ?
         """,
@@ -97,8 +99,8 @@ async def get_node_by_id(
 ) -> FsNode:
     """Get a single node by ID."""
     async with db.execute(
-        """
-        SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+        f"""
+        SELECT {_COLS}
         FROM fs_nodes
         WHERE id = ?
         """,
@@ -151,8 +153,8 @@ async def create_node(
 
     await db.execute(
         """
-        INSERT INTO fs_nodes (id, type, name, path, parent_path, content, is_daily, sort_order, created, updated)
-        VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
+        INSERT INTO fs_nodes (id, type, name, path, parent_path, content, sort_order, created, updated)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             node_id,
@@ -217,8 +219,8 @@ async def update_node(
 
     # Fetch updated node
     async with db.execute(
-        """
-        SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+        f"""
+        SELECT {_COLS}
         FROM fs_nodes WHERE id = ?
         """,
         (node_id,),
@@ -337,8 +339,8 @@ async def move_node(
 
     # Fetch updated node
     async with db.execute(
-        """
-        SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+        f"""
+        SELECT {_COLS}
         FROM fs_nodes WHERE id = ?
         """,
         (node_id,),
@@ -358,8 +360,8 @@ async def search_files(
     search_pattern = f"%{q}%"
 
     async with db.execute(
-        """
-        SELECT id, type, name, path, parent_path, content, is_daily, sort_order, created, updated
+        f"""
+        SELECT {_COLS}
         FROM fs_nodes
         WHERE type = 'file' AND (name LIKE ? OR content LIKE ?)
         ORDER BY updated DESC

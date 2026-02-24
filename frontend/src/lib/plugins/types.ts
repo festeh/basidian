@@ -110,12 +110,6 @@ export interface PluginContextMenuAPI {
 	getItems: (context: 'fileTree' | 'editor' | 'sidebar') => PluginContextMenu[];
 }
 
-export interface PluginDOM {
-	querySelector: (selector: string) => Element | null;
-	querySelectorAll: (selector: string) => NodeListOf<Element>;
-	injectStyles: (css: string) => () => void;
-}
-
 export interface PluginStorage {
 	get: <T>(key: string) => T | null;
 	set: <T>(key: string, value: T) => void;
@@ -137,7 +131,6 @@ export interface PluginContext {
 	ui: PluginUI;
 	commands: PluginCommands;
 	contextMenu: PluginContextMenuAPI;
-	dom: PluginDOM;
 	storage: PluginStorage;
 	log: PluginLogger;
 }

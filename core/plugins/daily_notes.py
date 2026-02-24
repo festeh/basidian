@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-from basidian.client import BasidianClient
-from basidian.models import FsNode
+from core.client import BasidianClient
+from core.models import FsNode
 
 
 class DailyNotes:

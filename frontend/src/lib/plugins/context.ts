@@ -124,25 +124,6 @@ export function createPluginContext(
 				Array.from(contextMenuItems.values()).filter((m) => m.context === context)
 		},
 
-		dom: {
-			querySelector: (selector: string) =>
-				browser ? document.querySelector(selector) : null,
-			querySelectorAll: (selector: string) =>
-				browser
-					? document.querySelectorAll(selector)
-					: ([] as unknown as NodeListOf<Element>),
-			injectStyles: (css: string) => {
-				if (!browser) return () => {};
-				const style = document.createElement('style');
-				style.setAttribute('data-plugin', manifest.id);
-				style.textContent = css;
-				document.head.appendChild(style);
-				return () => {
-					style.remove();
-				};
-			}
-		},
-
 		storage: {
 			get: <T>(key: string): T | null => {
 				if (!browser) return null;
