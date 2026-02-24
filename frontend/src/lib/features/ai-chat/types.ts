@@ -48,7 +48,7 @@ export type MessageStatus = 'sending' | 'sent' | 'error';
 // =============================================================================
 
 /**
- * User configuration for the AI chat plugin.
+ * User configuration for AI chat.
  */
 export interface AISettings {
   /** Selected AI provider ID */
@@ -209,8 +209,8 @@ export interface ChatCompletionChunk {
 // =============================================================================
 
 /**
- * Keys used for plugin storage.
- * All keys are automatically prefixed with 'basidian-plugin-ai-chat-'.
+ * Keys used for localStorage.
+ * All keys are prefixed with 'basidian-ai-chat-'.
  */
 export const STORAGE_KEYS = {
   SETTINGS: 'settings',

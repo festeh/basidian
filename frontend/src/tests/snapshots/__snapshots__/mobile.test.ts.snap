@@ -180,9 +180,7 @@ exports[`PageMobile snapshots > empty state — top bar with hamburger, editor p
     </div>
      
     <!---->
-    <!---->
-     
-    <!---->
+    
     <!---->
   </div>
    
@@ -286,9 +284,7 @@ exports[`PageMobile snapshots > loading state — spinner shown in editor area 1
     </div>
      
     <!---->
-    <!---->
-     
-    <!---->
+    
     <!---->
   </div>
    
@@ -706,9 +702,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
     </div>
      
     <!---->
-    <!---->
-     
-    <!---->
+    
     <!---->
   </div>
    

@@ -1,35 +1,18 @@
 <script lang="ts">
-	import PluginSlot from '$lib/plugins/PluginSlot.svelte';
-	import { uiRegistry, type Notification, type UISlotItem } from '$lib/plugins';
+	import { notifications, dismissNotification, type Notification } from '$lib/stores/notifications';
 
-	let notifications: Notification[] = $state([]);
-	let statusBarItems: UISlotItem[] = $state([]);
-	uiRegistry.notifications.subscribe((value) => (notifications = value));
-	uiRegistry.statusBarItems.subscribe((value) => (statusBarItems = value));
-
-	const hasContent = $derived(statusBarItems.length > 0);
+	let items: Notification[] = $state([]);
+	notifications.subscribe((value) => (items = value));
 </script>
 
-{#if hasContent}
-<div class="status-bar">
-	<div class="status-left">
-		<PluginSlot slot="statusBar" />
-	</div>
-	<div class="status-right">
-		<!-- Core status items can go here -->
-	</div>
-</div>
-{/if}
-
-<!-- Notifications -->
-{#if notifications.length > 0}
+{#if items.length > 0}
 	<div class="notifications">
-		{#each notifications as notification (notification.id)}
+		{#each items as notification (notification.id)}
 			<div class="notification notification-{notification.type}">
 				<span>{notification.message}</span>
 				<button
 					class="dismiss"
-					onclick={() => uiRegistry.dismissNotification(notification.id)}
+					onclick={() => dismissNotification(notification.id)}
 				>
 					&times;
 				</button>
@@ -39,26 +22,7 @@
 {/if}
 
 <style>
-	.status-bar {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		min-height: 24px;
-		padding: 0 var(--space-cozy);
-		padding-bottom: var(--safe-area-inset-bottom);
-		background: var(--color-base);
-		font-size: var(--text-label);
-		color: var(--color-subtext);
-	}
-
-	.status-left,
-	.status-right {
-		display: flex;
-		align-items: center;
-		gap: var(--space-cozy);
-	}
-
-	.notifications {
+.notifications {
 		position: fixed;
 		bottom: calc(32px + var(--safe-area-inset-bottom));
 		right: calc(16px + var(--safe-area-inset-right));

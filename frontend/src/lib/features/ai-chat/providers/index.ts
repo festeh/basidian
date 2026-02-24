@@ -1,5 +1,5 @@
 /**
- * AI Chat Plugin - Provider Registry
+ * AI Chat - Provider Registry
  *
  * Exports provider interface and manages provider instances.
  */

@@ -1,9 +1,0 @@
-{
-  "id": "ai-chat",
-  "name": "AI Chat",
-  "version": "1.0.0",
-  "description": "Chat with AI assistants in a right-side panel",
-  "author": "Basidian",
-  "main": "index.ts",
-  "hooks": ["onLoad", "onUnload"]
-}

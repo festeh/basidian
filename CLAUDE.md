@@ -4,7 +4,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-10
 
 ## Active Technologies
 
-- TypeScript 5.x, Svelte 5 (runes) + Svelte 5, existing plugin system (PluginContext, ui-registry) (001-ai-chat)
+- TypeScript 5.x, Svelte 5 (runes), SvelteKit
 
 ## Project Structure
 
@@ -15,7 +15,7 @@ tests/
 
 ## Commands
 
-npm test && npm run lint
+npm test && VITE_PLATFORM=desktop npm run check
 
 ## Code Style
 
@@ -23,7 +23,7 @@ TypeScript 5.x, Svelte 5 (runes): Follow standard conventions
 
 ## Recent Changes
 
-- 001-ai-chat: Added TypeScript 5.x, Svelte 5 (runes) + Svelte 5, existing plugin system (PluginContext, ui-registry)
+- 008-remove-plugin-system: Removed plugin system, inlined Daily Notes and AI Chat as core features in src/lib/features/
 
 <!-- MANUAL ADDITIONS START -->
 Design docs are in arch/. See arch/00_MAP.md for an index.

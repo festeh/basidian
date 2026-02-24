@@ -1,11 +1,14 @@
 /**
- * Daily Notes Plugin - Shared State
- * Separated to avoid circular imports with Svelte components
+ * Daily Notes - Shared State
  */
 
-import type { PluginContext } from '../../types';
 import type { FsNode } from '$lib/types';
 import { get } from 'svelte/store';
+import { rootNodes, filesystemActions } from '$lib/stores/filesystem';
+import { createLogger } from '$lib/utils/logger';
+import { showNotification } from '$lib/stores/notifications';
+
+const log = createLogger('DailyNotes');
 
 export interface DailyNotesSettings {
 	folder: string;
@@ -19,23 +22,28 @@ const DEFAULT_SETTINGS: DailyNotesSettings = {
 	templatePath: ''
 };
 
-let ctx: PluginContext | null = null;
+const STORAGE_PREFIX = 'basidian-daily-notes-';
 
-/**
- * Set the plugin context (called from index.ts onLoad)
- */
-export function setContext(context: PluginContext | null): void {
-	ctx = context;
+function storageGet<T>(key: string): T | null {
+	try {
+		const raw = localStorage.getItem(STORAGE_PREFIX + key);
+		return raw ? JSON.parse(raw) : null;
+	} catch {
+		return null;
+	}
+}
+
+function storageSet<T>(key: string, value: T): void {
+	localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
 }
 
 export function getSettings(): DailyNotesSettings {
-	if (!ctx) return DEFAULT_SETTINGS;
-	const stored = ctx.storage.get<DailyNotesSettings>('settings');
+	const stored = storageGet<DailyNotesSettings>('settings');
 	return { ...DEFAULT_SETTINGS, ...stored };
 }
 
 export function saveSettings(settings: DailyNotesSettings): void {
-	ctx?.storage.set('settings', settings);
+	storageSet('settings', settings);
 }
 
 const MONTH_ABBREVS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -76,8 +84,7 @@ export function getDailyPath(date: Date): string {
 }
 
 function findNodeByPath(path: string): FsNode | null {
-	if (!ctx) return null;
-	const rootNodes = get(ctx.stores.filesystem.rootNodes);
+	const nodes = get(rootNodes);
 
 	function searchTree(nodes: FsNode[]): FsNode | null {
 		for (const node of nodes) {
@@ -90,21 +97,18 @@ function findNodeByPath(path: string): FsNode | null {
 		return null;
 	}
 
-	return searchTree(rootNodes);
+	return searchTree(nodes);
 }
 
 async function getTemplateContent(): Promise<string> {
 	const settings = getSettings();
-	if (!settings.templatePath || !ctx) {
-		// Default template with today's date
+	if (!settings.templatePath) {
 		const today = new Date();
 		return `# ${formatDate(today, settings.dateFormat)}\n\n`;
 	}
 
-	// Try to load template file
 	const templateNode = findNodeByPath(settings.templatePath);
 	if (templateNode?.content) {
-		// Replace {{date}} placeholder with today's date
 		return templateNode.content.replace(/\{\{date\}\}/g, formatDate(new Date(), settings.dateFormat));
 	}
 
@@ -112,49 +116,40 @@ async function getTemplateContent(): Promise<string> {
 }
 
 export async function openOrCreateDaily(date: Date): Promise<void> {
-	if (!ctx) return;
-
 	const settings = getSettings();
 	const dateStr = formatDate(date, settings.dateFormat);
 	const filename = `${dateStr}.md`;
 	const fullPath = `${settings.folder}/${filename}`;
 
-	ctx.log.info(`Opening daily note: ${fullPath}`);
+	log.info(`Opening daily note: ${fullPath}`);
 
-	// Check if exists
 	const existing = findNodeByPath(fullPath);
 	if (existing) {
-		await ctx.actions.filesystem.openFile(existing);
+		await filesystemActions.openFile(existing);
 		return;
 	}
 
-	// Ensure folder exists - check if folder node exists
 	const folderNode = findNodeByPath(settings.folder);
 	if (!folderNode) {
-		// Create the folder first
-		ctx.log.info(`Creating folder: ${settings.folder}`);
-		await ctx.actions.filesystem.createFolder('/', settings.folder.replace(/^\//, ''));
-		await ctx.actions.filesystem.loadTree();
+		log.info(`Creating folder: ${settings.folder}`);
+		await filesystemActions.createFolder('/', settings.folder.replace(/^\//, ''));
+		await filesystemActions.loadTree();
 	}
 
-	// Create the daily note
 	const content = await getTemplateContent();
-	const node = await ctx.actions.filesystem.createFile(settings.folder, filename, content);
+	const node = await filesystemActions.createFile(settings.folder, filename, content);
 
 	if (node) {
-		await ctx.actions.filesystem.openFile(node);
-		ctx.ui.showNotification(`Created daily note: ${dateStr}`, 'success');
+		await filesystemActions.openFile(node);
+		showNotification(`Created daily note: ${dateStr}`, 'success');
 	}
 }
 
 export function getDailyNotesForMonth(year: number, month: number): Set<number> {
-	if (!ctx) return new Set();
-
 	const settings = getSettings();
-	const rootNodes = get(ctx.stores.filesystem.rootNodes);
+	const nodes = get(rootNodes);
 	const days = new Set<number>();
 
-	// Find the daily notes folder
 	function findFolder(nodes: FsNode[]): FsNode | null {
 		for (const node of nodes) {
 			if (node.path === settings.folder && node.type === 'folder') {
@@ -168,10 +163,9 @@ export function getDailyNotesForMonth(year: number, month: number): Set<number> 
 		return null;
 	}
 
-	const folder = findFolder(rootNodes);
+	const folder = findFolder(nodes);
 	if (!folder?.children) return days;
 
-	// Check each file in the folder
 	for (const file of folder.children) {
 		if (file.type !== 'file') continue;
 		const date = parseDate(file.name);

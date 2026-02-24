@@ -3,9 +3,9 @@
 	import { currentThemeName, currentTheme } from '$lib/stores/theme';
 	import { settings } from '$lib/stores/settings';
 	import { themeList } from '$lib/themes';
-	import { loadedPlugins, pluginManager, uiRegistry, type SettingsTab } from '$lib/plugins';
+	import DailyNotesSettings from '$lib/features/daily-notes/Settings.svelte';
+	import AIChatSettings from '$lib/features/ai-chat/Settings.svelte';
 	import type { ThemeName } from '$lib/types';
-	import type { LoadedPlugin } from '$lib/plugins';
 
 	function selectTheme(name: ThemeName) {
 		currentThemeName.set(name);
@@ -33,21 +33,6 @@
 		goto('/');
 	}
 
-	let plugins: LoadedPlugin[] = $state([]);
-	loadedPlugins.subscribe((map) => {
-		plugins = Array.from(map.values());
-	});
-
-	let settingsTabs: SettingsTab[] = $state([]);
-	uiRegistry.settingsTabs.subscribe((tabs) => (settingsTabs = tabs));
-
-	async function togglePlugin(pluginId: string, enabled: boolean) {
-		if (enabled) {
-			await pluginManager.disablePlugin(pluginId);
-		} else {
-			await pluginManager.enablePlugin(pluginId);
-		}
-	}
 </script>
 
 <div class="settings">
@@ -148,39 +133,19 @@
 			</button>
 		</section>
 
-		{#if plugins.length > 0}
-			<section>
-				<h2>Plugins</h2>
-				<div class="plugin-list">
-					{#each plugins as plugin (plugin.manifest.id)}
-						<button
-							class="setting-row"
-							onclick={() => togglePlugin(plugin.manifest.id, plugin.enabled)}
-						>
-							<div class="setting-info">
-								<span class="setting-name">{plugin.manifest.name}</span>
-								<span class="setting-desc"
-									>{plugin.manifest.description || `v${plugin.manifest.version}`}</span
-								>
-							</div>
-							<div class="toggle" class:active={plugin.enabled}>
-								<div class="toggle-knob"></div>
-							</div>
-						</button>
-					{/each}
-				</div>
-			</section>
-		{/if}
+		<section>
+			<h2>Daily Notes</h2>
+			<div class="feature-settings">
+				<DailyNotesSettings />
+			</div>
+		</section>
 
-		{#each settingsTabs as tab (tab.id)}
-			{@const Component = tab.component}
-			<section>
-				<h2>{tab.title}</h2>
-				<div class="plugin-settings">
-					<Component />
-				</div>
-			</section>
-		{/each}
+		<section>
+			<h2>AI Chat</h2>
+			<div class="feature-settings">
+				<AIChatSettings />
+			</div>
+		</section>
 	</main>
 </div>
 
@@ -358,13 +323,7 @@
 		transform: translateX(20px);
 	}
 
-	.plugin-list {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-compact);
-	}
-
-	.plugin-settings {
+.feature-settings {
 		background: var(--color-surface);
 		border: 1px solid var(--color-overlay);
 		border-radius: var(--radius-prominent);

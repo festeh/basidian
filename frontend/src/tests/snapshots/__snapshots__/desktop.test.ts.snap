@@ -35,7 +35,86 @@ exports[`PageDesktop snapshots > empty state — sidebar with no files, editor p
             />
           </div>
            
-          <!---->
+          <div
+            class="sidebar-actions svelte-129hoe0"
+          >
+            <div
+              class="daily-notes-container svelte-jclnn8"
+            >
+              <button
+                class="today-btn svelte-jclnn8"
+                title="Open today's note"
+              >
+                <span
+                  class="today-icon svelte-jclnn8"
+                >
+                  T
+                </span>
+              </button>
+               
+              <button
+                class="calendar-btn svelte-jclnn8"
+                title="Open calendar"
+              >
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  width="16"
+                >
+                  <path
+                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                  />
+                </svg>
+              </button>
+               
+              <!---->
+            </div>
+            <!---->
+             
+            <button
+              aria-label="Toggle AI Chat"
+              class="chat-button svelte-1trldch"
+              title="AI Chat"
+            >
+              <svg
+                class="svelte-1trldch"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+                <circle
+                  cx="9"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+                <circle
+                  cx="12"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+                <circle
+                  cx="15"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+              </svg>
+            </button>
+             
+            <!---->
+            <!---->
+          </div>
         </div>
          
         <div
@@ -241,9 +320,7 @@ exports[`PageDesktop snapshots > empty state — sidebar with no files, editor p
       </main>
        
       <!---->
-      <!---->
-       
-      <!---->
+      
       <!---->
     </div>
   </div>
@@ -295,7 +372,86 @@ exports[`PageDesktop snapshots > loading state — spinner shown in editor area 
             />
           </div>
            
-          <!---->
+          <div
+            class="sidebar-actions svelte-129hoe0"
+          >
+            <div
+              class="daily-notes-container svelte-jclnn8"
+            >
+              <button
+                class="today-btn svelte-jclnn8"
+                title="Open today's note"
+              >
+                <span
+                  class="today-icon svelte-jclnn8"
+                >
+                  T
+                </span>
+              </button>
+               
+              <button
+                class="calendar-btn svelte-jclnn8"
+                title="Open calendar"
+              >
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  width="16"
+                >
+                  <path
+                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                  />
+                </svg>
+              </button>
+               
+              <!---->
+            </div>
+            <!---->
+             
+            <button
+              aria-label="Toggle AI Chat"
+              class="chat-button svelte-1trldch"
+              title="AI Chat"
+            >
+              <svg
+                class="svelte-1trldch"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+                <circle
+                  cx="9"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+                <circle
+                  cx="12"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+                <circle
+                  cx="15"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+              </svg>
+            </button>
+             
+            <!---->
+            <!---->
+          </div>
         </div>
          
         <div
@@ -336,9 +492,7 @@ exports[`PageDesktop snapshots > loading state — spinner shown in editor area 
       </main>
        
       <!---->
-      <!---->
-       
-      <!---->
+      
       <!---->
     </div>
   </div>
@@ -390,7 +544,86 @@ exports[`PageDesktop snapshots > note open — sidebar with file tree, editor sh
             />
           </div>
            
-          <!---->
+          <div
+            class="sidebar-actions svelte-129hoe0"
+          >
+            <div
+              class="daily-notes-container svelte-jclnn8"
+            >
+              <button
+                class="today-btn svelte-jclnn8"
+                title="Open today's note"
+              >
+                <span
+                  class="today-icon svelte-jclnn8"
+                >
+                  T
+                </span>
+              </button>
+               
+              <button
+                class="calendar-btn svelte-jclnn8"
+                title="Open calendar"
+              >
+                <svg
+                  fill="currentColor"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  width="16"
+                >
+                  <path
+                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                  />
+                </svg>
+              </button>
+               
+              <!---->
+            </div>
+            <!---->
+             
+            <button
+              aria-label="Toggle AI Chat"
+              class="chat-button svelte-1trldch"
+              title="AI Chat"
+            >
+              <svg
+                class="svelte-1trldch"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+                <circle
+                  cx="9"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+                <circle
+                  cx="12"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+                <circle
+                  cx="15"
+                  cy="10"
+                  fill="currentColor"
+                  r="1"
+                />
+              </svg>
+            </button>
+             
+            <!---->
+            <!---->
+          </div>
         </div>
          
         <div
@@ -801,9 +1034,7 @@ exports[`PageDesktop snapshots > note open — sidebar with file tree, editor sh
       </main>
        
       <!---->
-      <!---->
-       
-      <!---->
+      
       <!---->
     </div>
   </div>

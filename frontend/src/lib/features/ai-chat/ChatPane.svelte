@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte';
-  import { closeChatPane, getContext } from './state';
+  import { closeChatPane } from './state';
   import { isMobile } from '$lib/stores/platform';
   import { getProvider } from './providers';
   import {
@@ -30,10 +30,7 @@
   // Load conversations on mount
   $effect(() => {
     untrack(() => {
-      const log = getContext()?.log;
-      log?.info('ChatPane mounted');
       loadConversations();
-      log?.debug('ChatPane loadConversations completed');
     });
   });
 

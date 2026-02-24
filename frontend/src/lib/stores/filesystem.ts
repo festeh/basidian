@@ -3,8 +3,6 @@ import { browser } from '$app/environment';
 import type { FsNode } from '$lib/types';
 import { api } from '$lib/api/client';
 import { createLogger } from '$lib/utils/logger';
-import { pluginManager } from '$lib/plugins/loader';
-
 const log = createLogger('Filesystem');
 
 const EXPANDED_PATHS_KEY = 'basidian-expanded-paths';
@@ -148,8 +146,6 @@ export const filesystemActions = {
 			const fullNode = node.id ? await api.getNode(node.id) : node;
 			currentFile.set(fullNode);
 			selectedNode.set(fullNode);
-			// Dispatch plugin hook
-			pluginManager.dispatchFileOpen(fullNode);
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to load file');
 		} finally {
@@ -170,8 +166,6 @@ export const filesystemActions = {
 				content
 			});
 			await this.loadTree();
-			// Dispatch plugin hook
-			pluginManager.dispatchFileCreate(node);
 			return node;
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to create file');
@@ -216,10 +210,6 @@ export const filesystemActions = {
 				}
 				return updateInTree(nodes);
 			});
-			// Dispatch plugin hook (file save)
-			if (node.type === 'file') {
-				pluginManager.dispatchFileSave(updated);
-			}
 			return updated;
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to update node');
@@ -239,10 +229,6 @@ export const filesystemActions = {
 				selectedNode.set(null);
 			}
 			await this.loadTree();
-			// Dispatch plugin hook
-			if (node.type === 'file') {
-				pluginManager.dispatchFileDelete(node);
-			}
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to delete node');
 		}
