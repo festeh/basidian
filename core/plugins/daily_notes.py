@@ -19,7 +19,7 @@ class DailyNotes:
         self,
         client: BasidianClient,
         folder: str = "/daily",
-        date_format: str = "%Y-%m-%d",
+        date_format: str = "%d-%b-%y",
     ) -> None:
         self._client = client
         self.folder = folder
@@ -52,7 +52,7 @@ class DailyNotes:
         )
 
     async def get(self, date_str: str) -> FsNode | None:
-        """Get a daily note by date string (e.g. '2026-01-15')."""
+        """Get a daily note by date string (e.g. '15-Jan-26')."""
         d = datetime.strptime(date_str, self.date_format).date()
         return await self._client.get_node(self._path_for(d))
 

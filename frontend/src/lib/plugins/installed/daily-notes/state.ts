@@ -15,7 +15,7 @@ export interface DailyNotesSettings {
 
 const DEFAULT_SETTINGS: DailyNotesSettings = {
 	folder: '/daily',
-	dateFormat: 'YYYY-MM-DD',
+	dateFormat: 'DD-MMM-YY',
 	templatePath: ''
 };
 
@@ -38,19 +38,30 @@ export function saveSettings(settings: DailyNotesSettings): void {
 	ctx?.storage.set('settings', settings);
 }
 
-export function formatDate(date: Date, format: string = 'YYYY-MM-DD'): string {
+const MONTH_ABBREVS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export function formatDate(date: Date, format: string = 'DD-MMM-YY'): string {
 	const year = date.getFullYear();
 	const month = String(date.getMonth() + 1).padStart(2, '0');
 	const day = String(date.getDate()).padStart(2, '0');
 
 	return format
 		.replace('YYYY', String(year))
+		.replace('YY', String(year).slice(-2))
+		.replace('MMM', MONTH_ABBREVS[date.getMonth()])
 		.replace('MM', month)
 		.replace('DD', day);
 }
 
 export function parseDate(filename: string): Date | null {
-	// Try to parse YYYY-MM-DD from filename
+	// Try DD-MMM-YY format (e.g. 05-Jan-26)
+	const mmmMatch = filename.match(/(\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2})/);
+	if (mmmMatch) {
+		const monthIdx = MONTH_ABBREVS.indexOf(mmmMatch[2]);
+		const year = 2000 + parseInt(mmmMatch[3]);
+		return new Date(year, monthIdx, parseInt(mmmMatch[1]));
+	}
+	// Fallback: try YYYY-MM-DD
 	const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
 	if (match) {
 		return new Date(parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3]));

@@ -34,6 +34,13 @@
 		<div class="format-options" role="group" aria-labelledby="format-label">
 			<button
 				class="format-option"
+				class:selected={settings.dateFormat === 'DD-MMM-YY'}
+				onclick={() => { settings.dateFormat = 'DD-MMM-YY'; saveSettings(settings); }}
+			>
+				DD-MMM-YY
+			</button>
+			<button
+				class="format-option"
 				class:selected={settings.dateFormat === 'YYYY-MM-DD'}
 				onclick={() => { settings.dateFormat = 'YYYY-MM-DD'; saveSettings(settings); }}
 			>
@@ -45,13 +52,6 @@
 				onclick={() => { settings.dateFormat = 'DD-MM-YYYY'; saveSettings(settings); }}
 			>
 				DD-MM-YYYY
-			</button>
-			<button
-				class="format-option"
-				class:selected={settings.dateFormat === 'MM-DD-YYYY'}
-				onclick={() => { settings.dateFormat = 'MM-DD-YYYY'; saveSettings(settings); }}
-			>
-				MM-DD-YYYY
 			</button>
 		</div>
 		<span class="hint">Format for daily note filenames</span>
