@@ -3,11 +3,6 @@ name: Deploy Backend to VPS
 on:
   push:
     branches: [ master ]
-    paths:
-      - 'server/**'
-      - 'basidian/**'
-      - 'pyproject.toml'
-      - 'uv.lock'
   workflow_dispatch:
 
 jobs:
@@ -32,6 +27,7 @@ jobs:
           fi
 
           sudo mkdir -p /root/basidian
+          rm -rf /root/basidian/basidian /root/basidian/server /root/basidian/core /root/basidian/backend
 
     - name: Copy code to VPS
       uses: appleboy/scp-action@v0.1.7
@@ -39,7 +35,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "server/,basidian/,pyproject.toml,uv.lock,README.md"
+        source: "server/,core/,pyproject.toml,uv.lock,README.md"
         target: "/root/basidian/"
         overwrite: true
 
