@@ -17,13 +17,13 @@ dependencies = [
 ]
 
 [project.scripts]
-basidian-server = "server.main:cli"
-bscli = "bscli.main:cli"
-basync = "basync.main:cli"
+basidian-server = "basidian.server.main:cli"
+bscli = "basidian.bscli.main:cli"
+basync = "basidian.basync.main:cli"
 
 [tool.uv.build-backend]
 module-root = ""
-module-name = "core"
+module-name = "basidian"
 
 [build-system]
 requires = ["uv_build>=0.9.11,<0.10.0"]

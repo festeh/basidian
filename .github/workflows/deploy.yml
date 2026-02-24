@@ -34,7 +34,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: root
         key: ${{ secrets.SSH_KEY }}
-        source: "server/,core/,pyproject.toml,uv.lock,README.md"
+        source: "basidian/,pyproject.toml,uv.lock,README.md"
         target: "/root/basidian/"
         overwrite: true
 
@@ -49,6 +49,12 @@ jobs:
           /root/.local/bin/uv sync
 
           mkdir -p /root/basidian/data
+
+          # One-time migration: move old DB to new path and clean up old layout
+          if [ -f /root/basidian/backend/pb_data/data.db ] && [ ! -f /root/basidian/data/basidian.db ]; then
+            mv /root/basidian/backend/pb_data/data.db /root/basidian/data/basidian.db
+          fi
+          rm -rf /root/basidian/backend /root/basidian/server /root/basidian/core
 
           sudo tee /etc/systemd/system/basidian.service > /dev/null <<EOF
           [Unit]

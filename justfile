@@ -12,7 +12,7 @@ backend:
 
 # Run backend with hot reload
 backend-dev:
-    uv run uvicorn server.main:create_app --factory --reload --host 0.0.0.0 --port 8090
+    uv run uvicorn basidian.server.main:create_app --factory --reload --host 0.0.0.0 --port 8090
 
 # Install backend dependencies
 deps-backend:
