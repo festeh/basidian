@@ -27,7 +27,6 @@ jobs:
           fi
 
           sudo mkdir -p /root/basidian
-          rm -rf /root/basidian/server /root/basidian/core
 
     - name: Copy code to VPS
       uses: appleboy/scp-action@v0.1.7
