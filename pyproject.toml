@@ -23,6 +23,7 @@ basync = "basync.main:cli"
 
 [tool.uv.build-backend]
 module-root = ""
+module-name = ["core", "server", "bscli", "basync"]
 
 [build-system]
 requires = ["uv_build>=0.9.11,<0.10.0"]
