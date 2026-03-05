@@ -12,6 +12,7 @@ export const rootNodes = writable<FsNode[]>([]);
 export const selectedNode = writable<FsNode | null>(null);
 export const currentFile = writable<FsNode | null>(null);
 export const expandedPaths = writable<Set<string>>(new Set());
+export const renamingPath = writable<string | null>(null);
 export const isLoading = writable(false);
 export const isLoadingFile = writable(false);
 export const error = writable<string | null>(null);

@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import type { FsNode } from '$lib/types';
-	import { selectedNode, filesystemActions } from '$lib/stores/filesystem';
+	import { selectedNode, filesystemActions, renamingPath } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
 
 	interface Props {
@@ -13,6 +14,46 @@
 	const isSelected = $derived($selectedNode?.id === node.id);
 	const hasChildren = $derived(node.children && node.children.length > 0);
 	const isFolder = $derived(node.type === 'folder');
+	const isRenaming = $derived($renamingPath === node.path);
+
+	let renameInput = $state<HTMLInputElement>();
+	let renameValue = $state('');
+
+	$effect(() => {
+		if (isRenaming) {
+			renameValue = node.name;
+			tick().then(() => {
+				if (renameInput) {
+					renameInput.focus();
+					// Select name without extension for files
+					const dotIndex = node.type === 'file' ? renameValue.lastIndexOf('.') : -1;
+					renameInput.setSelectionRange(0, dotIndex > 0 ? dotIndex : renameValue.length);
+				}
+			});
+		}
+	});
+
+	async function commitRename() {
+		renamingPath.set(null);
+		const trimmed = renameValue.trim();
+		if (trimmed && trimmed !== node.name) {
+			await filesystemActions.renameNode(node, trimmed);
+		}
+	}
+
+	function cancelRename() {
+		renamingPath.set(null);
+	}
+
+	function handleRenameKeydown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			commitRename();
+		} else if (e.key === 'Escape') {
+			e.preventDefault();
+			cancelRename();
+		}
+	}
 
 	function handleClick() {
 		filesystemActions.selectNode(node);
@@ -58,7 +99,19 @@
 				/>
 			</svg>
 		{/if}
-		<span class="name">{node.name}</span>
+		{#if isRenaming}
+			<!-- svelte-ignore a11y_autofocus -->
+			<input
+				class="rename-input"
+				bind:this={renameInput}
+				bind:value={renameValue}
+				onkeydown={handleRenameKeydown}
+				onblur={commitRename}
+				onclick={(e) => e.stopPropagation()}
+			/>
+		{:else}
+			<span class="name">{node.name}</span>
+		{/if}
 		{#if isFolder}
 			<span class="toggle-icon" class:rotated={node.isExpanded}>
 				<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -126,6 +179,19 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.rename-input {
+		flex: 1;
+		min-width: 0;
+		padding: 0 var(--space-tight);
+		border: 1px solid var(--color-accent);
+		border-radius: var(--radius-subtle);
+		background: var(--color-base);
+		color: var(--color-text);
+		font-size: var(--text-body);
+		font-family: inherit;
+		outline: none;
 	}
 
 	.children {

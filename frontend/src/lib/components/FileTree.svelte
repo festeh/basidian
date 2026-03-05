@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FsNode } from '$lib/types';
-	import { rootNodes, isLoading, error, filesystemActions, selectedNode } from '$lib/stores/filesystem';
+	import { rootNodes, isLoading, error, filesystemActions, selectedNode, renamingPath } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import ConfirmDialog from './ConfirmDialog.svelte';
@@ -54,11 +54,20 @@
 		deleteTarget = null;
 	}
 
+	function handleRenameClick() {
+		if ($selectedNode) {
+			renamingPath.set($selectedNode.path);
+		}
+	}
+
 	const menuItems = $derived([
 		{ label: 'New File', action: () => onCreateFile() },
 		{ label: 'New Folder', action: () => onCreateFolder() },
 		...($selectedNode
-			? [{ label: 'Delete', action: handleDeleteClick, danger: true }]
+			? [
+					{ label: 'Rename', action: handleRenameClick },
+					{ label: 'Delete', action: handleDeleteClick, danger: true }
+				]
 			: [])
 	]);
 </script>
