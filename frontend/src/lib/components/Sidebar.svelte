@@ -55,6 +55,7 @@
 	.sidebar {
 		display: flex;
 		flex-direction: column;
+		height: 100%;
 		width: 280px;
 		min-width: 200px;
 		max-width: 400px;
