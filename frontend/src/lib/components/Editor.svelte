@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import type { FsNode } from '$lib/types';
 	import { filesystemActions } from '$lib/stores/filesystem';
 	import { createLogger } from '$lib/utils/logger';
@@ -21,22 +22,48 @@
 	let content = $state('');
 	let hasUnsavedChanges = $state(false);
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+	let pendingSave: { file: FsNode; content: string } | null = null;
 	let mode: 'edit' | 'preview' = $state('edit');
 	let isRenaming = $state(false);
 	let renameValue = $state('');
 	let renameInput = $state<HTMLInputElement | null>(null);
 
+	// Flush pending save immediately (fire-and-forget)
+	function flushSave() {
+		if (saveTimeout) {
+			clearTimeout(saveTimeout);
+			saveTimeout = null;
+		}
+		if (pendingSave) {
+			const { file: targetFile, content: targetContent } = pendingSave;
+			pendingSave = null;
+			filesystemActions.updateNode({ ...targetFile, content: targetContent });
+		}
+	}
+
 	// Sync content when file changes
 	$effect(() => {
 		if (file) {
+			// Flush any pending save for the previous file before switching
+			flushSave();
 			content = file.content || '';
 			hasUnsavedChanges = false;
 		}
 	});
 
+	// Clean up on component destroy (handles {#key} remounting)
+	onDestroy(() => {
+		flushSave();
+	});
+
 	function handleContentChange(newContent: string) {
 		content = newContent;
 		hasUnsavedChanges = true;
+
+		// Capture current file so the save always targets the correct note
+		if (file) {
+			pendingSave = { file: { ...file }, content: newContent };
+		}
 
 		// Debounced auto-save (2.5 seconds)
 		if (saveTimeout) {
@@ -46,16 +73,23 @@
 	}
 
 	async function save() {
-		if (!file || !hasUnsavedChanges) return;
+		if (!pendingSave) return;
+
+		const { file: targetFile, content: targetContent } = pendingSave;
+		pendingSave = null;
+		saveTimeout = null;
 
 		try {
-			await filesystemActions.updateNode({
-				...file,
-				content
-			});
-			hasUnsavedChanges = false;
+			await filesystemActions.updateNode({ ...targetFile, content: targetContent });
+			// Only clear indicator if still viewing the same file
+			if (file?.id === targetFile.id) {
+				hasUnsavedChanges = false;
+			}
 		} catch {
-			// Keep hasUnsavedChanges true on error
+			// Restore pending save on error if still on same file
+			if (file?.id === targetFile.id) {
+				pendingSave = { file: targetFile, content: targetContent };
+			}
 		}
 	}
 
