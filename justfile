@@ -26,7 +26,10 @@ tauri-dev:
 
 # Build Tauri app for production
 tauri-build:
-    cd frontend && VITE_PLATFORM=desktop mise exec -- npm run tauri:build
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source .env
+    cd frontend && VITE_PLATFORM=desktop VITE_BACKEND_URL="$LIVE_BACKEND_URL" mise exec -- npm run tauri:build
 
 # Install frontend dependencies
 deps-frontend:
