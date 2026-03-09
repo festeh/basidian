@@ -12,7 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from .db import close_db, init_db
-from .handlers import filesystem_router, notes_router
+from .handlers import filesystem_router, history_router, notes_router
+from .handlers.history import cleanup_versions
 
 # Configure loguru - stderr output
 logger.remove()
@@ -53,6 +54,7 @@ def create_app(db_path: str = "data/basidian.db") -> FastAPI:
     async def lifespan(app: FastAPI):
         await init_db(app, db_path)
         logger.info(f"Database initialized: {db_path}")
+        await cleanup_versions(app.state.db)
         yield
         await close_db(app)
         logger.info("Database connection closed")
@@ -86,6 +88,7 @@ def create_app(db_path: str = "data/basidian.db") -> FastAPI:
     # Include routers
     app.include_router(notes_router)
     app.include_router(filesystem_router)
+    app.include_router(history_router)
 
     return app
 

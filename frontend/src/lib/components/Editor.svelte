@@ -2,9 +2,12 @@
 	import { onDestroy } from 'svelte';
 	import type { FsNode } from '$lib/types';
 	import { filesystemActions } from '$lib/stores/filesystem';
+	import { historyActions, historyOpen } from '$lib/stores/history';
+	import { api } from '$lib/api/client';
 	import { createLogger } from '$lib/utils/logger';
 	import CodeMirrorEditor from './CodeMirrorEditor.svelte';
 	import MarkdownPreview from './MarkdownPreview.svelte';
+	import HistoryPanel from './HistoryPanel.svelte';
 	import TopBar from './TopBar.svelte';
 
 	const log = createLogger('Editor');
@@ -28,8 +31,8 @@
 	let renameValue = $state('');
 	let renameInput = $state<HTMLInputElement | null>(null);
 
-	// Flush pending save immediately (fire-and-forget)
-	function flushSave() {
+	// Flush pending save immediately, then snapshot for version history
+	async function flushAndSnapshot(fileId?: string) {
 		if (saveTimeout) {
 			clearTimeout(saveTimeout);
 			saveTimeout = null;
@@ -37,15 +40,24 @@
 		if (pendingSave) {
 			const { file: targetFile, content: targetContent } = pendingSave;
 			pendingSave = null;
-			filesystemActions.updateNode({ ...targetFile, content: targetContent });
+			await filesystemActions.updateNode({ ...targetFile, content: targetContent });
+			if (targetFile.id) {
+				api.snapshot(targetFile.id);
+			}
+		} else if (fileId) {
+			// No pending save, but still snapshot (autosave may have already persisted)
+			api.snapshot(fileId);
 		}
 	}
 
 	// Sync content when file changes
+	let previousFileId: string | undefined;
 	$effect(() => {
 		if (file) {
 			// Flush any pending save for the previous file before switching
-			flushSave();
+			flushAndSnapshot(previousFileId);
+			historyActions.close();
+			previousFileId = file.id;
 			content = file.content || '';
 			hasUnsavedChanges = false;
 		}
@@ -53,7 +65,7 @@
 
 	// Clean up on component destroy (handles {#key} remounting)
 	onDestroy(() => {
-		flushSave();
+		flushAndSnapshot(file?.id);
 	});
 
 	function handleContentChange(newContent: string) {
@@ -165,6 +177,16 @@
 				{/if}
 			</div>
 			<div class="right">
+				<button
+					class="icon-btn"
+					class:active={$historyOpen}
+					onclick={() => $historyOpen ? historyActions.close() : historyActions.open()}
+					title="Version history"
+				>
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+					</svg>
+				</button>
 				<div class="mode-toggle">
 					<button
 						class="toggle-btn"
@@ -197,10 +219,15 @@
 			</div>
 		</div>
 		<div class="editor-body">
-			{#if mode === 'edit'}
-				<CodeMirrorEditor {content} onchange={handleContentChange} />
-			{:else}
-				<MarkdownPreview {content} />
+			<div class="editor-content" class:with-history={$historyOpen}>
+				{#if mode === 'edit'}
+					<CodeMirrorEditor {content} onchange={handleContentChange} />
+				{:else}
+					<MarkdownPreview {content} />
+				{/if}
+			</div>
+			{#if $historyOpen}
+				<HistoryPanel currentContent={content} />
 			{/if}
 		</div>
 	{:else}
@@ -373,9 +400,42 @@
 		color: var(--color-text);
 	}
 
+	.icon-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border: none;
+		background: transparent;
+		color: var(--color-subtext);
+		border-radius: var(--radius-default);
+		cursor: pointer;
+	}
+
+	.icon-btn:hover {
+		background-color: var(--color-overlay);
+		color: var(--color-text);
+	}
+
+	.icon-btn.active {
+		color: var(--color-accent);
+	}
+
 	.editor-body {
 		flex: 1;
 		overflow: hidden;
+		display: flex;
+	}
+
+	.editor-content {
+		flex: 1;
+		overflow: hidden;
+	}
+
+	.editor-content.with-history {
+		flex: 1;
+		min-width: 0;
 	}
 
 	.empty-state {

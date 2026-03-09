@@ -49,3 +49,19 @@ class FsNodeUpdateRequest(BaseModel):
 class MoveRequest(BaseModel):
     new_parent_path: str = ""
     new_name: str = ""
+
+
+# File version models
+class FileVersion(BaseModel):
+    id: str
+    node_id: str
+    content: str
+    created_at: str
+
+
+class FileVersionSummary(BaseModel):
+    id: str
+    node_id: str
+    created_at: str
+    lines_added: int
+    lines_removed: int

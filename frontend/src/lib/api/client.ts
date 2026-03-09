@@ -1,4 +1,4 @@
-import type { FsNode, CreateNodeRequest, MoveNodeRequest } from '$lib/types';
+import type { FsNode, CreateNodeRequest, MoveNodeRequest, FileVersion, FileVersionSummary } from '$lib/types';
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8090/api';
 
@@ -76,5 +76,27 @@ export const api = {
 	async searchFiles(query: string): Promise<FsNode[]> {
 		const response = await fetch(`${BASE_URL}/fs/search?q=${encodeURIComponent(query)}`);
 		return handleResponse<FsNode[]>(response);
+	},
+
+	// File history
+	async getVersions(nodeId: string): Promise<FileVersionSummary[]> {
+		const response = await fetch(`${BASE_URL}/fs/node/${nodeId}/versions`);
+		return handleResponse<FileVersionSummary[]>(response);
+	},
+
+	async getVersion(nodeId: string, versionId: string): Promise<FileVersion> {
+		const response = await fetch(`${BASE_URL}/fs/node/${nodeId}/versions/${versionId}`);
+		return handleResponse<FileVersion>(response);
+	},
+
+	async snapshot(nodeId: string): Promise<void> {
+		await fetch(`${BASE_URL}/fs/node/${nodeId}/snapshot`, { method: 'POST' });
+	},
+
+	async restoreVersion(nodeId: string, versionId: string): Promise<FileVersion> {
+		const response = await fetch(`${BASE_URL}/fs/node/${nodeId}/restore/${versionId}`, {
+			method: 'POST'
+		});
+		return handleResponse<FileVersion>(response);
 	}
 };

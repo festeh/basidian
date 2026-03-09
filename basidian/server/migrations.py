@@ -45,6 +45,23 @@ async def run_migrations(db: aiosqlite.Connection) -> None:
     )
     await db.execute("CREATE INDEX IF NOT EXISTS idx_notes_date ON notes (date)")
 
+    # file_versions table
+    await db.execute("""
+        CREATE TABLE IF NOT EXISTS file_versions (
+            id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(8)))),
+            node_id TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (node_id) REFERENCES fs_nodes(id) ON DELETE CASCADE
+        )
+    """)
+    await db.execute(
+        "CREATE INDEX IF NOT EXISTS idx_file_versions_node_id ON file_versions (node_id)"
+    )
+    await db.execute(
+        "CREATE INDEX IF NOT EXISTS idx_file_versions_created_at ON file_versions (created_at)"
+    )
+
     # Drop unused is_daily column from existing databases
     async with db.execute("PRAGMA table_info(fs_nodes)") as cursor:
         columns = [row[1] for row in await cursor.fetchall()]

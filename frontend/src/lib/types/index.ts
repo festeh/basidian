@@ -29,6 +29,21 @@ export interface MoveNodeRequest {
 	new_name?: string;
 }
 
+export interface FileVersion {
+	id: string;
+	node_id: string;
+	content: string;
+	created_at: string;
+}
+
+export interface FileVersionSummary {
+	id: string;
+	node_id: string;
+	created_at: string;
+	lines_added: number;
+	lines_removed: number;
+}
+
 export interface Theme {
 	name: string;
 	displayName: string;

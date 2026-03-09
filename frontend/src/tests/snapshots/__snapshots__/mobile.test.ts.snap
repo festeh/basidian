@@ -399,6 +399,24 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
             <div
               class="right svelte-1ctqrjb"
             >
+              <button
+                class="icon-btn svelte-1ctqrjb"
+                title="Version history"
+              >
+                <svg
+                  class="svelte-1ctqrjb"
+                  fill="currentColor"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  width="16"
+                >
+                  <path
+                    class="svelte-1ctqrjb"
+                    d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
+                  />
+                </svg>
+              </button>
+               
               <div
                 class="mode-toggle svelte-1ctqrjb"
               >
@@ -447,252 +465,258 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
             class="editor-body svelte-1ctqrjb"
           >
             <div
-              class="codemirror-container svelte-9m8fhl"
+              class="editor-content svelte-1ctqrjb"
             >
               <div
-                class="cm-editor ͼ1 ͼ2 ͼp"
+                class="codemirror-container svelte-9m8fhl"
               >
                 <div
-                  aria-live="polite"
-                  class="cm-announced"
-                />
-                <div
-                  class="cm-scroller"
-                  tabindex="-1"
+                  class="cm-editor ͼ1 ͼ2 ͼp"
                 >
                   <div
-                    aria-hidden="true"
-                    class="cm-gutters cm-gutters-before"
-                    style="min-height: 196px; position: sticky;"
-                  >
-                    <div
-                      class="cm-gutter cm-lineNumbers"
-                    >
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 0px; visibility: hidden; pointer-events: none;"
-                      >
-                        99
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.099476439790577px;"
-                      >
-                        1
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        2
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14.659685863874346px;"
-                      >
-                        3
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        4
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.465968586387435px;"
-                      >
-                        5
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 16.418848167539267px;"
-                      >
-                        6
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.319371727748692px;"
-                      >
-                        7
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        8
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.099476439790577px;"
-                      >
-                        9
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 14px;"
-                      >
-                        10
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.979057591623036px;"
-                      >
-                        11
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 16.272251308900522px;"
-                      >
-                        12
-                      </div>
-                      <div
-                        class="cm-gutterElement"
-                        style="height: 15.832460732984293px;"
-                      >
-                        13
-                      </div>
-                    </div>
-                  </div>
+                    aria-live="polite"
+                    class="cm-announced"
+                  />
                   <div
-                    aria-multiline="true"
-                    autocapitalize="off"
-                    autocorrect="off"
-                    class="cm-content cm-lineWrapping"
-                    contenteditable="true"
-                    data-language="markdown"
-                    role="textbox"
-                    spellcheck="false"
-                    style="tab-size: 4;"
-                    translate="no"
-                    writingsuggestions="false"
+                    class="cm-scroller"
+                    tabindex="-1"
                   >
                     <div
-                      class="cm-line cm-activeLine"
+                      aria-hidden="true"
+                      class="cm-gutters cm-gutters-before"
+                      style="min-height: 196px; position: sticky;"
                     >
-                      <span
-                        class="ͼ7 ͼ5"
+                      <div
+                        class="cm-gutter cm-lineNumbers"
                       >
-                        #
-                      </span>
-                      <span
-                        class="ͼ7"
-                      >
-                         Meeting Notes
-                      </span>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 0px; visibility: hidden; pointer-events: none;"
+                        >
+                          99
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.099476439790577px;"
+                        >
+                          1
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          2
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14.659685863874346px;"
+                        >
+                          3
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          4
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.465968586387435px;"
+                        >
+                          5
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 16.418848167539267px;"
+                        >
+                          6
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.319371727748692px;"
+                        >
+                          7
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          8
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.099476439790577px;"
+                        >
+                          9
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 14px;"
+                        >
+                          10
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.979057591623036px;"
+                        >
+                          11
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 16.272251308900522px;"
+                        >
+                          12
+                        </div>
+                        <div
+                          class="cm-gutterElement"
+                          style="height: 15.832460732984293px;"
+                        >
+                          13
+                        </div>
+                      </div>
                     </div>
                     <div
-                      class="cm-line"
+                      aria-multiline="true"
+                      autocapitalize="off"
+                      autocorrect="off"
+                      class="cm-content cm-lineWrapping"
+                      contenteditable="true"
+                      data-language="markdown"
+                      role="textbox"
+                      spellcheck="false"
+                      style="tab-size: 4;"
+                      translate="no"
+                      writingsuggestions="false"
                     >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ7 ͼ5"
+                      <div
+                        class="cm-line cm-activeLine"
                       >
-                        ##
-                      </span>
-                      <span
-                        class="ͼ7"
+                        <span
+                          class="ͼ7 ͼ5"
+                        >
+                          #
+                        </span>
+                        <span
+                          class="ͼ7"
+                        >
+                           Meeting Notes
+                        </span>
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                         Agenda
-                      </span>
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        -
-                      </span>
-                       Review Q1 progress
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <span
+                          class="ͼ7 ͼ5"
+                        >
+                          ##
+                        </span>
+                        <span
+                          class="ͼ7"
+                        >
+                           Agenda
+                        </span>
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        -
-                      </span>
-                       Discuss new plugin architecture
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        -
-                      </span>
-                       Plan next sprint
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ7 ͼ5"
+                        <span
+                          class="ͼ5"
+                        >
+                          -
+                        </span>
+                         Review Q1 progress
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        ##
-                      </span>
-                      <span
-                        class="ͼ7"
+                        <span
+                          class="ͼ5"
+                        >
+                          -
+                        </span>
+                         Discuss new plugin architecture
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                         Action Items
-                      </span>
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <br />
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <span
+                          class="ͼ5"
+                        >
+                          -
+                        </span>
+                         Plan next sprint
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        1.
-                      </span>
-                       Update roadmap by Friday
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        2.
-                      </span>
-                       Create PR for search feature
-                    </div>
-                    <div
-                      class="cm-line"
-                    >
-                      <span
-                        class="ͼ5"
+                        <span
+                          class="ͼ7 ͼ5"
+                        >
+                          ##
+                        </span>
+                        <span
+                          class="ͼ7"
+                        >
+                           Action Items
+                        </span>
+                      </div>
+                      <div
+                        class="cm-line"
                       >
-                        3.
-                      </span>
-                       Schedule design review
+                        <br />
+                      </div>
+                      <div
+                        class="cm-line"
+                      >
+                        <span
+                          class="ͼ5"
+                        >
+                          1.
+                        </span>
+                         Update roadmap by Friday
+                      </div>
+                      <div
+                        class="cm-line"
+                      >
+                        <span
+                          class="ͼ5"
+                        >
+                          2.
+                        </span>
+                         Create PR for search feature
+                      </div>
+                      <div
+                        class="cm-line"
+                      >
+                        <span
+                          class="ͼ5"
+                        >
+                          3.
+                        </span>
+                         Schedule design review
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <!---->
             </div>
+             
             <!---->
           </div>
           <!---->

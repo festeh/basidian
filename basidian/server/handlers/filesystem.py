@@ -8,6 +8,9 @@ from loguru import logger
 from basidian.models import FsNode, FsNodeRequest, FsNodeUpdateRequest, MoveRequest
 
 from ..db import generate_id, get_db
+from .history import create_version_if_changed
+
+INACTIVITY_THRESHOLD_MINUTES = 10
 
 router = APIRouter()
 
@@ -193,7 +196,7 @@ async def update_node(
     """Update an existing node."""
     # Check if node exists and get current values
     async with db.execute(
-        "SELECT type, name, content, sort_order FROM fs_nodes WHERE id = ?",
+        "SELECT type, name, content, sort_order, updated FROM fs_nodes WHERE id = ?",
         (node_id,),
     ) as cursor:
         row = await cursor.fetchone()
@@ -205,7 +208,23 @@ async def update_node(
     new_content = req.content if req.content is not None else row["content"]
     new_sort_order = req.sort_order if req.sort_order is not None else row["sort_order"]
 
-    now = datetime.now().isoformat()
+    now = datetime.now()
+
+    # Auto-snapshot on inactivity gap: if content is changing and the file
+    # hasn't been updated in 10+ minutes, snapshot the old content first
+    content_changing = req.content is not None and req.content != row["content"]
+    if content_changing and row["updated"]:
+        try:
+            last_updated = datetime.fromisoformat(row["updated"])
+            gap = now - last_updated
+            if gap.total_seconds() >= INACTIVITY_THRESHOLD_MINUTES * 60:
+                await create_version_if_changed(
+                    db, node_id, row["content"], row["updated"]
+                )
+        except (ValueError, TypeError):
+            pass
+
+    now_iso = now.isoformat()
 
     await db.execute(
         """
@@ -213,7 +232,7 @@ async def update_node(
         SET name = ?, content = ?, sort_order = ?, updated = ?
         WHERE id = ?
         """,
-        (new_name, new_content, new_sort_order, now, node_id),
+        (new_name, new_content, new_sort_order, now_iso, node_id),
     )
     await db.commit()
 
