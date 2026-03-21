@@ -592,12 +592,12 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line cm-activeLine"
                       >
                         <span
-                          class="ͼ7 ͼ5"
+                          class="ͼs ͼq"
                         >
                           #
                         </span>
                         <span
-                          class="ͼ7"
+                          class="ͼs"
                         >
                            Meeting Notes
                         </span>
@@ -611,12 +611,12 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ7 ͼ5"
+                          class="ͼs ͼq"
                         >
                           ##
                         </span>
                         <span
-                          class="ͼ7"
+                          class="ͼs"
                         >
                            Agenda
                         </span>
@@ -630,7 +630,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ5"
+                          class="ͼq"
                         >
                           -
                         </span>
@@ -640,7 +640,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ5"
+                          class="ͼq"
                         >
                           -
                         </span>
@@ -650,7 +650,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ5"
+                          class="ͼq"
                         >
                           -
                         </span>
@@ -665,12 +665,12 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ7 ͼ5"
+                          class="ͼs ͼq"
                         >
                           ##
                         </span>
                         <span
-                          class="ͼ7"
+                          class="ͼs"
                         >
                            Action Items
                         </span>
@@ -684,7 +684,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ5"
+                          class="ͼq"
                         >
                           1.
                         </span>
@@ -694,7 +694,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ5"
+                          class="ͼq"
                         >
                           2.
                         </span>
@@ -704,7 +704,7 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
                         class="cm-line"
                       >
                         <span
-                          class="ͼ5"
+                          class="ͼq"
                         >
                           3.
                         </span>

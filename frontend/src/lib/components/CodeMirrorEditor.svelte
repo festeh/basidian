@@ -12,10 +12,11 @@
 	} from '@codemirror/commands';
 	import {
 		syntaxHighlighting,
-		defaultHighlightStyle,
+		HighlightStyle,
 		bracketMatching,
 		indentOnInput
 	} from '@codemirror/language';
+	import { tags } from '@lezer/highlight';
 	import { vim } from '@replit/codemirror-vim';
 	import { settings } from '$lib/stores/settings';
 
@@ -72,6 +73,29 @@
 		}
 	});
 
+	// Syntax highlighting using theme CSS variables
+	const highlightStyle = HighlightStyle.define([
+		{ tag: tags.meta, color: 'var(--color-subtext)' },
+		{ tag: tags.link, textDecoration: 'underline' },
+		{ tag: tags.heading, textDecoration: 'underline', fontWeight: 'bold' },
+		{ tag: tags.emphasis, fontStyle: 'italic' },
+		{ tag: tags.strong, fontWeight: 'bold' },
+		{ tag: tags.strikethrough, textDecoration: 'line-through' },
+		{ tag: tags.keyword, color: 'var(--color-code-keyword)' },
+		{ tag: [tags.atom, tags.bool, tags.url, tags.contentSeparator, tags.labelName], color: 'var(--color-accent)' },
+		{ tag: [tags.literal, tags.inserted], color: 'var(--color-code-string)' },
+		{ tag: [tags.string, tags.deleted], color: 'var(--color-code-string)' },
+		{ tag: [tags.regexp, tags.escape, tags.special(tags.string)], color: 'var(--color-code-number)' },
+		{ tag: tags.definition(tags.variableName), color: 'var(--color-code-function)' },
+		{ tag: tags.local(tags.variableName), color: 'var(--color-code-variable)' },
+		{ tag: [tags.typeName, tags.namespace], color: 'var(--color-code-keyword)' },
+		{ tag: tags.className, color: 'var(--color-code-keyword)' },
+		{ tag: [tags.special(tags.variableName), tags.macroName], color: 'var(--color-code-variable)' },
+		{ tag: tags.definition(tags.propertyName), color: 'var(--color-code-function)' },
+		{ tag: tags.comment, color: 'var(--color-code-comment)' },
+		{ tag: tags.invalid, color: 'var(--color-error)' }
+	]);
+
 	// Base theme for light/dark modes
 	const baseTheme = EditorView.baseTheme({
 		'&.cm-editor': {
@@ -93,7 +117,7 @@
 				base: markdownLanguage,
 				codeLanguages: languages
 			}),
-			syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+			syntaxHighlighting(highlightStyle),
 			keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
 			theme,
 			baseTheme,
