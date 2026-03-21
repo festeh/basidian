@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import type { FsNode } from '$lib/types';
-	import { selectedNode, filesystemActions, renamingPath } from '$lib/stores/filesystem';
+	import { selectedNode, filesystemActions, renamingPath, movingNode } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
 
 	interface Props {
@@ -15,6 +15,7 @@
 	const hasChildren = $derived(node.children && node.children.length > 0);
 	const isFolder = $derived(node.type === 'folder');
 	const isRenaming = $derived($renamingPath === node.path);
+	const isMoving = $derived($movingNode?.id === node.id);
 
 	let renameInput = $state<HTMLInputElement>();
 	let renameValue = $state('');
@@ -75,16 +76,71 @@
 		// Select node on right-click so context menu shows correct options
 		filesystemActions.selectNode(node);
 	}
+
+	// Drag source (the node being moved)
+	function handleDragStart(e: DragEvent) {
+		if (!isMoving || !e.dataTransfer) return;
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData('text/plain', node.id!);
+	}
+
+	function handleDragEnd() {
+		movingNode.set(null);
+	}
+
+	// Drop target (folders only)
+	let isDropTarget = $state(false);
+
+	function isDescendantOfMoving(folderPath: string): boolean {
+		const moving = $movingNode;
+		if (!moving) return false;
+		// Can't drop onto self
+		if (moving.id === node.id) return true;
+		// Can't drop onto own descendant
+		if (moving.type === 'folder' && folderPath.startsWith(moving.path + '/')) return true;
+		return false;
+	}
+
+	function handleDragOver(e: DragEvent) {
+		if (!$movingNode || !isFolder) return;
+		if (isDescendantOfMoving(node.path)) return;
+		// Don't highlight if already the parent
+		if ($movingNode.parent_path === node.path) return;
+		e.preventDefault();
+		isDropTarget = true;
+	}
+
+	function handleDragLeave() {
+		isDropTarget = false;
+	}
+
+	function handleDrop(e: DragEvent) {
+		isDropTarget = false;
+		if (!$movingNode || !isFolder) return;
+		if (isDescendantOfMoving(node.path)) return;
+		if ($movingNode.parent_path === node.path) return;
+		e.preventDefault();
+		e.stopPropagation();
+		filesystemActions.moveNode($movingNode, node.path);
+	}
 </script>
 
 <div class="tree-item">
 	<button
 		class="item-row"
 		class:selected={isSelected}
+		class:moving={isMoving}
+		class:drop-target={isDropTarget}
 		style="padding-left: {depth * 16 + 8}px"
+		draggable={isMoving}
 		onclick={handleClick}
 		onkeydown={handleKeydown}
 		oncontextmenu={handleContextMenu}
+		ondragstart={handleDragStart}
+		ondragend={handleDragEnd}
+		ondragover={handleDragOver}
+		ondragleave={handleDragLeave}
+		ondrop={handleDrop}
 	>
 		{#if isFolder}
 			<svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-secondary)">
@@ -157,6 +213,19 @@
 	.item-row.selected {
 		background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
 		border-left: 3px solid var(--color-accent);
+	}
+
+	.item-row.moving {
+		opacity: 0.6;
+		outline: 2px dashed var(--color-accent);
+		outline-offset: -2px;
+		cursor: grab;
+	}
+
+	.item-row.drop-target {
+		background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+		outline: 2px solid var(--color-accent);
+		outline-offset: -2px;
 	}
 
 	.toggle-icon {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FsNode } from '$lib/types';
-	import { rootNodes, isLoading, error, filesystemActions, selectedNode, renamingPath } from '$lib/stores/filesystem';
+	import { rootNodes, isLoading, error, filesystemActions, selectedNode, renamingPath, movingNode } from '$lib/stores/filesystem';
 	import FileTreeItem from './FileTreeItem.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import ConfirmDialog from './ConfirmDialog.svelte';
@@ -60,11 +60,46 @@
 		}
 	}
 
+	function handleMoveClick() {
+		if ($selectedNode) {
+			movingNode.set($selectedNode);
+		}
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape' && $movingNode) {
+			movingNode.set(null);
+		}
+	}
+
+	let rootDropOver = $state(false);
+
+	function handleRootDragOver(e: DragEvent) {
+		if (!$movingNode) return;
+		// Don't highlight if already at root
+		if ($movingNode.parent_path === '/' || $movingNode.parent_path === '') return;
+		e.preventDefault();
+		rootDropOver = true;
+	}
+
+	function handleRootDragLeave() {
+		rootDropOver = false;
+	}
+
+	function handleRootDrop(e: DragEvent) {
+		rootDropOver = false;
+		if (!$movingNode) return;
+		if ($movingNode.parent_path === '/' || $movingNode.parent_path === '') return;
+		e.preventDefault();
+		filesystemActions.moveNode($movingNode, '/');
+	}
+
 	const menuItems = $derived([
 		{ label: 'New File', action: () => onCreateFile() },
 		{ label: 'New Folder', action: () => onCreateFolder() },
 		...($selectedNode
 			? [
+					{ label: 'Move', action: handleMoveClick },
 					{ label: 'Rename', action: handleRenameClick },
 					{ label: 'Delete', action: handleDeleteClick, danger: true }
 				]
@@ -75,10 +110,15 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="file-tree"
+	class:drop-target={rootDropOver}
 	oncontextmenu={handleContextMenu}
+	onkeydown={handleKeydown}
 	ontouchstart={handleTouchStart}
 	ontouchend={handleTouchEnd}
 	ontouchmove={handleTouchEnd}
+	ondragover={handleRootDragOver}
+	ondragleave={handleRootDragLeave}
+	ondrop={handleRootDrop}
 >
 	{#if $isLoading}
 		<div class="loading">
@@ -127,6 +167,13 @@
 		flex: 1;
 		overflow-y: auto;
 		padding: var(--space-compact);
+	}
+
+	.file-tree.drop-target {
+		background-color: color-mix(in srgb, var(--color-accent) 8%, transparent);
+		outline: 2px dashed var(--color-accent);
+		outline-offset: -2px;
+		border-radius: var(--radius-default);
 	}
 
 	.loading {

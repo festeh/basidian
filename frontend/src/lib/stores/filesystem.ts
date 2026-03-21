@@ -13,6 +13,7 @@ export const selectedNode = writable<FsNode | null>(null);
 export const currentFile = writable<FsNode | null>(null);
 export const expandedPaths = writable<Set<string>>(new Set());
 export const renamingPath = writable<string | null>(null);
+export const movingNode = writable<FsNode | null>(null);
 export const isLoading = writable(false);
 export const isLoadingFile = writable(false);
 export const error = writable<string | null>(null);
@@ -232,6 +233,25 @@ export const filesystemActions = {
 			await this.loadTree();
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to delete node');
+		}
+	},
+
+	async moveNode(node: FsNode, newParentPath: string) {
+		log.info('moveNode', { id: node.id, from: node.parent_path, to: newParentPath });
+		try {
+			const updated = await api.moveNode(node.id!, { new_parent_path: newParentPath });
+			log.debug('move success', { updated });
+			movingNode.set(null);
+			await this.loadTree();
+
+			const current = get(currentFile);
+			if (current && current.id === node.id) {
+				currentFile.set({ ...updated, content: current.content });
+			}
+		} catch (e) {
+			log.error('move failed', e);
+			movingNode.set(null);
+			error.set(e instanceof Error ? e.message : 'Failed to move node');
 		}
 	},
 
