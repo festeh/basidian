@@ -12,13 +12,13 @@ const log = createLogger('DailyNotes');
 
 export interface DailyNotesSettings {
 	folder: string;
-	dateFormat: string;
 	templatePath: string;
 }
 
+const DATE_FORMAT = 'DD-MMM-YYYY';
+
 const DEFAULT_SETTINGS: DailyNotesSettings = {
 	folder: '/daily',
-	dateFormat: 'DD-MMM-YY',
 	templatePath: ''
 };
 
@@ -48,7 +48,7 @@ export function saveSettings(settings: DailyNotesSettings): void {
 
 const MONTH_ABBREVS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export function formatDate(date: Date, format: string = 'DD-MMM-YY'): string {
+export function formatDate(date: Date, format: string = DATE_FORMAT): string {
 	const year = date.getFullYear();
 	const month = String(date.getMonth() + 1).padStart(2, '0');
 	const day = String(date.getDate()).padStart(2, '0');
@@ -62,12 +62,18 @@ export function formatDate(date: Date, format: string = 'DD-MMM-YY'): string {
 }
 
 export function parseDate(filename: string): Date | null {
-	// Try DD-MMM-YY format (e.g. 05-Jan-26)
-	const mmmMatch = filename.match(/(\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2})/);
+	// Try DD-MMM-YYYY format (e.g. 05-Jan-2026)
+	const mmmMatch = filename.match(/(\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{4})/);
 	if (mmmMatch) {
 		const monthIdx = MONTH_ABBREVS.indexOf(mmmMatch[2]);
-		const year = 2000 + parseInt(mmmMatch[3]);
-		return new Date(year, monthIdx, parseInt(mmmMatch[1]));
+		return new Date(parseInt(mmmMatch[3]), monthIdx, parseInt(mmmMatch[1]));
+	}
+	// Fallback: try DD-MMM-YY (legacy)
+	const yyMatch = filename.match(/(\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2})/);
+	if (yyMatch) {
+		const monthIdx = MONTH_ABBREVS.indexOf(yyMatch[2]);
+		const year = 2000 + parseInt(yyMatch[3]);
+		return new Date(year, monthIdx, parseInt(yyMatch[1]));
 	}
 	// Fallback: try YYYY-MM-DD
 	const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
@@ -79,7 +85,7 @@ export function parseDate(filename: string): Date | null {
 
 export function getDailyPath(date: Date): string {
 	const settings = getSettings();
-	const dateStr = formatDate(date, settings.dateFormat);
+	const dateStr = formatDate(date);
 	return `${settings.folder}/${dateStr}.md`;
 }
 
@@ -104,20 +110,20 @@ async function getTemplateContent(): Promise<string> {
 	const settings = getSettings();
 	if (!settings.templatePath) {
 		const today = new Date();
-		return `# ${formatDate(today, settings.dateFormat)}\n\n`;
+		return `# ${formatDate(today)}\n\n`;
 	}
 
 	const templateNode = findNodeByPath(settings.templatePath);
 	if (templateNode?.content) {
-		return templateNode.content.replace(/\{\{date\}\}/g, formatDate(new Date(), settings.dateFormat));
+		return templateNode.content.replace(/\{\{date\}\}/g, formatDate(new Date()));
 	}
 
-	return `# ${formatDate(new Date(), settings.dateFormat)}\n\n`;
+	return `# ${formatDate(new Date())}\n\n`;
 }
 
 export async function openOrCreateDaily(date: Date): Promise<void> {
 	const settings = getSettings();
-	const dateStr = formatDate(date, settings.dateFormat);
+	const dateStr = formatDate(date);
 	const filename = `${dateStr}.md`;
 	const fullPath = `${settings.folder}/${filename}`;
 

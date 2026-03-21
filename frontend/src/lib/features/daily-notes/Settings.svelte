@@ -30,34 +30,6 @@
 	</div>
 
 	<div class="setting-item">
-		<span class="label" id="format-label">Date Format</span>
-		<div class="format-options" role="group" aria-labelledby="format-label">
-			<button
-				class="format-option"
-				class:selected={settings.dateFormat === 'DD-MMM-YY'}
-				onclick={() => { settings.dateFormat = 'DD-MMM-YY'; saveSettings(settings); }}
-			>
-				DD-MMM-YY
-			</button>
-			<button
-				class="format-option"
-				class:selected={settings.dateFormat === 'YYYY-MM-DD'}
-				onclick={() => { settings.dateFormat = 'YYYY-MM-DD'; saveSettings(settings); }}
-			>
-				YYYY-MM-DD
-			</button>
-			<button
-				class="format-option"
-				class:selected={settings.dateFormat === 'DD-MM-YYYY'}
-				onclick={() => { settings.dateFormat = 'DD-MM-YYYY'; saveSettings(settings); }}
-			>
-				DD-MM-YYYY
-			</button>
-		</div>
-		<span class="hint">Format for daily note filenames</span>
-	</div>
-
-	<div class="setting-item">
 		<label for="template">Template Path (optional)</label>
 		<input
 			type="text"
@@ -83,8 +55,7 @@
 		gap: var(--space-snug);
 	}
 
-	label,
-	.label {
+	label {
 		font-size: var(--text-detail);
 		font-weight: 500;
 		color: var(--color-text);
@@ -102,35 +73,6 @@
 	input:focus {
 		outline: none;
 		border-color: var(--color-accent);
-	}
-
-	.format-options {
-		display: flex;
-		gap: var(--space-compact);
-	}
-
-	.format-option {
-		flex: 1;
-		padding: 10px 12px;
-		background: var(--color-surface);
-		border: 1px solid var(--color-overlay);
-		border-radius: var(--radius-default);
-		color: var(--color-subtext);
-		font-size: var(--text-label);
-		cursor: pointer;
-		transition: all 0.15s;
-	}
-
-	.format-option:hover {
-		border-color: var(--color-accent);
-		color: var(--color-text);
-	}
-
-	.format-option.selected {
-		background: var(--color-accent);
-		border-color: var(--color-accent);
-		color: var(--color-base);
-		font-weight: 500;
 	}
 
 	.hint {
