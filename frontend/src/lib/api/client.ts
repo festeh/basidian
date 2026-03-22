@@ -72,6 +72,12 @@ export const api = {
 		return handleResponse<FsNode>(response);
 	},
 
+	// Recent files
+	async getRecentFiles(limit = 10): Promise<FsNode[]> {
+		const response = await fetch(`${BASE_URL}/fs/recent?limit=${limit}`);
+		return handleResponse<FsNode[]>(response);
+	},
+
 	// Search files
 	async searchFiles(query: string): Promise<FsNode[]> {
 		const response = await fetch(`${BASE_URL}/fs/search?q=${encodeURIComponent(query)}`);

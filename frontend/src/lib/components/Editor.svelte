@@ -27,6 +27,7 @@
 	let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 	let pendingSave: { file: FsNode; content: string } | null = null;
 	let mode: 'edit' | 'preview' = $state('edit');
+	let recentFiles = $state<FsNode[]>([]);
 	let isRenaming = $state(false);
 	let renameValue = $state('');
 	let renameInput = $state<HTMLInputElement | null>(null);
@@ -49,6 +50,17 @@
 			api.snapshot(fileId);
 		}
 	}
+
+	// Load recent files for the greeting screen
+	$effect(() => {
+		if (!file) {
+			api.getRecentFiles(8).then((files) => {
+				recentFiles = files;
+			}).catch(() => {
+				recentFiles = [];
+			});
+		}
+	});
 
 	// Sync content when file changes
 	let previousFileId: string | undefined;
@@ -273,7 +285,29 @@
 				</svg>
 			</div>
 			<p class="empty-title">Your knowledge awaits</p>
-			<p class="empty-hint">Open a file from the sidebar to start editing</p>
+			{#if recentFiles.length > 0}
+				<div class="recent-files">
+					<p class="recent-label">Recent files</p>
+					<ul class="recent-list">
+						{#each recentFiles as recentFile (recentFile.id)}
+							<li>
+								<button
+									class="recent-item"
+									onclick={() => filesystemActions.openFile(recentFile)}
+								>
+									<svg class="recent-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+										<path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6z" />
+									</svg>
+									<span class="recent-name">{recentFile.name}</span>
+									<span class="recent-path">{recentFile.parent_path === '/' ? '' : recentFile.parent_path}</span>
+								</button>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{:else}
+				<p class="empty-hint">Open a file from the sidebar to start editing</p>
+			{/if}
 		</div>
 	{/if}
 </div>
@@ -491,5 +525,69 @@
 	.empty-hint {
 		font-size: var(--text-detail);
 		margin: 0;
+	}
+
+	.recent-files {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-compact);
+		margin-top: var(--space-compact);
+		width: 100%;
+		max-width: 320px;
+	}
+
+	.recent-label {
+		font-size: var(--text-detail);
+		color: var(--color-subtext);
+		margin: 0;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 500;
+	}
+
+	.recent-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+
+	.recent-item {
+		display: flex;
+		align-items: center;
+		gap: var(--space-compact);
+		width: 100%;
+		padding: var(--space-compact) var(--space-cozy);
+		border: none;
+		background: transparent;
+		color: var(--color-text);
+		font-size: var(--text-body);
+		font-family: inherit;
+		border-radius: var(--radius-default);
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.recent-item:hover {
+		background-color: var(--color-overlay);
+	}
+
+	.recent-icon {
+		flex-shrink: 0;
+		color: var(--color-subtext);
+	}
+
+	.recent-name {
+		flex-shrink: 0;
+		font-weight: 500;
+	}
+
+	.recent-path {
+		color: var(--color-subtext);
+		font-size: var(--text-detail);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>

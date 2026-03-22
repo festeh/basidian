@@ -370,6 +370,27 @@ async def move_node(
     return _row_to_node(row)
 
 
+@router.get("/api/fs/recent")
+async def get_recent_files(
+    limit: int = Query(default=10, ge=1, le=50),
+    db: aiosqlite.Connection = Depends(get_db),
+) -> list[FsNode]:
+    """Get recently updated files."""
+    async with db.execute(
+        f"""
+        SELECT {_COLS}
+        FROM fs_nodes
+        WHERE type = 'file' AND updated IS NOT NULL
+        ORDER BY updated DESC
+        LIMIT ?
+        """,
+        (limit,),
+    ) as cursor:
+        rows = await cursor.fetchall()
+
+    return [_row_to_node(row) for row in rows]
+
+
 @router.get("/api/fs/search")
 async def search_files(
     q: str = Query(..., min_length=1),

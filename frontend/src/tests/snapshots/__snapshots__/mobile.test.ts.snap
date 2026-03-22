@@ -172,6 +172,7 @@ exports[`PageMobile snapshots > empty state — top bar with hamburger, editor p
             >
               Open a file from the sidebar to start editing
             </p>
+            <!---->
           </div>
           <!---->
         </div>
