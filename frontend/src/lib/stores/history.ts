@@ -45,7 +45,7 @@ export const historyActions = {
 
 		const restored = await api.restoreVersion(file.id, versionId);
 		// Update the current file content
-		currentFile.update((f) => (f ? { ...f, content: restored.content } : f));
+		currentFile.update((f) => (f ? { ...f, content: restored.body } : f));
 		// Reload version list
 		const list = await api.getVersions(file.id);
 		versions.set(list);

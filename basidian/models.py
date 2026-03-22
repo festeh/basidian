@@ -3,31 +3,16 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-# Note models
-class Note(BaseModel):
-    id: str
-    title: str
-    content: str
-    date: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-
-
-class NoteRequest(BaseModel):
-    title: str = ""
-    content: str = ""
-    date: str = ""
-
-
 # Filesystem models
 class FsNode(BaseModel):
     id: str
+    parent_id: Optional[str] = None
+    parent_path: str = "/"
     type: str
     name: str
     path: str
-    parent_path: str
-    content: str
-    sort_order: int
+    content: Optional[str] = None
+    sort_order: int = 0
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
 
@@ -55,7 +40,7 @@ class MoveRequest(BaseModel):
 class FileVersion(BaseModel):
     id: str
     node_id: str
-    content: str
+    body: str
     created_at: str
 
 

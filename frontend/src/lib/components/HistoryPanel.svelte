@@ -72,7 +72,7 @@
 
 	let diffLines = $derived.by(() => {
 		if (!$selectedVersion) return [];
-		return computeDiffLines($selectedVersion.content, currentContent);
+		return computeDiffLines($selectedVersion.body, currentContent);
 	});
 </script>
 

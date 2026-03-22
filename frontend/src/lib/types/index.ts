@@ -2,11 +2,12 @@ export type FsNodeType = 'folder' | 'file';
 
 export interface FsNode {
 	id?: string;
+	parent_id?: string | null;
 	type: FsNodeType;
 	name: string;
 	path: string;
 	parent_path: string;
-	content?: string;
+	content?: string | null;
 	sort_order: number;
 	created_at?: string;
 	updated_at?: string;
@@ -32,7 +33,7 @@ export interface MoveNodeRequest {
 export interface FileVersion {
 	id: string;
 	node_id: string;
-	content: string;
+	body: string;
 	created_at: string;
 }
 

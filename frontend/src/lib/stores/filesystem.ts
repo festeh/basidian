@@ -48,22 +48,24 @@ function buildTree(flatNodes: FsNode[]): FsNode[] {
 	const roots: FsNode[] = [];
 	const expanded = get(expandedPaths);
 
-	// Create map with initialized children
+	// Create map by ID with initialized children
 	for (const node of flatNodes) {
-		nodeMap.set(node.path, {
-			...node,
-			children: [],
-			isExpanded: expanded.has(node.path)
-		});
+		if (node.id) {
+			nodeMap.set(node.id, {
+				...node,
+				children: [],
+				isExpanded: expanded.has(node.path)
+			});
+		}
 	}
 
-	// Build hierarchy
+	// Build hierarchy using parent_id
 	for (const node of flatNodes) {
-		const treeNode = nodeMap.get(node.path)!;
-		if (node.parent_path === '/' || node.parent_path === '') {
+		const treeNode = nodeMap.get(node.id!)!;
+		if (!node.parent_id) {
 			roots.push(treeNode);
 		} else {
-			const parent = nodeMap.get(node.parent_path);
+			const parent = nodeMap.get(node.parent_id);
 			if (parent) {
 				parent.children!.push(treeNode);
 			} else {

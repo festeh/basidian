@@ -15,50 +15,50 @@ router = APIRouter()
 
 
 async def _get_node_content(db: aiosqlite.Connection, node_id: str) -> str | None:
-    """Get current content of a node, or None if not found."""
+    """Get current content of a node from fs_content, or None if not found."""
     async with db.execute(
-        "SELECT content FROM fs_nodes WHERE id = ?", (node_id,)
+        "SELECT body FROM fs_content WHERE node_id = ?", (node_id,)
     ) as cursor:
         row = await cursor.fetchone()
-    return row["content"] if row else None
+    return row["body"] if row else None
 
 
-async def _get_latest_version_content(
+async def _get_latest_version_body(
     db: aiosqlite.Connection, node_id: str
 ) -> str | None:
-    """Get content of the most recent version, or None if no versions exist."""
+    """Get body of the most recent version, or None if no versions exist."""
     async with db.execute(
-        "SELECT content FROM file_versions WHERE node_id = ? ORDER BY created_at DESC LIMIT 1",
+        "SELECT body FROM fs_versions WHERE node_id = ? ORDER BY created_at DESC LIMIT 1",
         (node_id,),
     ) as cursor:
         row = await cursor.fetchone()
-    return row["content"] if row else None
+    return row["body"] if row else None
 
 
 async def create_version_if_changed(
-    db: aiosqlite.Connection, node_id: str, content: str, timestamp: str | None = None
+    db: aiosqlite.Connection, node_id: str, body: str, timestamp: str | None = None
 ) -> bool:
-    """Create a version snapshot if content differs from the latest version.
+    """Create a version snapshot if body differs from the latest version.
 
     Returns True if a version was created.
     """
-    latest = await _get_latest_version_content(db, node_id)
-    if latest == content:
+    latest = await _get_latest_version_body(db, node_id)
+    if latest == body:
         return False
 
     version_id = generate_id()
     now = timestamp or datetime.now().isoformat()
     await db.execute(
-        "INSERT INTO file_versions (id, node_id, content, created_at) VALUES (?, ?, ?, ?)",
-        (version_id, node_id, content, now),
+        "INSERT INTO fs_versions (id, node_id, body, created_at) VALUES (?, ?, ?, ?)",
+        (version_id, node_id, body, now),
     )
     return True
 
 
-def _compute_diff_summary(old_content: str, new_content: str) -> tuple[int, int]:
-    """Compute lines added/removed between two contents."""
-    old_lines = old_content.splitlines(keepends=True)
-    new_lines = new_content.splitlines(keepends=True)
+def _compute_diff_summary(old_body: str, new_body: str) -> tuple[int, int]:
+    """Compute lines added/removed between two bodies."""
+    old_lines = old_body.splitlines(keepends=True)
+    new_lines = new_body.splitlines(keepends=True)
     added = 0
     removed = 0
     for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(
@@ -81,7 +81,7 @@ async def list_versions(
 ) -> list[FileVersionSummary]:
     """List all versions for a file, most recent first."""
     async with db.execute(
-        "SELECT id, node_id, content, created_at FROM file_versions WHERE node_id = ? ORDER BY created_at DESC",
+        "SELECT id, node_id, body, created_at FROM fs_versions WHERE node_id = ? ORDER BY created_at DESC",
         (node_id,),
     ) as cursor:
         rows = await cursor.fetchall()
@@ -90,18 +90,18 @@ async def list_versions(
         return []
 
     # Get current content to diff against the most recent version
-    current_content = await _get_node_content(db, node_id)
+    current_body = await _get_node_content(db, node_id)
 
     summaries: list[FileVersionSummary] = []
     for i, row in enumerate(rows):
         # Compare each version against the one before it (newer content)
         if i == 0:
             # Most recent version: diff against current file content
-            newer = current_content or ""
+            newer = current_body or ""
         else:
-            newer = rows[i - 1]["content"]
+            newer = rows[i - 1]["body"]
 
-        added, removed = _compute_diff_summary(row["content"], newer)
+        added, removed = _compute_diff_summary(row["body"], newer)
         summaries.append(
             FileVersionSummary(
                 id=row["id"],
@@ -123,7 +123,7 @@ async def get_version(
 ) -> FileVersion:
     """Get a specific version's full content."""
     async with db.execute(
-        "SELECT id, node_id, content, created_at FROM file_versions WHERE id = ? AND node_id = ?",
+        "SELECT id, node_id, body, created_at FROM fs_versions WHERE id = ? AND node_id = ?",
         (version_id, node_id),
     ) as cursor:
         row = await cursor.fetchone()
@@ -134,7 +134,7 @@ async def get_version(
     return FileVersion(
         id=row["id"],
         node_id=row["node_id"],
-        content=row["content"],
+        body=row["body"],
         created_at=row["created_at"],
     )
 
@@ -149,11 +149,11 @@ async def snapshot(
     Called by the frontend on file switch and app close.
     Only creates a version if content has changed since the last version.
     """
-    content = await _get_node_content(db, node_id)
-    if content is None:
+    body = await _get_node_content(db, node_id)
+    if body is None:
         raise HTTPException(status_code=404, detail="Node not found")
 
-    created = await create_version_if_changed(db, node_id, content)
+    created = await create_version_if_changed(db, node_id, body)
     if created:
         await db.commit()
         logger.info(f"Snapshot: Created version for node {node_id}")
@@ -170,12 +170,12 @@ async def restore_version(
     """Restore a file to a previous version.
 
     1. Snapshots the current content (so the restore is undoable)
-    2. Replaces file content with the version's content
+    2. Replaces file content with the version's body
     3. Returns the restored version
     """
     # Get the version to restore
     async with db.execute(
-        "SELECT content FROM file_versions WHERE id = ? AND node_id = ?",
+        "SELECT body FROM fs_versions WHERE id = ? AND node_id = ?",
         (version_id, node_id),
     ) as cursor:
         version_row = await cursor.fetchone()
@@ -184,24 +184,30 @@ async def restore_version(
         raise HTTPException(status_code=404, detail="Version not found")
 
     # Snapshot current content before restoring
-    current_content = await _get_node_content(db, node_id)
-    if current_content is None:
+    current_body = await _get_node_content(db, node_id)
+    if current_body is None:
         raise HTTPException(status_code=404, detail="Node not found")
 
-    await create_version_if_changed(db, node_id, current_content)
+    await create_version_if_changed(db, node_id, current_body)
 
     # Update the file content
     now = datetime.now().isoformat()
     await db.execute(
-        "UPDATE fs_nodes SET content = ?, updated = ? WHERE id = ?",
-        (version_row["content"], now, node_id),
+        "UPDATE fs_content SET body = ?, updated_at = ? WHERE node_id = ?",
+        (version_row["body"], now, node_id),
+    )
+
+    # Also update fs_nodes.updated_at to keep recent files in sync
+    await db.execute(
+        "UPDATE fs_nodes SET updated_at = ? WHERE id = ?",
+        (now, node_id),
     )
 
     # Create a version of the restored content too
     restore_version_id = generate_id()
     await db.execute(
-        "INSERT INTO file_versions (id, node_id, content, created_at) VALUES (?, ?, ?, ?)",
-        (restore_version_id, node_id, version_row["content"], now),
+        "INSERT INTO fs_versions (id, node_id, body, created_at) VALUES (?, ?, ?, ?)",
+        (restore_version_id, node_id, version_row["body"], now),
     )
 
     await db.commit()
@@ -210,7 +216,7 @@ async def restore_version(
     return FileVersion(
         id=restore_version_id,
         node_id=node_id,
-        content=version_row["content"],
+        body=version_row["body"],
         created_at=now,
     )
 
@@ -231,7 +237,7 @@ async def cleanup_versions(db: aiosqlite.Connection) -> int:
 
     # Get all versions older than 7 days, grouped by node
     async with db.execute(
-        "SELECT id, node_id, created_at FROM file_versions WHERE created_at < ? ORDER BY node_id, created_at DESC",
+        "SELECT id, node_id, created_at FROM fs_versions WHERE created_at < ? ORDER BY node_id, created_at DESC",
         (seven_days_ago,),
     ) as cursor:
         old_versions = await cursor.fetchall()
@@ -279,7 +285,7 @@ async def cleanup_versions(db: aiosqlite.Connection) -> int:
     if ids_to_delete:
         placeholders = ",".join("?" * len(ids_to_delete))
         await db.execute(
-            f"DELETE FROM file_versions WHERE id IN ({placeholders})",
+            f"DELETE FROM fs_versions WHERE id IN ({placeholders})",
             ids_to_delete,
         )
         await db.commit()

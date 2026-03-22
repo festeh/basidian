@@ -12,8 +12,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from .db import close_db, init_db
-from .handlers import filesystem_router, history_router, notes_router
+from .handlers import filesystem_router, history_router, metadata_router
 from .handlers.history import cleanup_versions
+from .metadata import MetadataIndex
 
 # Configure loguru - stderr output
 logger.remove()
@@ -55,6 +56,22 @@ def create_app(db_path: str = "data/basidian.db") -> FastAPI:
         await init_db(app, db_path)
         logger.info(f"Database initialized: {db_path}")
         await cleanup_versions(app.state.db)
+
+        # Build in-memory metadata index
+        index = MetadataIndex()
+        db = app.state.db
+        async with db.execute(
+            "SELECT n.id, n.name, n.path, c.body "
+            "FROM fs_nodes n JOIN fs_content c ON c.node_id = n.id "
+            "WHERE n.type = 'file'"
+        ) as cursor:
+            nodes = [
+                {"id": row["id"], "name": row["name"], "path": row["path"], "body": row["body"]}
+                for row in await cursor.fetchall()
+            ]
+        index.build(nodes)
+        app.state.metadata_index = index
+
         yield
         await close_db(app)
         logger.info("Database connection closed")
@@ -86,9 +103,9 @@ def create_app(db_path: str = "data/basidian.db") -> FastAPI:
         return {"status": "ok", "service": "basidian-backend"}
 
     # Include routers
-    app.include_router(notes_router)
     app.include_router(filesystem_router)
     app.include_router(history_router)
+    app.include_router(metadata_router)
 
     return app
 
