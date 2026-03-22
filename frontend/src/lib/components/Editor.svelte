@@ -12,6 +12,21 @@
 
 	const log = createLogger('Editor');
 
+	function formatRelativeDate(iso: string): string {
+		const date = new Date(iso);
+		const now = new Date();
+		const diffMs = now.getTime() - date.getTime();
+		const diffMins = Math.floor(diffMs / 60000);
+		const diffHours = Math.floor(diffMs / 3600000);
+		const diffDays = Math.floor(diffMs / 86400000);
+
+		if (diffMins < 1) return 'just now';
+		if (diffMins < 60) return `${diffMins}m ago`;
+		if (diffHours < 24) return `${diffHours}h ago`;
+		if (diffDays < 7) return `${diffDays}d ago`;
+		return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+	}
+
 	interface Props {
 		file: FsNode | null;
 		sidebarCollapsed?: boolean;
@@ -300,6 +315,9 @@
 									</svg>
 									<span class="recent-name">{recentFile.name}</span>
 									<span class="recent-path">{recentFile.parent_path === '/' ? '' : recentFile.parent_path}</span>
+									{#if recentFile.updated_at}
+										<span class="recent-date">{formatRelativeDate(recentFile.updated_at)}</span>
+									{/if}
 								</button>
 							</li>
 						{/each}
@@ -589,5 +607,12 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.recent-date {
+		flex-shrink: 0;
+		color: var(--color-subtext);
+		font-size: var(--text-detail);
+		margin-left: auto;
 	}
 </style>
