@@ -4,6 +4,7 @@
 	import { filesystemActions } from '$lib/stores/filesystem';
 	import { historyActions, historyOpen } from '$lib/stores/history';
 	import { api } from '$lib/api/client';
+	import * as dbNodes from '$lib/db/nodes';
 	import { createLogger } from '$lib/utils/logger';
 	import CodeMirrorEditor from './CodeMirrorEditor.svelte';
 	import MarkdownPreview from './MarkdownPreview.svelte';
@@ -58,18 +59,21 @@
 			pendingSave = null;
 			await filesystemActions.updateNode({ ...targetFile, content: targetContent });
 			if (targetFile.id) {
-				api.snapshot(targetFile.id);
+				api.snapshot(targetFile.id).catch((e) => {
+					log.warn('snapshot failed (server unreachable?)', e);
+				});
 			}
 		} else if (fileId) {
-			// No pending save, but still snapshot (autosave may have already persisted)
-			api.snapshot(fileId);
+			api.snapshot(fileId).catch((e) => {
+				log.warn('snapshot failed (server unreachable?)', e);
+			});
 		}
 	}
 
 	// Load recent files for the greeting screen
 	$effect(() => {
 		if (!file) {
-			api.getRecentFiles(8).then((files) => {
+			dbNodes.getRecentFiles(8).then((files) => {
 				recentFiles = files;
 			}).catch(() => {
 				recentFiles = [];

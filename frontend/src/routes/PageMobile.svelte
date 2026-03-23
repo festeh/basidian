@@ -7,6 +7,8 @@
 	import Editor from '$lib/components/Editor.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import StatusBar from '$lib/components/StatusBar.svelte';
+	import SyncIndicator from '$lib/components/SyncIndicator.svelte';
+	import ConflictModal from '$lib/components/ConflictModal.svelte';
 	import { filesystemActions, currentFile, isLoadingFile } from '$lib/stores/filesystem';
 	import { createPageState } from '$lib/page-shared.svelte';
 
@@ -55,6 +57,10 @@
 				<Editor file={$currentFile} />
 			{/if}
 		</main>
+	</div>
+
+	<div class="sync-bar">
+		<SyncIndicator />
 	</div>
 
 	<StatusBar />
@@ -114,6 +120,8 @@
 	{/snippet}
 </Modal>
 
+<ConflictModal />
+
 <style>
 	.app {
 		display: flex;
@@ -156,6 +164,13 @@
 		to {
 			transform: rotate(360deg);
 		}
+	}
+
+	.sync-bar {
+		border-top: 1px solid var(--color-overlay);
+		background: var(--color-mantle);
+		padding: 2px 0;
+		padding-bottom: var(--safe-area-inset-bottom);
 	}
 
 	.sidebar-overlay {

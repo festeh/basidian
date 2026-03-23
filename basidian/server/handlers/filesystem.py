@@ -81,7 +81,7 @@ async def get_tree(
     if parent_path:
         # Find the parent node to get its ID
         async with db.execute(
-            "SELECT id FROM fs_nodes WHERE path = ?", (parent_path,)
+            "SELECT id FROM fs_nodes WHERE path = ? AND deleted_at IS NULL", (parent_path,)
         ) as cursor:
             parent_row = await cursor.fetchone()
 
@@ -90,7 +90,7 @@ async def get_tree(
                 f"""
                 SELECT {_TREE_COLS}
                 FROM fs_nodes
-                WHERE parent_id = ?
+                WHERE parent_id = ? AND deleted_at IS NULL
                 ORDER BY type DESC, sort_order ASC, name ASC
                 """,
                 (parent_row["id"],),
@@ -102,6 +102,7 @@ async def get_tree(
         async with db.execute(f"""
             SELECT {_TREE_COLS}
             FROM fs_nodes
+            WHERE deleted_at IS NULL
             ORDER BY type DESC, sort_order ASC, name ASC
         """) as cursor:
             rows = await cursor.fetchall()
@@ -123,7 +124,7 @@ async def get_node(
         SELECT {_FULL_COLS}
         FROM fs_nodes n
         LEFT JOIN fs_content c ON c.node_id = n.id
-        WHERE n.path = ?
+        WHERE n.path = ? AND n.deleted_at IS NULL
         """,
         (path,),
     ) as cursor:
@@ -148,7 +149,7 @@ async def get_node_by_id(
         SELECT {_FULL_COLS}
         FROM fs_nodes n
         LEFT JOIN fs_content c ON c.node_id = n.id
-        WHERE n.id = ?
+        WHERE n.id = ? AND n.deleted_at IS NULL
         """,
         (node_id,),
     ) as cursor:
@@ -186,7 +187,7 @@ async def create_node(
     parent_id = None
     if parent_path != "/":
         async with db.execute(
-            "SELECT id FROM fs_nodes WHERE path = ? AND type = 'folder'",
+            "SELECT id FROM fs_nodes WHERE path = ? AND type = 'folder' AND deleted_at IS NULL",
             (parent_path,),
         ) as cursor:
             parent_row = await cursor.fetchone()
@@ -199,7 +200,7 @@ async def create_node(
 
     # Check if path already exists
     async with db.execute(
-        "SELECT 1 FROM fs_nodes WHERE path = ?", (node_path,)
+        "SELECT 1 FROM fs_nodes WHERE path = ? AND deleted_at IS NULL", (node_path,)
     ) as cursor:
         if await cursor.fetchone() is not None:
             raise HTTPException(status_code=409, detail="Path already exists")
@@ -349,9 +350,9 @@ async def delete_node(
     request: Request,
     db: aiosqlite.Connection = Depends(get_db),
 ) -> None:
-    """Delete a node. For folders, ON DELETE CASCADE handles children recursively."""
+    """Soft-delete a node. Sets deleted_at on the node and all descendants."""
     async with db.execute(
-        "SELECT path, type FROM fs_nodes WHERE id = ?", (node_id,)
+        "SELECT path, type FROM fs_nodes WHERE id = ? AND deleted_at IS NULL", (node_id,)
     ) as cursor:
         row = await cursor.fetchone()
 
@@ -359,35 +360,42 @@ async def delete_node(
         raise HTTPException(status_code=404, detail="Node not found")
 
     node_path = row["path"]
+    now = datetime.now().isoformat()
     index = _get_index(request)
 
-    # Collect all descendant IDs before deletion (for index cleanup)
-    descendant_ids = []
-    if row["type"] == "folder":
-        async with db.execute(
-            """
-            WITH RECURSIVE descendants AS (
-                SELECT id FROM fs_nodes WHERE parent_id = ?
-                UNION ALL
-                SELECT n.id FROM fs_nodes n JOIN descendants d ON n.parent_id = d.id
-            )
-            SELECT id FROM descendants
-            """,
-            (node_id,),
-        ) as cursor:
-            descendant_ids = [r["id"] for r in await cursor.fetchall()]
-
-    # CASCADE on parent_id handles recursive child deletion,
-    # CASCADE on fs_content/fs_versions handles content/version cleanup
-    await db.execute("DELETE FROM fs_nodes WHERE id = ?", (node_id,))
+    # Soft-delete the node and all descendants
+    await db.execute(
+        """
+        WITH RECURSIVE descendants AS (
+            SELECT id FROM fs_nodes WHERE id = ?
+            UNION ALL
+            SELECT n.id FROM fs_nodes n JOIN descendants d ON n.parent_id = d.id
+        )
+        UPDATE fs_nodes SET deleted_at = ?, updated_at = ?
+        WHERE id IN (SELECT id FROM descendants) AND deleted_at IS NULL
+        """,
+        (node_id, now, now),
+    )
     await db.commit()
 
-    # Update metadata index
-    index.remove_node(node_id)
-    for desc_id in descendant_ids:
-        index.remove_node(desc_id)
+    # Collect all affected IDs for index cleanup
+    async with db.execute(
+        """
+        WITH RECURSIVE descendants AS (
+            SELECT id FROM fs_nodes WHERE id = ?
+            UNION ALL
+            SELECT n.id FROM fs_nodes n JOIN descendants d ON n.parent_id = d.id
+        )
+        SELECT id FROM descendants
+        """,
+        (node_id,),
+    ) as cursor:
+        all_ids = [r["id"] for r in await cursor.fetchall()]
 
-    logger.info(f"DeleteNode: Deleted {node_path}")
+    for nid in all_ids:
+        index.remove_node(nid)
+
+    logger.info(f"DeleteNode: Soft-deleted {node_path}")
 
 
 @router.post("/api/fs/move/{node_id}")
@@ -400,7 +408,7 @@ async def move_node(
     """Move or rename a node."""
     # Get current node info
     async with db.execute(
-        "SELECT id, parent_id, path, name, type FROM fs_nodes WHERE id = ?",
+        "SELECT id, parent_id, path, name, type FROM fs_nodes WHERE id = ? AND deleted_at IS NULL",
         (node_id,),
     ) as cursor:
         row = await cursor.fetchone()
@@ -424,7 +432,7 @@ async def move_node(
             new_parent_id = None
         else:
             async with db.execute(
-                "SELECT id FROM fs_nodes WHERE path = ? AND type = 'folder'",
+                "SELECT id FROM fs_nodes WHERE path = ? AND type = 'folder' AND deleted_at IS NULL",
                 (new_parent_path,),
             ) as cursor:
                 parent_row = await cursor.fetchone()
@@ -437,7 +445,7 @@ async def move_node(
     # Check if new path already exists
     if new_path != old_path:
         async with db.execute(
-            "SELECT 1 FROM fs_nodes WHERE path = ?", (new_path,)
+            "SELECT 1 FROM fs_nodes WHERE path = ? AND deleted_at IS NULL", (new_path,)
         ) as cursor:
             if await cursor.fetchone() is not None:
                 raise HTTPException(
@@ -515,7 +523,7 @@ async def get_recent_files(
         f"""
         SELECT {_TREE_COLS}
         FROM fs_nodes
-        WHERE type = 'file' AND updated_at IS NOT NULL
+        WHERE type = 'file' AND updated_at IS NOT NULL AND deleted_at IS NULL
         ORDER BY updated_at DESC
         LIMIT ?
         """,
@@ -540,7 +548,7 @@ async def search_files(
         SELECT {_FULL_COLS}
         FROM fs_nodes n
         LEFT JOIN fs_content c ON c.node_id = n.id
-        WHERE n.type = 'file' AND (n.name LIKE ? OR c.body LIKE ?)
+        WHERE n.type = 'file' AND n.deleted_at IS NULL AND (n.name LIKE ? OR c.body LIKE ?)
         ORDER BY n.updated_at DESC
         """,
         (search_pattern, search_pattern),
