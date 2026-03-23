@@ -5,6 +5,8 @@
 	import Editor from '$lib/components/Editor.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import StatusBar from '$lib/components/StatusBar.svelte';
+	import SyncIndicator from '$lib/components/SyncIndicator.svelte';
+	import ConflictModal from '$lib/components/ConflictModal.svelte';
 	import { filesystemActions, currentFile, isLoadingFile } from '$lib/stores/filesystem';
 	import { createPageState } from '$lib/page-shared.svelte';
 
@@ -30,8 +32,13 @@
 </script>
 
 <div class="app">
-	<div class="sidebar-wrapper" class:collapsed={sidebarCollapsed}>
-		<Sidebar onCreateFile={page.openCreateFileModal} onCreateFolder={page.openCreateFolderModal} />
+	<div class="sidebar-area" class:collapsed={sidebarCollapsed}>
+		<div class="sidebar-wrapper">
+			<Sidebar onCreateFile={page.openCreateFileModal} onCreateFolder={page.openCreateFolderModal} />
+		</div>
+		<div class="sync-bar">
+			<SyncIndicator />
+		</div>
 	</div>
 
 	<div class="right-panel">
@@ -99,6 +106,8 @@
 	{/snippet}
 </Modal>
 
+<ConflictModal />
+
 <style>
 	.app {
 		display: flex;
@@ -109,14 +118,27 @@
 		padding-right: var(--safe-area-inset-right);
 	}
 
-	.sidebar-wrapper {
+	.sidebar-area {
+		display: flex;
+		flex-direction: column;
 		width: 280px;
 		overflow: hidden;
 		transition: width 0.25s ease;
 	}
 
-	.sidebar-wrapper.collapsed {
+	.sidebar-area.collapsed {
 		width: 0;
+	}
+
+	.sidebar-wrapper {
+		flex: 1;
+		overflow: hidden;
+	}
+
+	.sync-bar {
+		border-top: 1px solid var(--color-overlay);
+		background: var(--color-mantle);
+		padding: 2px 0;
 	}
 
 	.right-panel {

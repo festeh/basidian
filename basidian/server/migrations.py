@@ -148,7 +148,8 @@ async def _create_tables(db: aiosqlite.Connection) -> None:
             path        TEXT NOT NULL,
             sort_order  INTEGER NOT NULL DEFAULT 0,
             created_at  TEXT NOT NULL,
-            updated_at  TEXT NOT NULL
+            updated_at  TEXT NOT NULL,
+            deleted_at  TEXT
         )
     """)
 
@@ -173,6 +174,16 @@ async def _create_tables(db: aiosqlite.Connection) -> None:
     await db.commit()
 
 
+async def _add_deleted_at_column(db: aiosqlite.Connection) -> None:
+    """Add deleted_at column to fs_nodes if missing (for sync soft-deletes)."""
+    if await _table_exists(db, "fs_nodes"):
+        columns = await _get_columns(db, "fs_nodes")
+        if "deleted_at" not in columns:
+            logger.info("Migration: Adding deleted_at column to fs_nodes")
+            await db.execute("ALTER TABLE fs_nodes ADD COLUMN deleted_at TEXT")
+            await db.commit()
+
+
 async def run_migrations(db: aiosqlite.Connection) -> None:
     """Run all migrations. Detects schema version and migrates as needed."""
     # Enable foreign keys (SQLite disables them by default)
@@ -182,3 +193,6 @@ async def run_migrations(db: aiosqlite.Connection) -> None:
         await _migrate_from_old_schema(db)
     else:
         await _create_tables(db)
+
+    # Incremental migrations (safe to run on any schema version)
+    await _add_deleted_at_column(db)

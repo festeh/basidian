@@ -1,7 +1,8 @@
 import { writable, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import type { FsNode } from '$lib/types';
-import { api } from '$lib/api/client';
+import * as dbNodes from '$lib/db/nodes';
+import { schedulePush } from '$lib/sync/engine';
 import { createLogger } from '$lib/utils/logger';
 const log = createLogger('Filesystem');
 
@@ -96,7 +97,7 @@ export const filesystemActions = {
 		isLoading.set(true);
 		error.set(null);
 		try {
-			const nodes = await api.getTree();
+			const nodes = await dbNodes.getTree();
 			rootNodes.set(buildTree(nodes));
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to load tree');
@@ -147,7 +148,7 @@ export const filesystemActions = {
 		isLoadingFile.set(true);
 		error.set(null);
 		try {
-			const fullNode = node.id ? await api.getNode(node.id) : node;
+			const fullNode = node.id ? await dbNodes.getNode(node.id) : node;
 			currentFile.set(fullNode);
 			selectedNode.set(fullNode);
 		} catch (e) {
@@ -163,13 +164,9 @@ export const filesystemActions = {
 
 	async createFile(parentPath: string, name: string, content = '') {
 		try {
-			const node = await api.createNode({
-				type: 'file',
-				name,
-				parent_path: parentPath,
-				content
-			});
+			const node = await dbNodes.createNode('file', name, parentPath, content);
 			await this.loadTree();
+			schedulePush();
 			return node;
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to create file');
@@ -179,12 +176,9 @@ export const filesystemActions = {
 
 	async createFolder(parentPath: string, name: string) {
 		try {
-			const node = await api.createNode({
-				type: 'folder',
-				name,
-				parent_path: parentPath
-			});
+			const node = await dbNodes.createNode('folder', name, parentPath);
 			await this.loadTree();
+			schedulePush();
 			return node;
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to create folder');
@@ -194,7 +188,12 @@ export const filesystemActions = {
 
 	async updateNode(node: FsNode) {
 		try {
-			const updated = await api.updateNode(node);
+			const updated = await dbNodes.updateNode(node.id!, {
+				name: node.name,
+				content: node.content ?? undefined,
+				sort_order: node.sort_order
+			});
+			if (!updated) return null;
 			const current = get(currentFile);
 			if (current?.id === node.id) {
 				currentFile.set(updated);
@@ -203,8 +202,8 @@ export const filesystemActions = {
 			rootNodes.update((nodes) => {
 				function updateInTree(list: FsNode[]): FsNode[] {
 					return list.map((n) => {
-						if (n.id === updated.id) {
-							return { ...updated, children: n.children, isExpanded: n.isExpanded };
+						if (n.id === updated!.id) {
+							return { ...updated!, children: n.children, isExpanded: n.isExpanded };
 						}
 						if (n.children?.length) {
 							return { ...n, children: updateInTree(n.children) };
@@ -214,6 +213,7 @@ export const filesystemActions = {
 				}
 				return updateInTree(nodes);
 			});
+			schedulePush();
 			return updated;
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to update node');
@@ -223,7 +223,7 @@ export const filesystemActions = {
 
 	async deleteNode(node: FsNode) {
 		try {
-			await api.deleteNode(node.id!);
+			await dbNodes.softDeleteNode(node.id!);
 			const current = get(currentFile);
 			if (current?.id === node.id) {
 				currentFile.set(null);
@@ -233,6 +233,7 @@ export const filesystemActions = {
 				selectedNode.set(null);
 			}
 			await this.loadTree();
+			schedulePush();
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Failed to delete node');
 		}
@@ -241,13 +242,14 @@ export const filesystemActions = {
 	async moveNode(node: FsNode, newParentPath: string) {
 		log.info('moveNode', { id: node.id, from: node.parent_path, to: newParentPath });
 		try {
-			const updated = await api.moveNode(node.id!, { new_parent_path: newParentPath });
+			const updated = await dbNodes.moveNode(node.id!, newParentPath);
 			log.debug('move success', { updated });
 			movingNode.set(null);
 			await this.loadTree();
+			schedulePush();
 
 			const current = get(currentFile);
-			if (current && current.id === node.id) {
+			if (current && current.id === node.id && updated) {
 				currentFile.set({ ...updated, content: current.content });
 			}
 		} catch (e) {
@@ -260,13 +262,13 @@ export const filesystemActions = {
 	async renameNode(node: FsNode, newName: string) {
 		log.info('renameNode', { id: node.id, from: node.name, to: newName });
 		try {
-			const updated = await api.moveNode(node.id!, { new_name: newName });
+			const updated = await dbNodes.moveNode(node.id!, undefined, newName);
 			log.debug('rename success', { updated });
 			await this.loadTree();
+			schedulePush();
 
-			// Update currentFile if it was the renamed file
 			const current = get(currentFile);
-			if (current && current.id === node.id) {
+			if (current && current.id === node.id && updated) {
 				currentFile.set({ ...updated, content: current.content });
 			}
 		} catch (e) {
@@ -277,7 +279,7 @@ export const filesystemActions = {
 
 	async searchFiles(query: string): Promise<FsNode[]> {
 		try {
-			return await api.searchFiles(query);
+			return await dbNodes.searchFiles(query);
 		} catch (e) {
 			error.set(e instanceof Error ? e.message : 'Search failed');
 			return [];

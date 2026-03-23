@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 from .db import close_db, init_db
-from .handlers import filesystem_router, history_router, metadata_router
+from .handlers import filesystem_router, history_router, metadata_router, sync_router
 from .handlers.history import cleanup_versions
 from .metadata import MetadataIndex
 
@@ -106,6 +106,7 @@ def create_app(db_path: str = "data/basidian.db") -> FastAPI:
     app.include_router(filesystem_router)
     app.include_router(history_router)
     app.include_router(metadata_router)
+    app.include_router(sync_router)
 
     return app
 
