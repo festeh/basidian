@@ -1,4 +1,5 @@
 import { createLogger } from '$lib/utils/logger';
+import { filesystemActions } from '$lib/stores/filesystem';
 import { pull } from './pull';
 import { push } from './push';
 import { syncState, syncError, lastSyncAt, refreshPendingCount } from './status';
@@ -22,6 +23,9 @@ async function runSync(): Promise<void> {
 		if (serverTime) {
 			lastSyncAt.set(serverTime);
 		}
+
+		// Refresh stores with any new data from pull
+		await filesystemActions.loadTree();
 
 		await push();
 
