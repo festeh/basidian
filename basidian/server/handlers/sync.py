@@ -1,6 +1,6 @@
 """Sync API endpoints for client-server data synchronization."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import aiosqlite
@@ -66,24 +66,28 @@ async def get_changes(
     If `since` is omitted, returns everything (full sync).
     Includes soft-deleted nodes so clients can apply deletions.
     """
-    server_time = datetime.now().isoformat()
+    server_time = datetime.utcnow().isoformat()
 
     if since:
-        logger.info(f"Sync pull: changes since {since}")
+        # Normalize: strip trailing Z and +00:00 for consistent string comparison
+        since_normalized = since.replace("Z", "").replace("+00:00", "")
+        logger.info(f"Sync pull: changes since {since_normalized}")
         async with db.execute(
             """
             SELECT id, parent_id, type, name, path, sort_order,
                    created_at, updated_at, deleted_at
             FROM fs_nodes
-            WHERE updated_at > ? OR (deleted_at IS NOT NULL AND deleted_at > ?)
+            WHERE REPLACE(REPLACE(updated_at, 'Z', ''), '+00:00', '') > ?
+               OR (deleted_at IS NOT NULL AND REPLACE(REPLACE(deleted_at, 'Z', ''), '+00:00', '') > ?)
             """,
-            (since, since),
+            (since_normalized, since_normalized),
         ) as cursor:
             node_rows = await cursor.fetchall()
 
         async with db.execute(
-            "SELECT node_id, body, updated_at FROM fs_content WHERE updated_at > ?",
-            (since,),
+            """SELECT node_id, body, updated_at FROM fs_content
+               WHERE REPLACE(REPLACE(updated_at, 'Z', ''), '+00:00', '') > ?""",
+            (since_normalized,),
         ) as cursor:
             content_rows = await cursor.fetchall()
     else:
@@ -143,7 +147,7 @@ async def push_changes(
     db: aiosqlite.Connection = Depends(get_db),
 ) -> SyncPushResponse:
     """Accept changed rows from a client. Last-write-wins by updated_at."""
-    server_time = datetime.now().isoformat()
+    server_time = datetime.utcnow().isoformat()
     results: list[SyncPushResult] = []
     index = _get_index(request)
 
