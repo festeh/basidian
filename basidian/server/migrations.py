@@ -196,3 +196,21 @@ async def run_migrations(db: aiosqlite.Connection) -> None:
 
     # Incremental migrations (safe to run on any schema version)
     await _add_deleted_at_column(db)
+    await _normalize_timestamps(db)
+
+
+async def _normalize_timestamps(db: aiosqlite.Connection) -> None:
+    """Strip Z and +00:00 suffixes from all timestamps for consistent comparison."""
+    for table, cols in [
+        ("fs_nodes", ["created_at", "updated_at", "deleted_at"]),
+        ("fs_content", ["updated_at"]),
+        ("fs_versions", ["created_at"]),
+    ]:
+        if not await _table_exists(db, table):
+            continue
+        for col in cols:
+            await db.execute(
+                f"UPDATE {table} SET {col} = REPLACE(REPLACE({col}, 'Z', ''), '+00:00', '') "
+                f"WHERE {col} LIKE '%Z' OR {col} LIKE '%+00:00'"
+            )
+    await db.commit()

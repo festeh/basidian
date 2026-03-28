@@ -1,6 +1,6 @@
 """Sync API endpoints for client-server data synchronization."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 import aiosqlite
@@ -13,6 +13,22 @@ from basidian.server.metadata import MetadataIndex
 from ..db import get_db
 
 router = APIRouter()
+
+
+def _to_utc(ts: str | None) -> str | None:
+    """Parse any ISO timestamp and return naive UTC ISO string.
+
+    '2026-03-28T10:33:13.873Z'      → '2026-03-28T10:33:13.873'
+    '2026-03-28T12:33:13+02:00'     → '2026-03-28T10:33:13'
+    '2026-03-28T10:33:13.873'       → '2026-03-28T10:33:13.873' (assumed UTC)
+    """
+    if ts is None:
+        return None
+    from datetime import timezone
+    dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    if dt.tzinfo is not None:
+        dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+    return dt.isoformat()
 
 
 class SyncNodeRow(BaseModel):
@@ -66,28 +82,25 @@ async def get_changes(
     If `since` is omitted, returns everything (full sync).
     Includes soft-deleted nodes so clients can apply deletions.
     """
-    server_time = datetime.utcnow().isoformat()
+    server_time = _to_utc(datetime.utcnow().isoformat())
 
     if since:
-        # Normalize: strip trailing Z and +00:00 for consistent string comparison
-        since_normalized = since.replace("Z", "").replace("+00:00", "")
-        logger.info(f"Sync pull: changes since {since_normalized}")
+        since = _to_utc(since)
+        logger.info(f"Sync pull: changes since {since}")
         async with db.execute(
             """
             SELECT id, parent_id, type, name, path, sort_order,
                    created_at, updated_at, deleted_at
             FROM fs_nodes
-            WHERE REPLACE(REPLACE(updated_at, 'Z', ''), '+00:00', '') > ?
-               OR (deleted_at IS NOT NULL AND REPLACE(REPLACE(deleted_at, 'Z', ''), '+00:00', '') > ?)
+            WHERE updated_at > ? OR (deleted_at IS NOT NULL AND deleted_at > ?)
             """,
-            (since_normalized, since_normalized),
+            (since, since),
         ) as cursor:
             node_rows = await cursor.fetchall()
 
         async with db.execute(
-            """SELECT node_id, body, updated_at FROM fs_content
-               WHERE REPLACE(REPLACE(updated_at, 'Z', ''), '+00:00', '') > ?""",
-            (since_normalized,),
+            "SELECT node_id, body, updated_at FROM fs_content WHERE updated_at > ?",
+            (since,),
         ) as cursor:
             content_rows = await cursor.fetchall()
     else:
@@ -147,11 +160,16 @@ async def push_changes(
     db: aiosqlite.Connection = Depends(get_db),
 ) -> SyncPushResponse:
     """Accept changed rows from a client. Last-write-wins by updated_at."""
-    server_time = datetime.utcnow().isoformat()
+    server_time = _to_utc(datetime.utcnow().isoformat())
     results: list[SyncPushResult] = []
     index = _get_index(request)
 
     for node in req.nodes:
+        # Normalize all incoming timestamps to naive UTC
+        node_created = _to_utc(node.created_at)
+        node_updated = _to_utc(node.updated_at)
+        node_deleted = _to_utc(node.deleted_at)
+
         # Check if this node exists on the server
         async with db.execute(
             "SELECT updated_at, deleted_at FROM fs_nodes WHERE id = ?", (node.id,)
@@ -168,11 +186,11 @@ async def push_changes(
                 """,
                 (
                     node.id, node.parent_id, node.type, node.name, node.path,
-                    node.sort_order, node.created_at, node.updated_at, node.deleted_at,
+                    node.sort_order, node_created, node_updated, node_deleted,
                 ),
             )
             results.append(SyncPushResult(id=node.id, accepted=True))
-        elif node.updated_at > existing["updated_at"]:
+        elif node_updated > existing["updated_at"]:
             # Client is newer — update
             await db.execute(
                 """
@@ -183,13 +201,13 @@ async def push_changes(
                 """,
                 (
                     node.parent_id, node.type, node.name, node.path, node.sort_order,
-                    node.created_at, node.updated_at, node.deleted_at, node.id,
+                    node_created, node_updated, node_deleted, node.id,
                 ),
             )
             results.append(SyncPushResult(id=node.id, accepted=True))
 
             # Update metadata index
-            if node.deleted_at:
+            if node_deleted:
                 index.remove_node(node.id)
         else:
             # Server is newer — reject
@@ -201,6 +219,8 @@ async def push_changes(
             ))
 
     for content in req.content:
+        content_updated = _to_utc(content.updated_at)
+
         async with db.execute(
             "SELECT updated_at FROM fs_content WHERE node_id = ?", (content.node_id,)
         ) as cursor:
@@ -210,14 +230,14 @@ async def push_changes(
             # New content row — insert
             await db.execute(
                 "INSERT INTO fs_content (node_id, body, updated_at) VALUES (?, ?, ?)",
-                (content.node_id, content.body, content.updated_at),
+                (content.node_id, content.body, content_updated),
             )
             results.append(SyncPushResult(id=content.node_id, accepted=True))
-        elif content.updated_at > existing["updated_at"]:
+        elif content_updated > existing["updated_at"]:
             # Client is newer — update
             await db.execute(
                 "UPDATE fs_content SET body = ?, updated_at = ? WHERE node_id = ?",
-                (content.body, content.updated_at, content.node_id),
+                (content.body, content_updated, content.node_id),
             )
             results.append(SyncPushResult(id=content.node_id, accepted=True))
 
