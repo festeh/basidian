@@ -1,5 +1,6 @@
 import { createLogger } from '$lib/utils/logger';
-import { filesystemActions } from '$lib/stores/filesystem';
+import { get } from 'svelte/store';
+import { filesystemActions, currentFile } from '$lib/stores/filesystem';
 import { pull } from './pull';
 import { push } from './push';
 import { syncState, syncError, lastSyncAt, refreshPendingCount } from './status';
@@ -26,6 +27,12 @@ async function runSync(): Promise<void> {
 
 		// Refresh stores with any new data from pull
 		await filesystemActions.loadTree();
+
+		// Re-read currently open file in case its content changed
+		const open = get(currentFile);
+		if (open?.id) {
+			await filesystemActions.openFile(open);
+		}
 
 		await push();
 
