@@ -93,8 +93,9 @@ function generateId(): string {
 	return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+/** Naive UTC ISO string — no Z suffix, consistent with server format. */
 function now(): string {
-	return new Date().toISOString();
+	return new Date().toISOString().replace('Z', '');
 }
 
 export async function createNode(
