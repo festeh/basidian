@@ -14,13 +14,6 @@ from ..db import get_db, utcnow_iso
 router = APIRouter()
 
 
-def _strip_tz(ts: str) -> str:
-    """Strip timezone suffix for consistent string comparison.
-
-    All timestamps should already be naive UTC, but clients may send
-    Z or +00:00 — strip them so the comparison matches what's in the DB.
-    """
-    return ts.replace("Z", "").replace("+00:00", "")
 
 
 class SyncNodeRow(BaseModel):
@@ -77,7 +70,6 @@ async def get_changes(
     server_time = utcnow_iso()
 
     if since:
-        since = _strip_tz(since)
         logger.info(f"Sync pull: changes since {since}")
         async with db.execute(
             """
@@ -157,11 +149,6 @@ async def push_changes(
     index = _get_index(request)
 
     for node in req.nodes:
-        # Strip timezone suffixes from incoming timestamps
-        node_created = _strip_tz(node.created_at)
-        node_updated = _strip_tz(node.updated_at)
-        node_deleted = _strip_tz(node.deleted_at) if node.deleted_at else None
-
         # Check if this node exists on the server
         async with db.execute(
             "SELECT updated_at, deleted_at FROM fs_nodes WHERE id = ?", (node.id,)
@@ -178,11 +165,11 @@ async def push_changes(
                 """,
                 (
                     node.id, node.parent_id, node.type, node.name, node.path,
-                    node.sort_order, node_created, node_updated, node_deleted,
+                    node.sort_order, node.created_at, node.updated_at, node.deleted_at,
                 ),
             )
             results.append(SyncPushResult(id=node.id, accepted=True))
-        elif node_updated > existing["updated_at"]:
+        elif node.updated_at > existing["updated_at"]:
             # Client is newer — update
             await db.execute(
                 """
@@ -193,13 +180,13 @@ async def push_changes(
                 """,
                 (
                     node.parent_id, node.type, node.name, node.path, node.sort_order,
-                    node_created, node_updated, node_deleted, node.id,
+                    node.created_at, node.updated_at, node.deleted_at, node.id,
                 ),
             )
             results.append(SyncPushResult(id=node.id, accepted=True))
 
             # Update metadata index
-            if node_deleted:
+            if node.deleted_at:
                 index.remove_node(node.id)
         else:
             # Server is newer — reject
@@ -211,8 +198,6 @@ async def push_changes(
             ))
 
     for content in req.content:
-        content_updated = _strip_tz(content.updated_at)
-
         async with db.execute(
             "SELECT updated_at FROM fs_content WHERE node_id = ?", (content.node_id,)
         ) as cursor:
@@ -222,14 +207,14 @@ async def push_changes(
             # New content row — insert
             await db.execute(
                 "INSERT INTO fs_content (node_id, body, updated_at) VALUES (?, ?, ?)",
-                (content.node_id, content.body, content_updated),
+                (content.node_id, content.body, content.updated_at),
             )
             results.append(SyncPushResult(id=content.node_id, accepted=True))
-        elif content_updated > existing["updated_at"]:
+        elif content.updated_at > existing["updated_at"]:
             # Client is newer — update
             await db.execute(
                 "UPDATE fs_content SET body = ?, updated_at = ? WHERE node_id = ?",
-                (content.body, content_updated, content.node_id),
+                (content.body, content.updated_at, content.node_id),
             )
             results.append(SyncPushResult(id=content.node_id, accepted=True))
 
