@@ -6,136 +6,181 @@ exports[`PageDesktop snapshots > empty state — sidebar with no files, editor p
     class="app svelte-chipbn"
   >
     <div
-      class="sidebar-wrapper svelte-chipbn"
+      class="sidebar-area svelte-chipbn"
     >
-      <aside
-        class="sidebar svelte-129hoe0"
+      <div
+        class="sidebar-wrapper svelte-chipbn"
       >
-        <div
-          class="header svelte-129hoe0"
+        <aside
+          class="sidebar svelte-129hoe0"
         >
           <div
-            class="search-container svelte-129hoe0"
-          >
-            <svg
-              fill="var(--color-subtext)"
-              height="16"
-              viewBox="0 0 24 24"
-              width="16"
-            >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-              />
-            </svg>
-             
-            <input
-              class="svelte-129hoe0"
-              placeholder="Search..."
-              type="text"
-            />
-          </div>
-           
-          <div
-            class="sidebar-actions svelte-129hoe0"
+            class="header svelte-129hoe0"
           >
             <div
-              class="daily-notes-container svelte-jclnn8"
+              class="search-container svelte-129hoe0"
             >
-              <button
-                class="today-btn svelte-jclnn8"
-                title="Open today's note"
+              <svg
+                fill="var(--color-subtext)"
+                height="16"
+                viewBox="0 0 24 24"
+                width="16"
               >
-                <span
-                  class="today-icon svelte-jclnn8"
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+               
+              <input
+                class="svelte-129hoe0"
+                placeholder="Search..."
+                type="text"
+              />
+            </div>
+             
+            <div
+              class="sidebar-actions svelte-129hoe0"
+            >
+              <div
+                class="daily-notes-container svelte-jclnn8"
+              >
+                <button
+                  class="today-btn svelte-jclnn8"
+                  title="Open today's note"
                 >
-                  T
-                </span>
-              </button>
+                  <span
+                    class="today-icon svelte-jclnn8"
+                  >
+                    T
+                  </span>
+                </button>
+                 
+                <button
+                  class="calendar-btn svelte-jclnn8"
+                  title="Open calendar"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    />
+                  </svg>
+                </button>
+                 
+                <!---->
+              </div>
+              <!---->
                
               <button
-                class="calendar-btn svelte-jclnn8"
-                title="Open calendar"
+                aria-label="Toggle AI Chat"
+                class="chat-button svelte-1trldch"
+                title="AI Chat"
               >
                 <svg
-                  fill="currentColor"
+                  class="svelte-1trldch"
+                  fill="none"
                   height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   viewBox="0 0 24 24"
                   width="16"
                 >
                   <path
-                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  />
+                  <circle
+                    cx="9"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
+                  />
+                  <circle
+                    cx="12"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
+                  />
+                  <circle
+                    cx="15"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
                   />
                 </svg>
               </button>
                
               <!---->
+              <!---->
             </div>
-            <!---->
-             
-            <button
-              aria-label="Toggle AI Chat"
-              class="chat-button svelte-1trldch"
-              title="AI Chat"
-            >
-              <svg
-                class="svelte-1trldch"
-                fill="none"
-                height="16"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="16"
-              >
-                <path
-                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                />
-                <circle
-                  cx="9"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-                <circle
-                  cx="12"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-                <circle
-                  cx="15"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-              </svg>
-            </button>
-             
-            <!---->
-            <!---->
           </div>
-        </div>
-         
-        <div
-          class="file-tree svelte-124nk1e"
-        >
+           
           <div
-            class="loading svelte-124nk1e"
+            class="file-tree svelte-124nk1e"
           >
             <div
-              class="spinner svelte-124nk1e"
-            />
+              class="loading svelte-124nk1e"
+            >
+              <div
+                class="spinner svelte-124nk1e"
+              />
+            </div>
+            <!---->
           </div>
+           
           <!---->
-        </div>
+           
+          <!---->
+          <!---->
+        </aside>
+        <!---->
+      </div>
+       
+      <div
+        class="sync-bar svelte-chipbn"
+      >
+        <button
+          class="sync-indicator svelte-15e08h8 uninitialized"
+          title="Click to sync now"
+        >
+          <svg
+            class="icon svelte-15e08h8"
+            fill="none"
+            height="14"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="14"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <line
+              x1="8"
+              x2="16"
+              y1="12"
+              y2="12"
+            />
+          </svg>
+          <!---->
+           
+          <span
+            class="label svelte-15e08h8"
+          >
+            Not synced
+          </span>
+        </button>
          
         <!---->
-         
         <!---->
-        <!---->
-      </aside>
-      <!---->
+      </div>
     </div>
      
     <div
@@ -333,7 +378,10 @@ exports[`PageDesktop snapshots > empty state — sidebar with no files, editor p
   <!---->
   
   <!---->
+   
+  <!---->
   
+  <!---->
   
 </div>
 `;
@@ -344,136 +392,181 @@ exports[`PageDesktop snapshots > loading state — spinner shown in editor area 
     class="app svelte-chipbn"
   >
     <div
-      class="sidebar-wrapper svelte-chipbn"
+      class="sidebar-area svelte-chipbn"
     >
-      <aside
-        class="sidebar svelte-129hoe0"
+      <div
+        class="sidebar-wrapper svelte-chipbn"
       >
-        <div
-          class="header svelte-129hoe0"
+        <aside
+          class="sidebar svelte-129hoe0"
         >
           <div
-            class="search-container svelte-129hoe0"
-          >
-            <svg
-              fill="var(--color-subtext)"
-              height="16"
-              viewBox="0 0 24 24"
-              width="16"
-            >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-              />
-            </svg>
-             
-            <input
-              class="svelte-129hoe0"
-              placeholder="Search..."
-              type="text"
-            />
-          </div>
-           
-          <div
-            class="sidebar-actions svelte-129hoe0"
+            class="header svelte-129hoe0"
           >
             <div
-              class="daily-notes-container svelte-jclnn8"
+              class="search-container svelte-129hoe0"
             >
-              <button
-                class="today-btn svelte-jclnn8"
-                title="Open today's note"
+              <svg
+                fill="var(--color-subtext)"
+                height="16"
+                viewBox="0 0 24 24"
+                width="16"
               >
-                <span
-                  class="today-icon svelte-jclnn8"
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+               
+              <input
+                class="svelte-129hoe0"
+                placeholder="Search..."
+                type="text"
+              />
+            </div>
+             
+            <div
+              class="sidebar-actions svelte-129hoe0"
+            >
+              <div
+                class="daily-notes-container svelte-jclnn8"
+              >
+                <button
+                  class="today-btn svelte-jclnn8"
+                  title="Open today's note"
                 >
-                  T
-                </span>
-              </button>
+                  <span
+                    class="today-icon svelte-jclnn8"
+                  >
+                    T
+                  </span>
+                </button>
+                 
+                <button
+                  class="calendar-btn svelte-jclnn8"
+                  title="Open calendar"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    />
+                  </svg>
+                </button>
+                 
+                <!---->
+              </div>
+              <!---->
                
               <button
-                class="calendar-btn svelte-jclnn8"
-                title="Open calendar"
+                aria-label="Toggle AI Chat"
+                class="chat-button svelte-1trldch"
+                title="AI Chat"
               >
                 <svg
-                  fill="currentColor"
+                  class="svelte-1trldch"
+                  fill="none"
                   height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   viewBox="0 0 24 24"
                   width="16"
                 >
                   <path
-                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  />
+                  <circle
+                    cx="9"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
+                  />
+                  <circle
+                    cx="12"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
+                  />
+                  <circle
+                    cx="15"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
                   />
                 </svg>
               </button>
                
               <!---->
+              <!---->
             </div>
-            <!---->
-             
-            <button
-              aria-label="Toggle AI Chat"
-              class="chat-button svelte-1trldch"
-              title="AI Chat"
-            >
-              <svg
-                class="svelte-1trldch"
-                fill="none"
-                height="16"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="16"
-              >
-                <path
-                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                />
-                <circle
-                  cx="9"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-                <circle
-                  cx="12"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-                <circle
-                  cx="15"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-              </svg>
-            </button>
-             
-            <!---->
-            <!---->
           </div>
-        </div>
-         
-        <div
-          class="file-tree svelte-124nk1e"
-        >
+           
           <div
-            class="loading svelte-124nk1e"
+            class="file-tree svelte-124nk1e"
           >
             <div
-              class="spinner svelte-124nk1e"
-            />
+              class="loading svelte-124nk1e"
+            >
+              <div
+                class="spinner svelte-124nk1e"
+              />
+            </div>
+            <!---->
           </div>
+           
           <!---->
-        </div>
+           
+          <!---->
+          <!---->
+        </aside>
+        <!---->
+      </div>
+       
+      <div
+        class="sync-bar svelte-chipbn"
+      >
+        <button
+          class="sync-indicator svelte-15e08h8 uninitialized"
+          title="Click to sync now"
+        >
+          <svg
+            class="icon svelte-15e08h8"
+            fill="none"
+            height="14"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="14"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <line
+              x1="8"
+              x2="16"
+              y1="12"
+              y2="12"
+            />
+          </svg>
+          <!---->
+           
+          <span
+            class="label svelte-15e08h8"
+          >
+            Not synced
+          </span>
+        </button>
          
         <!---->
-         
         <!---->
-        <!---->
-      </aside>
-      <!---->
+      </div>
     </div>
      
     <div
@@ -505,7 +598,10 @@ exports[`PageDesktop snapshots > loading state — spinner shown in editor area 
   <!---->
   
   <!---->
+   
+  <!---->
   
+  <!---->
   
 </div>
 `;
@@ -516,136 +612,181 @@ exports[`PageDesktop snapshots > note open — sidebar with file tree, editor sh
     class="app svelte-chipbn"
   >
     <div
-      class="sidebar-wrapper svelte-chipbn"
+      class="sidebar-area svelte-chipbn"
     >
-      <aside
-        class="sidebar svelte-129hoe0"
+      <div
+        class="sidebar-wrapper svelte-chipbn"
       >
-        <div
-          class="header svelte-129hoe0"
+        <aside
+          class="sidebar svelte-129hoe0"
         >
           <div
-            class="search-container svelte-129hoe0"
-          >
-            <svg
-              fill="var(--color-subtext)"
-              height="16"
-              viewBox="0 0 24 24"
-              width="16"
-            >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-              />
-            </svg>
-             
-            <input
-              class="svelte-129hoe0"
-              placeholder="Search..."
-              type="text"
-            />
-          </div>
-           
-          <div
-            class="sidebar-actions svelte-129hoe0"
+            class="header svelte-129hoe0"
           >
             <div
-              class="daily-notes-container svelte-jclnn8"
+              class="search-container svelte-129hoe0"
             >
-              <button
-                class="today-btn svelte-jclnn8"
-                title="Open today's note"
+              <svg
+                fill="var(--color-subtext)"
+                height="16"
+                viewBox="0 0 24 24"
+                width="16"
               >
-                <span
-                  class="today-icon svelte-jclnn8"
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+               
+              <input
+                class="svelte-129hoe0"
+                placeholder="Search..."
+                type="text"
+              />
+            </div>
+             
+            <div
+              class="sidebar-actions svelte-129hoe0"
+            >
+              <div
+                class="daily-notes-container svelte-jclnn8"
+              >
+                <button
+                  class="today-btn svelte-jclnn8"
+                  title="Open today's note"
                 >
-                  T
-                </span>
-              </button>
+                  <span
+                    class="today-icon svelte-jclnn8"
+                  >
+                    T
+                  </span>
+                </button>
+                 
+                <button
+                  class="calendar-btn svelte-jclnn8"
+                  title="Open calendar"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <path
+                      d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    />
+                  </svg>
+                </button>
+                 
+                <!---->
+              </div>
+              <!---->
                
               <button
-                class="calendar-btn svelte-jclnn8"
-                title="Open calendar"
+                aria-label="Toggle AI Chat"
+                class="chat-button svelte-1trldch"
+                title="AI Chat"
               >
                 <svg
-                  fill="currentColor"
+                  class="svelte-1trldch"
+                  fill="none"
                   height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   viewBox="0 0 24 24"
                   width="16"
                 >
                   <path
-                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  />
+                  <circle
+                    cx="9"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
+                  />
+                  <circle
+                    cx="12"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
+                  />
+                  <circle
+                    cx="15"
+                    cy="10"
+                    fill="currentColor"
+                    r="1"
                   />
                 </svg>
               </button>
                
               <!---->
+              <!---->
             </div>
-            <!---->
-             
-            <button
-              aria-label="Toggle AI Chat"
-              class="chat-button svelte-1trldch"
-              title="AI Chat"
-            >
-              <svg
-                class="svelte-1trldch"
-                fill="none"
-                height="16"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="16"
-              >
-                <path
-                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                />
-                <circle
-                  cx="9"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-                <circle
-                  cx="12"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-                <circle
-                  cx="15"
-                  cy="10"
-                  fill="currentColor"
-                  r="1"
-                />
-              </svg>
-            </button>
-             
-            <!---->
-            <!---->
           </div>
-        </div>
-         
-        <div
-          class="file-tree svelte-124nk1e"
-        >
+           
           <div
-            class="loading svelte-124nk1e"
+            class="file-tree svelte-124nk1e"
           >
             <div
-              class="spinner svelte-124nk1e"
-            />
+              class="loading svelte-124nk1e"
+            >
+              <div
+                class="spinner svelte-124nk1e"
+              />
+            </div>
+            <!---->
           </div>
+           
           <!---->
-        </div>
+           
+          <!---->
+          <!---->
+        </aside>
+        <!---->
+      </div>
+       
+      <div
+        class="sync-bar svelte-chipbn"
+      >
+        <button
+          class="sync-indicator svelte-15e08h8 uninitialized"
+          title="Click to sync now"
+        >
+          <svg
+            class="icon svelte-15e08h8"
+            fill="none"
+            height="14"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="14"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <line
+              x1="8"
+              x2="16"
+              y1="12"
+              y2="12"
+            />
+          </svg>
+          <!---->
+           
+          <span
+            class="label svelte-15e08h8"
+          >
+            Not synced
+          </span>
+        </button>
          
         <!---->
-         
         <!---->
-        <!---->
-      </aside>
-      <!---->
+      </div>
     </div>
      
     <div
@@ -1071,7 +1212,10 @@ exports[`PageDesktop snapshots > note open — sidebar with file tree, editor sh
   <!---->
   
   <!---->
+   
+  <!---->
   
+  <!---->
   
 </div>
 `;

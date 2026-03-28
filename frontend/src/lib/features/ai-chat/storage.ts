@@ -9,9 +9,9 @@ import {
   type AISettings,
   DEFAULT_SETTINGS,
   STORAGE_KEYS,
-} from './types';
+} from "./types";
 
-const STORAGE_PREFIX = 'basidian-ai-chat-';
+const STORAGE_PREFIX = "basidian-ai-chat-";
 
 function storageGet<T>(key: string): T | null {
   try {
@@ -51,7 +51,7 @@ export function getConversations(): Conversation[] {
   const stored = storageGet<Conversation[]>(STORAGE_KEYS.CONVERSATIONS);
   const conversations = stored ?? [];
   return conversations.sort(
-    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
   );
 }
 
@@ -125,5 +125,5 @@ export function generateTitle(content: string): string {
   if (trimmed.length <= maxLength) {
     return trimmed;
   }
-  return trimmed.substring(0, maxLength - 3) + '...';
+  return trimmed.substring(0, maxLength - 3) + "...";
 }

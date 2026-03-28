@@ -1,7 +1,6 @@
 """bscli - Basidian CLI tool for file operations and search."""
 
 import asyncio
-from typing import Optional
 
 import click
 
@@ -17,6 +16,7 @@ def run_async(coro):
 
 
 # CLI commands
+
 
 @click.group()
 @click.option("--url", default=DEFAULT_URL, help="Backend URL")
@@ -38,6 +38,7 @@ def files():
 @click.pass_context
 def files_list(ctx, path: str):
     """List files and folders at a path."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             nodes = await client.get_tree(path or None)
@@ -55,6 +56,7 @@ def files_list(ctx, path: str):
 @click.pass_context
 def files_tree(ctx):
     """Show full tree structure."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             nodes = await client.get_tree()
@@ -79,11 +81,18 @@ def files_tree(ctx):
 
 @files.command("create")
 @click.argument("path")
-@click.option("--type", "node_type", type=click.Choice(["file", "folder"]), default="file", help="Node type")
+@click.option(
+    "--type",
+    "node_type",
+    type=click.Choice(["file", "folder"]),
+    default="file",
+    help="Node type",
+)
 @click.option("--content", default="", help="File content")
 @click.pass_context
 def files_create(ctx, path: str, node_type: str, content: str):
     """Create a new file or folder."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             # Check if exists
@@ -102,6 +111,7 @@ def files_create(ctx, path: str, node_type: str, content: str):
 @click.pass_context
 def files_read(ctx, path: str):
     """Read file content."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             node = await client.get_node(path)
@@ -122,6 +132,7 @@ def files_read(ctx, path: str):
 @click.pass_context
 def files_delete(ctx, path: str, force: bool):
     """Delete a file or folder."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             node = await client.get_node(path)
@@ -144,6 +155,7 @@ def files_delete(ctx, path: str, force: bool):
 @click.pass_context
 def files_move(ctx, source: str, dest: str):
     """Move or rename a file/folder."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             node = await client.get_node(source)
@@ -175,6 +187,7 @@ def files_move(ctx, source: str, dest: str):
 @click.pass_context
 def search(ctx, query: str):
     """Search files by name or content."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             results = await client.search_files(query)
@@ -194,6 +207,7 @@ def search(ctx, query: str):
 @click.pass_context
 def recent(ctx, limit: int):
     """List recently modified files."""
+
     async def _run():
         async with BasidianClient(ctx.obj["url"]) as client:
             # Get all files and take the most recent ones

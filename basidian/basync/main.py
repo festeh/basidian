@@ -119,7 +119,9 @@ async def do_push(
     # Track folders we need to create
     folders_to_create: set[str] = set()
 
-    for i, (file_remote_path, file_local_path) in enumerate(sorted(local_files.items()), 1):
+    for i, (file_remote_path, file_local_path) in enumerate(
+        sorted(local_files.items()), 1
+    ):
         # Adjust remote path if not root
         if remote_path != "/":
             full_remote_path = remote_path.rstrip("/") + file_remote_path
@@ -203,7 +205,8 @@ async def do_pull(
     if remote_path != "/":
         prefix = remote_path.rstrip("/")
         remote_nodes = [
-            n for n in remote_nodes
+            n
+            for n in remote_nodes
             if n.path == prefix or n.path.startswith(prefix + "/")
         ]
 
@@ -218,7 +221,7 @@ async def do_pull(
     for i, node in enumerate(sorted(files, key=lambda n: n.path), 1):
         # Calculate local path
         if remote_path != "/":
-            rel_path = node.path[len(remote_path.rstrip("/")):]
+            rel_path = node.path[len(remote_path.rstrip("/")) :]
         else:
             rel_path = node.path
 
@@ -256,13 +259,13 @@ async def do_pull(
 
             click.echo(f"[~] update ({i}/{total}): {rel_path}")
             if not dry_run:
-                file_path.write_text(node.content, encoding="utf-8")
+                file_path.write_text(node.content or "", encoding="utf-8")
             updated += 1
         else:
             click.echo(f"[+] create ({i}/{total}): {rel_path}")
             if not dry_run:
                 file_path.parent.mkdir(parents=True, exist_ok=True)
-                file_path.write_text(node.content, encoding="utf-8")
+                file_path.write_text(node.content or "", encoding="utf-8")
             created += 1
 
     return created, updated, skipped
@@ -270,8 +273,11 @@ async def do_pull(
 
 # CLI
 
+
 @click.group()
-@click.option("--config", "config_path", type=click.Path(exists=True), help="Config file path")
+@click.option(
+    "--config", "config_path", type=click.Path(exists=True), help="Config file path"
+)
 @click.pass_context
 def cli(ctx, config_path: Optional[str]):
     """basync - Sync files between local filesystem and Basidian."""
@@ -284,8 +290,12 @@ def cli(ctx, config_path: Optional[str]):
 @click.argument("path", default="", required=False)
 @click.option("--local", "local_path", help="Local directory")
 @click.option("--remote", "remote_path", help="Remote Basidian path")
-@click.option("--include", "includes", multiple=True, help="Include pattern (repeatable)")
-@click.option("--exclude", "excludes", multiple=True, help="Exclude pattern (repeatable)")
+@click.option(
+    "--include", "includes", multiple=True, help="Include pattern (repeatable)"
+)
+@click.option(
+    "--exclude", "excludes", multiple=True, help="Exclude pattern (repeatable)"
+)
 @click.option("--dry-run", is_flag=True, help="Show what would happen")
 @click.option("--url", "backend_url", help="Backend URL")
 @click.pass_context
@@ -323,7 +333,9 @@ def push(
                 created, updated, skipped = await do_push(
                     client, local, remote, include, exclude, dry_run
                 )
-                click.echo(f"\nDone: {created} created, {updated} updated, {skipped} skipped")
+                click.echo(
+                    f"\nDone: {created} created, {updated} updated, {skipped} skipped"
+                )
                 return 0 if skipped == 0 else 1
             except Exception as e:
                 click.echo(f"\nError: {e}", err=True)
@@ -337,8 +349,12 @@ def push(
 @click.argument("path", default="", required=False)
 @click.option("--local", "local_path", help="Local directory")
 @click.option("--remote", "remote_path", help="Remote Basidian path")
-@click.option("--include", "includes", multiple=True, help="Include pattern (repeatable)")
-@click.option("--exclude", "excludes", multiple=True, help="Exclude pattern (repeatable)")
+@click.option(
+    "--include", "includes", multiple=True, help="Include pattern (repeatable)"
+)
+@click.option(
+    "--exclude", "excludes", multiple=True, help="Exclude pattern (repeatable)"
+)
 @click.option("--dry-run", is_flag=True, help="Show what would happen")
 @click.option("--url", "backend_url", help="Backend URL")
 @click.pass_context
@@ -376,7 +392,9 @@ def pull(
                 created, updated, skipped = await do_pull(
                     client, local, remote, include, exclude, dry_run
                 )
-                click.echo(f"\nDone: {created} created, {updated} updated, {skipped} skipped")
+                click.echo(
+                    f"\nDone: {created} created, {updated} updated, {skipped} skipped"
+                )
                 return 0 if skipped == 0 else 1
             except Exception as e:
                 click.echo(f"\nError: {e}", err=True)

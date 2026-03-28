@@ -14,8 +14,6 @@ from ..db import get_db, utcnow_iso
 router = APIRouter()
 
 
-
-
 class SyncNodeRow(BaseModel):
     id: str
     parent_id: Optional[str] = None
@@ -128,9 +126,7 @@ async def get_changes(
     ]
 
     logger.info(f"Sync pull: {len(nodes)} nodes, {len(content)} content rows")
-    return SyncChangesResponse(
-        nodes=nodes, content=content, server_time=server_time
-    )
+    return SyncChangesResponse(nodes=nodes, content=content, server_time=server_time)
 
 
 def _get_index(request: Request) -> MetadataIndex:
@@ -164,8 +160,15 @@ async def push_changes(
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
-                    node.id, node.parent_id, node.type, node.name, node.path,
-                    node.sort_order, node.created_at, node.updated_at, node.deleted_at,
+                    node.id,
+                    node.parent_id,
+                    node.type,
+                    node.name,
+                    node.path,
+                    node.sort_order,
+                    node.created_at,
+                    node.updated_at,
+                    node.deleted_at,
                 ),
             )
             results.append(SyncPushResult(id=node.id, accepted=True))
@@ -179,8 +182,15 @@ async def push_changes(
                 WHERE id = ?
                 """,
                 (
-                    node.parent_id, node.type, node.name, node.path, node.sort_order,
-                    node.created_at, node.updated_at, node.deleted_at, node.id,
+                    node.parent_id,
+                    node.type,
+                    node.name,
+                    node.path,
+                    node.sort_order,
+                    node.created_at,
+                    node.updated_at,
+                    node.deleted_at,
+                    node.id,
                 ),
             )
             results.append(SyncPushResult(id=node.id, accepted=True))
@@ -190,12 +200,14 @@ async def push_changes(
                 index.remove_node(node.id)
         else:
             # Server is newer — reject
-            results.append(SyncPushResult(
-                id=node.id,
-                accepted=False,
-                reason="newer_on_server",
-                server_updated_at=existing["updated_at"],
-            ))
+            results.append(
+                SyncPushResult(
+                    id=node.id,
+                    accepted=False,
+                    reason="newer_on_server",
+                    server_updated_at=existing["updated_at"],
+                )
+            )
 
     for content in req.content:
         async with db.execute(
@@ -224,14 +236,18 @@ async def push_changes(
             ) as cursor:
                 node_info = await cursor.fetchone()
             if node_info:
-                index.update_node(content.node_id, node_info["name"], node_info["path"], content.body)
+                index.update_node(
+                    content.node_id, node_info["name"], node_info["path"], content.body
+                )
         else:
-            results.append(SyncPushResult(
-                id=content.node_id,
-                accepted=False,
-                reason="newer_on_server",
-                server_updated_at=existing["updated_at"],
-            ))
+            results.append(
+                SyncPushResult(
+                    id=content.node_id,
+                    accepted=False,
+                    reason="newer_on_server",
+                    server_updated_at=existing["updated_at"],
+                )
+            )
 
     await db.commit()
 

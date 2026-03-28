@@ -4,7 +4,7 @@ from typing import Optional
 
 import httpx
 
-from .models import FsNode, MoveRequest, Note
+from .models import FsNode, MoveRequest
 
 
 def _parse_node(item: dict) -> FsNode:
@@ -16,17 +16,6 @@ def _parse_node(item: dict) -> FsNode:
         parent_path=item["parent_path"],
         content=item.get("content", ""),
         sort_order=item.get("sort_order", 0),
-        created_at=item.get("created_at"),
-        updated_at=item.get("updated_at"),
-    )
-
-
-def _parse_note(item: dict) -> Note:
-    return Note(
-        id=item["id"],
-        title=item["title"],
-        content=item["content"],
-        date=item["date"],
         created_at=item.get("created_at"),
         updated_at=item.get("updated_at"),
     )
@@ -78,9 +67,7 @@ class BasidianClient:
         response.raise_for_status()
         return _parse_node(response.json())
 
-    async def create_node(
-        self, path: str, node_type: str, content: str = ""
-    ) -> FsNode:
+    async def create_node(self, path: str, node_type: str, content: str = "") -> FsNode:
         path = path.strip("/")
         if "/" in path:
             parts = path.rsplit("/", 1)
@@ -131,15 +118,3 @@ class BasidianClient:
         response = await self.client.get("/api/fs/search", params={"q": query})
         response.raise_for_status()
         return [_parse_node(item) for item in response.json()]
-
-    # ---- Notes ----
-
-    async def get_notes(self) -> list[Note]:
-        response = await self.client.get("/api/notes")
-        response.raise_for_status()
-        return [_parse_note(item) for item in response.json()]
-
-    async def search_notes(self, query: str) -> list[Note]:
-        response = await self.client.get("/api/search", params={"q": query})
-        response.raise_for_status()
-        return [_parse_note(item) for item in response.json()]

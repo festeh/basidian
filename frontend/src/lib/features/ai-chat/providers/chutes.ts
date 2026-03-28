@@ -11,7 +11,7 @@ import type {
   SendMessageOptions,
   ProviderConfig,
   ChatCompletionResponse,
-} from '../types';
+} from "../types";
 
 export class ChutesProvider implements AIProvider {
   readonly id: string;
@@ -31,7 +31,7 @@ export class ChutesProvider implements AIProvider {
   async sendMessage(
     messages: Message[],
     options: SendMessageOptions,
-    onChunk?: (chunk: string) => void
+    onChunk?: (chunk: string) => void,
   ): Promise<string> {
     const { apiKey, model, temperature = 0.7, maxTokens = 1024 } = options;
     const useStreaming = options.stream !== false && onChunk !== undefined;
@@ -48,10 +48,10 @@ export class ChutesProvider implements AIProvider {
     };
 
     const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
     });
@@ -73,11 +73,11 @@ export class ChutesProvider implements AIProvider {
    */
   private async handleStreamingResponse(
     response: Response,
-    onChunk: (chunk: string) => void
+    onChunk: (chunk: string) => void,
   ): Promise<string> {
     const reader = response.body!.getReader();
     const decoder = new TextDecoder();
-    let fullContent = '';
+    let fullContent = "";
 
     try {
       while (true) {
@@ -85,14 +85,14 @@ export class ChutesProvider implements AIProvider {
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        const lines = chunk.split("\n");
 
         for (const line of lines) {
-          if (line.startsWith('data: ')) {
+          if (line.startsWith("data: ")) {
             const data = line.slice(6).trim();
 
             // Skip [DONE] marker
-            if (data === '[DONE]') continue;
+            if (data === "[DONE]") continue;
 
             try {
               const parsed = JSON.parse(data);
@@ -117,9 +117,11 @@ export class ChutesProvider implements AIProvider {
   /**
    * Handle non-streaming response.
    */
-  private async handleNonStreamingResponse(response: Response): Promise<string> {
+  private async handleNonStreamingResponse(
+    response: Response,
+  ): Promise<string> {
     const data: ChatCompletionResponse = await response.json();
-    return data.choices[0]?.message?.content ?? '';
+    return data.choices[0]?.message?.content ?? "";
   }
 
   /**
@@ -128,7 +130,7 @@ export class ChutesProvider implements AIProvider {
   async validateApiKey(apiKey: string): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.baseUrl}/models`, {
-        method: 'GET',
+        method: "GET",
         headers: {
           Authorization: `Bearer ${apiKey}`,
         },

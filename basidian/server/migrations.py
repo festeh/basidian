@@ -117,9 +117,7 @@ async def _create_indexes(db: aiosqlite.Connection) -> None:
     await db.execute(
         "CREATE INDEX IF NOT EXISTS idx_fs_nodes_parent_id ON fs_nodes (parent_id)"
     )
-    await db.execute(
-        "CREATE INDEX IF NOT EXISTS idx_fs_nodes_type ON fs_nodes (type)"
-    )
+    await db.execute("CREATE INDEX IF NOT EXISTS idx_fs_nodes_type ON fs_nodes (type)")
     # Two partial indexes for unique name constraint (NULL parent_id needs special handling)
     await db.execute("""
         CREATE UNIQUE INDEX IF NOT EXISTS idx_fs_nodes_unique_name

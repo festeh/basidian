@@ -70,8 +70,8 @@ async def get_nodes_by_tag(
 
 @router.get("/api/fs/backlinks")
 async def get_backlinks(
+    request: Request,
     path: str = Query(...),
-    request: Request = None,
     db: aiosqlite.Connection = Depends(get_db),
 ) -> list[dict]:
     """Get nodes that link to a given path."""
@@ -119,10 +119,12 @@ async def get_links(
                     resolved = {"target_id": row["id"], "target_name": row["name"]}
                     break
 
-        results.append({
-            "target_path": target_path,
-            **(resolved or {"target_id": None, "target_name": None}),
-        })
+        results.append(
+            {
+                "target_path": target_path,
+                **(resolved or {"target_id": None, "target_name": None}),
+            }
+        )
 
     return results
 

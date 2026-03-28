@@ -84,7 +84,7 @@ async def list_versions(
         "SELECT id, node_id, body, created_at FROM fs_versions WHERE node_id = ? ORDER BY created_at DESC",
         (node_id,),
     ) as cursor:
-        rows = await cursor.fetchall()
+        rows = list(await cursor.fetchall())
 
     if not rows:
         return []

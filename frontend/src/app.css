@@ -1,131 +1,133 @@
-@import 'katex/dist/katex.min.css';
-@import '@fontsource-variable/plus-jakarta-sans';
+@import "katex/dist/katex.min.css";
+@import "@fontsource-variable/plus-jakarta-sans";
 
 :root {
-	/* Default theme (Catppuccin Mocha) */
-	--color-base: #1e1e2e;
-	--color-mantle: #181825;
-	--color-surface: #313244;
-	--color-overlay: #45475a;
-	--color-text: #cdd6f4;
-	--color-subtext: #a6adc8;
-	--color-accent: #89b4fa;
-	--color-secondary: #f5c2e7;
-	--color-error: #f38ba8;
-	--color-success: #a6e3a1;
+  /* Default theme (Catppuccin Mocha) */
+  --color-base: #1e1e2e;
+  --color-mantle: #181825;
+  --color-surface: #313244;
+  --color-overlay: #45475a;
+  --color-text: #cdd6f4;
+  --color-subtext: #a6adc8;
+  --color-accent: #89b4fa;
+  --color-secondary: #f5c2e7;
+  --color-error: #f38ba8;
+  --color-success: #a6e3a1;
 
-	/* Code syntax highlighting colors */
-	--color-code-keyword: #cba6f7;
-	--color-code-string: #a6e3a1;
-	--color-code-comment: #6c7086;
-	--color-code-number: #fab387;
-	--color-code-function: #89b4fa;
-	--color-code-variable: #f5c2e7;
-	--color-code-operator: #94e2d5;
+  /* Code syntax highlighting colors */
+  --color-code-keyword: #cba6f7;
+  --color-code-string: #a6e3a1;
+  --color-code-comment: #6c7086;
+  --color-code-number: #fab387;
+  --color-code-function: #89b4fa;
+  --color-code-variable: #f5c2e7;
+  --color-code-operator: #94e2d5;
 
-	/* Typography */
-	--font-ui: 'Plus Jakarta Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-	--font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-	--font-size-base: 14px;
+  /* Typography */
+  --font-ui:
+    "Plus Jakarta Sans Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --font-size-base: 14px;
 
-	/* Spacing */
-	--space-hairline: 2px;
-	--space-tight: 4px;
-	--space-snug: 6px;
-	--space-compact: 8px;
-	--space-cozy: 12px;
-	--space-comfortable: 16px;
-	--space-spacious: 20px;
-	--space-loose: 24px;
-	--space-wide: 32px;
+  /* Spacing */
+  --space-hairline: 2px;
+  --space-tight: 4px;
+  --space-snug: 6px;
+  --space-compact: 8px;
+  --space-cozy: 12px;
+  --space-comfortable: 16px;
+  --space-spacious: 20px;
+  --space-loose: 24px;
+  --space-wide: 32px;
 
-	/* Border radius */
-	--radius-subtle: 4px;
-	--radius-default: 6px;
-	--radius-rounded: 8px;
-	--radius-prominent: 12px;
+  /* Border radius */
+  --radius-subtle: 4px;
+  --radius-default: 6px;
+  --radius-rounded: 8px;
+  --radius-prominent: 12px;
 
-	/* Font sizes */
-	--text-caption: 10px;
-	--text-label: 12px;
-	--text-detail: 13px;
-	--text-body: 14px;
-	--text-subheading: 16px;
-	--text-heading: 18px;
-	--text-title: 20px;
+  /* Font sizes */
+  --text-caption: 10px;
+  --text-label: 12px;
+  --text-detail: 13px;
+  --text-body: 14px;
+  --text-subheading: 16px;
+  --text-heading: 18px;
+  --text-title: 20px;
 
-	/* Shadows */
-	--shadow-sidebar: 2px 0 8px rgba(0, 0, 0, 0.15);
-	--shadow-topbar: 0 2px 8px rgba(0, 0, 0, 0.12);
-	--shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.2);
-	--shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.3);
-	--shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.4);
+  /* Shadows */
+  --shadow-sidebar: 2px 0 8px rgba(0, 0, 0, 0.15);
+  --shadow-topbar: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-raised: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.4);
 
-	/* Z-index layers */
-	--z-raised: 1;
-	--z-sticky: 10;
-	--z-overlay: 100;
-	--z-modal: 1000;
+  /* Z-index layers */
+  --z-raised: 1;
+  --z-sticky: 10;
+  --z-overlay: 100;
+  --z-modal: 1000;
 
-	/* Backdrop */
-	--color-backdrop: rgba(0, 0, 0, 0.5);
+  /* Backdrop */
+  --color-backdrop: rgba(0, 0, 0, 0.5);
 
-	color-scheme: dark;
+  color-scheme: dark;
 }
 
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
 body {
-	height: 100%;
-	overflow: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Safe area insets for notches, status bars, navigation bars */
 :root {
-	--safe-area-inset-top: env(safe-area-inset-top, 0px);
-	--safe-area-inset-right: env(safe-area-inset-right, 0px);
-	--safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-	--safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
 }
 
 body {
-	font-family: var(--font-ui);
-	font-size: var(--font-size-base);
-	background-color: var(--color-base);
-	color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-base);
+  background-color: var(--color-base);
+  color: var(--color-text);
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-	width: 8px;
-	height: 8px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-	background: transparent;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--color-overlay);
-	border-radius: 4px;
+  background: var(--color-overlay);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--color-subtext);
+  background: var(--color-subtext);
 }
 
 /* Button reset */
 button {
-	font-family: inherit;
+  font-family: inherit;
 }
 
 /* Input reset */
 input,
 textarea {
-	font-family: inherit;
+  font-family: inherit;
 }

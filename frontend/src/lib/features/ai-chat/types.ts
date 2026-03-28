@@ -40,8 +40,8 @@ export interface Message {
   error?: string;
 }
 
-export type MessageRole = 'user' | 'assistant' | 'system';
-export type MessageStatus = 'sending' | 'sent' | 'error';
+export type MessageRole = "user" | "assistant" | "system";
+export type MessageStatus = "sending" | "sent" | "error";
 
 // =============================================================================
 // Settings & Configuration
@@ -69,9 +69,9 @@ export interface AISettings {
  * Default settings for new installations.
  */
 export const DEFAULT_SETTINGS: AISettings = {
-  provider: 'chutes',
+  provider: "chutes",
   apiKey: null,
-  model: 'deepseek-ai/DeepSeek-V3-0324',
+  model: "deepseek-ai/DeepSeek-V3-0324",
   temperature: 0.7,
   maxTokens: 1024,
   systemPrompt: null,
@@ -134,7 +134,7 @@ export interface AIProvider {
   sendMessage(
     messages: Message[],
     options: SendMessageOptions,
-    onChunk?: (chunk: string) => void
+    onChunk?: (chunk: string) => void,
   ): Promise<string>;
 
   /**
@@ -168,13 +168,13 @@ export interface ChatCompletionRequest {
  */
 export interface ChatCompletionResponse {
   id: string;
-  object: 'chat.completion';
+  object: "chat.completion";
   created: number;
   model: string;
   choices: Array<{
     index: number;
     message: {
-      role: 'assistant';
+      role: "assistant";
       content: string;
     };
     finish_reason: string;
@@ -191,13 +191,13 @@ export interface ChatCompletionResponse {
  */
 export interface ChatCompletionChunk {
   id: string;
-  object: 'chat.completion.chunk';
+  object: "chat.completion.chunk";
   created: number;
   model: string;
   choices: Array<{
     index: number;
     delta: {
-      role?: 'assistant';
+      role?: "assistant";
       content?: string;
     };
     finish_reason: string | null;
@@ -213,9 +213,9 @@ export interface ChatCompletionChunk {
  * All keys are prefixed with 'basidian-ai-chat-'.
  */
 export const STORAGE_KEYS = {
-  SETTINGS: 'settings',
-  CONVERSATIONS: 'conversations',
-  CURRENT_CONVERSATION_ID: 'currentConversationId',
+  SETTINGS: "settings",
+  CONVERSATIONS: "conversations",
+  CURRENT_CONVERSATION_ID: "currentConversationId",
 } as const;
 
 // =============================================================================
@@ -227,14 +227,14 @@ export const STORAGE_KEYS = {
  */
 export const PROVIDERS: Record<string, ProviderConfig> = {
   chutes: {
-    id: 'chutes',
-    name: 'Chutes AI',
-    baseUrl: 'https://llm.chutes.ai/v1',
+    id: "chutes",
+    name: "Chutes AI",
+    baseUrl: "https://llm.chutes.ai/v1",
     models: [
-      'deepseek-ai/DeepSeek-V3-0324',
-      'moonshotai/Kimi-K2-Instruct-0905',
-      'Qwen/Qwen3-235B-A22B',
+      "deepseek-ai/DeepSeek-V3-0324",
+      "moonshotai/Kimi-K2-Instruct-0905",
+      "Qwen/Qwen3-235B-A22B",
     ],
-    defaultModel: 'deepseek-ai/DeepSeek-V3-0324',
+    defaultModel: "deepseek-ai/DeepSeek-V3-0324",
   },
 };

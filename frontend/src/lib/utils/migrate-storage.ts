@@ -6,29 +6,29 @@
  */
 
 const MIGRATIONS: [string, string][] = [
-	['basidian-plugin-daily-notes-', 'basidian-daily-notes-'],
-	['basidian-plugin-ai-chat-', 'basidian-ai-chat-'],
+  ["basidian-plugin-daily-notes-", "basidian-daily-notes-"],
+  ["basidian-plugin-ai-chat-", "basidian-ai-chat-"],
 ];
 
 export function migratePluginStorageKeys(): void {
-	for (const [oldPrefix, newPrefix] of MIGRATIONS) {
-		const keysToMigrate: string[] = [];
+  for (const [oldPrefix, newPrefix] of MIGRATIONS) {
+    const keysToMigrate: string[] = [];
 
-		for (let i = 0; i < localStorage.length; i++) {
-			const key = localStorage.key(i);
-			if (key?.startsWith(oldPrefix)) {
-				keysToMigrate.push(key);
-			}
-		}
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(oldPrefix)) {
+        keysToMigrate.push(key);
+      }
+    }
 
-		for (const oldKey of keysToMigrate) {
-			const suffix = oldKey.slice(oldPrefix.length);
-			const newKey = newPrefix + suffix;
-			const value = localStorage.getItem(oldKey);
-			if (value !== null) {
-				localStorage.setItem(newKey, value);
-			}
-			localStorage.removeItem(oldKey);
-		}
-	}
+    for (const oldKey of keysToMigrate) {
+      const suffix = oldKey.slice(oldPrefix.length);
+      const newKey = newPrefix + suffix;
+      const value = localStorage.getItem(oldKey);
+      if (value !== null) {
+        localStorage.setItem(newKey, value);
+      }
+      localStorage.removeItem(oldKey);
+    }
+  }
 }

@@ -4,9 +4,9 @@
  * Exports provider interface and manages provider instances.
  */
 
-import type { AIProvider, ProviderConfig } from '../types';
-import { PROVIDERS } from '../types';
-import { ChutesProvider } from './chutes';
+import type { AIProvider, ProviderConfig } from "../types";
+import { PROVIDERS } from "../types";
+import { ChutesProvider } from "./chutes";
 
 // Re-export types for convenience
 export type { AIProvider, ProviderConfig };
@@ -33,7 +33,7 @@ export function getProvider(providerId: string): AIProvider | null {
   let provider: AIProvider;
 
   switch (providerId) {
-    case 'chutes':
+    case "chutes":
       provider = new ChutesProvider(config);
       break;
     default:

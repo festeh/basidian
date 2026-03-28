@@ -56,12 +56,12 @@ class DailyNotes:
         d = datetime.strptime(date_str, self.date_format).date()
         return await self._client.get_node(self._path_for(d))
 
-    async def list(self) -> list[FsNode]:
+    async def list_all(self) -> list[FsNode]:
         """List all daily notes in the folder."""
         return await self._client.get_tree(parent_path=self.folder)
 
     async def append_today(self, content: str) -> FsNode:
         """Append content to today's note, creating it if needed."""
         node = await self.get_or_create_today()
-        new_content = node.content.rstrip("\n") + "\n\n" + content + "\n"
+        new_content = (node.content or "").rstrip("\n") + "\n\n" + content + "\n"
         return await self._client.update_node(node.id, new_content)

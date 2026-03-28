@@ -23,8 +23,18 @@ _DAILY_PATTERN = re.compile(
     r"(\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{4})\.md$"
 )
 _MONTH_ABBREVS = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
 ]
 
 
@@ -117,7 +127,9 @@ class MetadataIndex:
         """Remove a node from all indexes."""
         self._remove_node(node_id)
 
-    def on_move(self, node_id: str, old_path: str, new_path: str, new_name: str) -> None:
+    def on_move(
+        self, node_id: str, old_path: str, new_path: str, new_name: str
+    ) -> None:
         """Update indexes after a node move/rename."""
         # Update daily dates if filename changed
         self.daily_dates = {

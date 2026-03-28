@@ -66,7 +66,12 @@ def create_app(db_path: str = "data/basidian.db") -> FastAPI:
             "WHERE n.type = 'file'"
         ) as cursor:
             nodes = [
-                {"id": row["id"], "name": row["name"], "path": row["path"], "body": row["body"]}
+                {
+                    "id": row["id"],
+                    "name": row["name"],
+                    "path": row["path"],
+                    "body": row["body"],
+                }
                 for row in await cursor.fetchall()
             ]
         index.build(nodes)
@@ -118,8 +123,12 @@ def cli():
 
 
 @cli.command()
-@click.option("--http", default=":8090", help="HTTP server address (e.g., :8090 or 0.0.0.0:8090)")
-@click.option("--db", "db_path", default="data/basidian.db", help="SQLite database path")
+@click.option(
+    "--http", default=":8090", help="HTTP server address (e.g., :8090 or 0.0.0.0:8090)"
+)
+@click.option(
+    "--db", "db_path", default="data/basidian.db", help="SQLite database path"
+)
 def serve(http: str, db_path: str):
     """Start the Basidian backend server."""
     # Parse host:port from --http flag

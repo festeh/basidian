@@ -3,7 +3,5 @@
   "identifier": "mobile",
   "platforms": ["android", "iOS"],
   "windows": ["main"],
-  "permissions": [
-    "safe-area-insets:default"
-  ]
+  "permissions": ["safe-area-insets:default"]
 }

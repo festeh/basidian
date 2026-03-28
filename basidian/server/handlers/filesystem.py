@@ -34,7 +34,9 @@ async def _get_parent_path(db: aiosqlite.Connection, parent_id: str | None) -> s
     """Get the path of a parent node, or '/' for root."""
     if parent_id is None:
         return "/"
-    async with db.execute("SELECT path FROM fs_nodes WHERE id = ?", (parent_id,)) as cursor:
+    async with db.execute(
+        "SELECT path FROM fs_nodes WHERE id = ?", (parent_id,)
+    ) as cursor:
         row = await cursor.fetchone()
     return row["path"] if row else "/"
 
@@ -81,7 +83,8 @@ async def get_tree(
     if parent_path:
         # Find the parent node to get its ID
         async with db.execute(
-            "SELECT id FROM fs_nodes WHERE path = ? AND deleted_at IS NULL", (parent_path,)
+            "SELECT id FROM fs_nodes WHERE path = ? AND deleted_at IS NULL",
+            (parent_path,),
         ) as cursor:
             parent_row = await cursor.fetchone()
 
@@ -266,7 +269,9 @@ async def update_node(
         raise HTTPException(status_code=404, detail="Node not found")
 
     new_name = req.name if req.name is not None else node_row["name"]
-    new_sort_order = req.sort_order if req.sort_order is not None else node_row["sort_order"]
+    new_sort_order = (
+        req.sort_order if req.sort_order is not None else node_row["sort_order"]
+    )
 
     now_dt = datetime.now(timezone.utc)
     now_iso = utcnow_iso()
@@ -286,7 +291,9 @@ async def update_node(
         if content_changing and content_row and content_row["updated_at"]:
             # Auto-snapshot on inactivity gap
             try:
-                last_updated = datetime.fromisoformat(content_row["updated_at"]).replace(tzinfo=timezone.utc)
+                last_updated = datetime.fromisoformat(
+                    content_row["updated_at"]
+                ).replace(tzinfo=timezone.utc)
                 gap = now_dt - last_updated
                 if gap.total_seconds() >= INACTIVITY_THRESHOLD_MINUTES * 60:
                     await create_version_if_changed(
@@ -325,7 +332,9 @@ async def update_node(
         ) as cursor:
             node_info = await cursor.fetchone()
         if node_info:
-            _get_index(request).update_node(node_id, node_info["name"], node_info["path"], req.content)
+            _get_index(request).update_node(
+                node_id, node_info["name"], node_info["path"], req.content
+            )
 
     # Fetch and return updated node
     async with db.execute(
@@ -352,7 +361,8 @@ async def delete_node(
 ) -> None:
     """Soft-delete a node. Sets deleted_at on the node and all descendants."""
     async with db.execute(
-        "SELECT path, type FROM fs_nodes WHERE id = ? AND deleted_at IS NULL", (node_id,)
+        "SELECT path, type FROM fs_nodes WHERE id = ? AND deleted_at IS NULL",
+        (node_id,),
     ) as cursor:
         row = await cursor.fetchone()
 
@@ -437,7 +447,9 @@ async def move_node(
             ) as cursor:
                 parent_row = await cursor.fetchone()
                 if parent_row is None:
-                    raise HTTPException(status_code=400, detail="Target folder not found")
+                    raise HTTPException(
+                        status_code=400, detail="Target folder not found"
+                    )
                 new_parent_id = parent_row["id"]
 
     new_path = _build_path(new_parent_path, new_name)
@@ -483,7 +495,7 @@ async def move_node(
             children = await cursor.fetchall()
 
         for child in children:
-            child_new_path = new_path + child["path"][len(old_path):]
+            child_new_path = new_path + child["path"][len(old_path) :]
             await db.execute(
                 "UPDATE fs_nodes SET path = ?, updated_at = ? WHERE id = ?",
                 (child_new_path, now, child["id"]),

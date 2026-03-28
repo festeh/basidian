@@ -180,6 +180,47 @@ exports[`PageMobile snapshots > empty state — top bar with hamburger, editor p
       </main>
     </div>
      
+    <div
+      class="sync-bar svelte-183wtch"
+    >
+      <button
+        class="sync-indicator svelte-15e08h8 uninitialized"
+        title="Click to sync now"
+      >
+        <svg
+          class="icon svelte-15e08h8"
+          fill="none"
+          height="14"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="14"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <line
+            x1="8"
+            x2="16"
+            y1="12"
+            y2="12"
+          />
+        </svg>
+        <!---->
+         
+        <span
+          class="label svelte-15e08h8"
+        >
+          Not synced
+        </span>
+      </button>
+       
+      <!---->
+      <!---->
+    </div>
+     
     <!---->
     
     <!---->
@@ -194,7 +235,10 @@ exports[`PageMobile snapshots > empty state — top bar with hamburger, editor p
   <!---->
   
   <!---->
+   
+  <!---->
   
+  <!---->
   
 </div>
 `;
@@ -284,6 +328,47 @@ exports[`PageMobile snapshots > loading state — spinner shown in editor area 1
       </main>
     </div>
      
+    <div
+      class="sync-bar svelte-183wtch"
+    >
+      <button
+        class="sync-indicator svelte-15e08h8 uninitialized"
+        title="Click to sync now"
+      >
+        <svg
+          class="icon svelte-15e08h8"
+          fill="none"
+          height="14"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="14"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <line
+            x1="8"
+            x2="16"
+            y1="12"
+            y2="12"
+          />
+        </svg>
+        <!---->
+         
+        <span
+          class="label svelte-15e08h8"
+        >
+          Not synced
+        </span>
+      </button>
+       
+      <!---->
+      <!---->
+    </div>
+     
     <!---->
     
     <!---->
@@ -298,7 +383,10 @@ exports[`PageMobile snapshots > loading state — spinner shown in editor area 1
   <!---->
   
   <!---->
+   
+  <!---->
   
+  <!---->
   
 </div>
 `;
@@ -726,6 +814,47 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
       </main>
     </div>
      
+    <div
+      class="sync-bar svelte-183wtch"
+    >
+      <button
+        class="sync-indicator svelte-15e08h8 uninitialized"
+        title="Click to sync now"
+      >
+        <svg
+          class="icon svelte-15e08h8"
+          fill="none"
+          height="14"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="14"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <line
+            x1="8"
+            x2="16"
+            y1="12"
+            y2="12"
+          />
+        </svg>
+        <!---->
+         
+        <span
+          class="label svelte-15e08h8"
+        >
+          Not synced
+        </span>
+      </button>
+       
+      <!---->
+      <!---->
+    </div>
+     
     <!---->
     
     <!---->
@@ -740,7 +869,10 @@ exports[`PageMobile snapshots > note open — top bar, editor showing file conte
   <!---->
   
   <!---->
+   
+  <!---->
   
+  <!---->
   
 </div>
 `;
