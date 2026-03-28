@@ -1,6 +1,7 @@
 """Database connection lifecycle and FastAPI dependency."""
 
 import secrets
+from datetime import datetime, timezone
 from pathlib import Path
 
 import aiosqlite
@@ -33,3 +34,8 @@ async def get_db(request: Request) -> aiosqlite.Connection:
 def generate_id() -> str:
     """Generate random ID similar to PocketBase format (16-char hex string)."""
     return secrets.token_hex(8)
+
+
+def utcnow_iso() -> str:
+    """Naive UTC ISO timestamp. Convention: all timestamps in the DB are UTC without suffix."""
+    return datetime.now(timezone.utc).replace(tzinfo=None).isoformat()

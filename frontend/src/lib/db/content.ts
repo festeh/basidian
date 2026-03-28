@@ -11,7 +11,7 @@ export async function getBody(nodeId: string): Promise<string | null> {
 
 export async function updateBody(nodeId: string, body: string): Promise<void> {
 	const db = await getDb();
-	const timestamp = new Date().toISOString().replace('Z', '');
+	const timestamp = new Date().toISOString().slice(0, -1);
 
 	await db.execute(
 		'UPDATE fs_content SET body = $1, updated_at = $2, is_dirty = 1 WHERE node_id = $3',

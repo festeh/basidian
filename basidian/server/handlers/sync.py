@@ -1,6 +1,5 @@
 """Sync API endpoints for client-server data synchronization."""
 
-from datetime import datetime
 from typing import Optional
 
 import aiosqlite
@@ -10,25 +9,18 @@ from pydantic import BaseModel
 
 from basidian.server.metadata import MetadataIndex
 
-from ..db import get_db
+from ..db import get_db, utcnow_iso
 
 router = APIRouter()
 
 
-def _to_utc(ts: str | None) -> str | None:
-    """Parse any ISO timestamp and return naive UTC ISO string.
+def _strip_tz(ts: str) -> str:
+    """Strip timezone suffix for consistent string comparison.
 
-    '2026-03-28T10:33:13.873Z'      → '2026-03-28T10:33:13.873'
-    '2026-03-28T12:33:13+02:00'     → '2026-03-28T10:33:13'
-    '2026-03-28T10:33:13.873'       → '2026-03-28T10:33:13.873' (assumed UTC)
+    All timestamps should already be naive UTC, but clients may send
+    Z or +00:00 — strip them so the comparison matches what's in the DB.
     """
-    if ts is None:
-        return None
-    from datetime import timezone
-    dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
-    if dt.tzinfo is not None:
-        dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
-    return dt.isoformat()
+    return ts.replace("Z", "").replace("+00:00", "")
 
 
 class SyncNodeRow(BaseModel):
@@ -82,10 +74,10 @@ async def get_changes(
     If `since` is omitted, returns everything (full sync).
     Includes soft-deleted nodes so clients can apply deletions.
     """
-    server_time = _to_utc(datetime.utcnow().isoformat())
+    server_time = utcnow_iso()
 
     if since:
-        since = _to_utc(since)
+        since = _strip_tz(since)
         logger.info(f"Sync pull: changes since {since}")
         async with db.execute(
             """
@@ -160,15 +152,15 @@ async def push_changes(
     db: aiosqlite.Connection = Depends(get_db),
 ) -> SyncPushResponse:
     """Accept changed rows from a client. Last-write-wins by updated_at."""
-    server_time = _to_utc(datetime.utcnow().isoformat())
+    server_time = utcnow_iso()
     results: list[SyncPushResult] = []
     index = _get_index(request)
 
     for node in req.nodes:
-        # Normalize all incoming timestamps to naive UTC
-        node_created = _to_utc(node.created_at)
-        node_updated = _to_utc(node.updated_at)
-        node_deleted = _to_utc(node.deleted_at)
+        # Strip timezone suffixes from incoming timestamps
+        node_created = _strip_tz(node.created_at)
+        node_updated = _strip_tz(node.updated_at)
+        node_deleted = _strip_tz(node.deleted_at) if node.deleted_at else None
 
         # Check if this node exists on the server
         async with db.execute(
@@ -219,7 +211,7 @@ async def push_changes(
             ))
 
     for content in req.content:
-        content_updated = _to_utc(content.updated_at)
+        content_updated = _strip_tz(content.updated_at)
 
         async with db.execute(
             "SELECT updated_at FROM fs_content WHERE node_id = ?", (content.node_id,)

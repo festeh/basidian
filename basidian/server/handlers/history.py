@@ -1,7 +1,7 @@
 """File version history endpoints."""
 
 import difflib
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import aiosqlite
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,7 +9,7 @@ from loguru import logger
 
 from basidian.models import FileVersion, FileVersionSummary
 
-from ..db import generate_id, get_db
+from ..db import generate_id, get_db, utcnow_iso
 
 router = APIRouter()
 
@@ -47,7 +47,7 @@ async def create_version_if_changed(
         return False
 
     version_id = generate_id()
-    now = timestamp or datetime.now().isoformat()
+    now = timestamp or utcnow_iso()
     await db.execute(
         "INSERT INTO fs_versions (id, node_id, body, created_at) VALUES (?, ?, ?, ?)",
         (version_id, node_id, body, now),
@@ -191,7 +191,7 @@ async def restore_version(
     await create_version_if_changed(db, node_id, current_body)
 
     # Update the file content
-    now = datetime.now().isoformat()
+    now = utcnow_iso()
     await db.execute(
         "UPDATE fs_content SET body = ?, updated_at = ? WHERE node_id = ?",
         (version_row["body"], now, node_id),
@@ -231,9 +231,9 @@ async def cleanup_versions(db: aiosqlite.Connection) -> int:
 
     Returns the number of deleted versions.
     """
-    now = datetime.now()
-    seven_days_ago = (now - timedelta(days=7)).isoformat()
-    thirty_days_ago = (now - timedelta(days=30)).isoformat()
+    now = datetime.now(timezone.utc)
+    seven_days_ago = (now - timedelta(days=7)).replace(tzinfo=None).isoformat()
+    thirty_days_ago = (now - timedelta(days=30)).replace(tzinfo=None).isoformat()
 
     # Get all versions older than 7 days, grouped by node
     async with db.execute(

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import aiosqlite
@@ -8,7 +8,7 @@ from loguru import logger
 from basidian.models import FsNode, FsNodeRequest, FsNodeUpdateRequest, MoveRequest
 from basidian.server.metadata import MetadataIndex
 
-from ..db import generate_id, get_db
+from ..db import generate_id, get_db, utcnow_iso
 from .history import create_version_if_changed
 
 INACTIVITY_THRESHOLD_MINUTES = 10
@@ -206,7 +206,7 @@ async def create_node(
             raise HTTPException(status_code=409, detail="Path already exists")
 
     node_id = generate_id()
-    now = datetime.now().isoformat()
+    now = utcnow_iso()
 
     # Insert tree node
     await db.execute(
@@ -268,8 +268,8 @@ async def update_node(
     new_name = req.name if req.name is not None else node_row["name"]
     new_sort_order = req.sort_order if req.sort_order is not None else node_row["sort_order"]
 
-    now = datetime.now()
-    now_iso = now.isoformat()
+    now_dt = datetime.now(timezone.utc)
+    now_iso = utcnow_iso()
 
     # Handle content update (files only)
     content_changing = False
@@ -286,8 +286,8 @@ async def update_node(
         if content_changing and content_row and content_row["updated_at"]:
             # Auto-snapshot on inactivity gap
             try:
-                last_updated = datetime.fromisoformat(content_row["updated_at"])
-                gap = now - last_updated
+                last_updated = datetime.fromisoformat(content_row["updated_at"]).replace(tzinfo=timezone.utc)
+                gap = now_dt - last_updated
                 if gap.total_seconds() >= INACTIVITY_THRESHOLD_MINUTES * 60:
                     await create_version_if_changed(
                         db, node_id, old_body, content_row["updated_at"]
@@ -360,7 +360,7 @@ async def delete_node(
         raise HTTPException(status_code=404, detail="Node not found")
 
     node_path = row["path"]
-    now = datetime.now().isoformat()
+    now = utcnow_iso()
     index = _get_index(request)
 
     # Soft-delete the node and all descendants
@@ -452,7 +452,7 @@ async def move_node(
                     status_code=409, detail="Destination path already exists"
                 )
 
-    now = datetime.now().isoformat()
+    now = utcnow_iso()
 
     # Update the node itself (O(1) for parent_id change)
     await db.execute(
