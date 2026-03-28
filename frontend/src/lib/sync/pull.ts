@@ -5,7 +5,12 @@ import { conflicts, type SyncConflict } from './status';
 
 const log = createLogger('SyncPull');
 
-export async function pull(): Promise<string | null> {
+export interface PullResult {
+	serverTime: string;
+	changedNodeIds: Set<string>;
+}
+
+export async function pull(): Promise<PullResult | null> {
 	const db = await getDb();
 
 	// Get last sync timestamp
@@ -21,7 +26,7 @@ export async function pull(): Promise<string | null> {
 	if (changes.nodes.length === 0 && changes.content.length === 0) {
 		log.debug('no changes from server');
 		await upsertSyncMeta(db, 'last_sync_at', changes.server_time);
-		return changes.server_time;
+		return { serverTime: changes.server_time, changedNodeIds: new Set() };
 	}
 
 	log.info('applying changes', {
@@ -104,6 +109,8 @@ export async function pull(): Promise<string | null> {
 	}
 
 	// Apply content changes — upsert, but skip locally dirty rows
+	const changedNodeIds = new Set<string>();
+
 	for (const content of changes.content) {
 		const local = await db.select<{ is_dirty: number }[]>(
 			'SELECT is_dirty FROM fs_content WHERE node_id = $1',
@@ -127,12 +134,13 @@ export async function pull(): Promise<string | null> {
 				[content.body, content.updated_at, content.node_id]
 			);
 		}
+		changedNodeIds.add(content.node_id);
 	}
 
 	await upsertSyncMeta(db, 'last_sync_at', changes.server_time);
 
-	log.info('pull complete', { server_time: changes.server_time });
-	return changes.server_time;
+	log.info('pull complete', { server_time: changes.server_time, changed: changedNodeIds.size });
+	return { serverTime: changes.server_time, changedNodeIds };
 }
 
 async function upsertSyncMeta(

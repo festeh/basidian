@@ -20,18 +20,19 @@ async function runSync(): Promise<void> {
 
 	try {
 		// Pull first, then push
-		const serverTime = await pull();
-		if (serverTime) {
-			lastSyncAt.set(serverTime);
-		}
+		const result = await pull();
+		if (result) {
+			lastSyncAt.set(result.serverTime);
 
-		// Refresh stores with any new data from pull
-		await filesystemActions.loadTree();
+			if (result.changedNodeIds.size > 0) {
+				await filesystemActions.loadTree();
 
-		// Re-read currently open file in case its content changed
-		const open = get(currentFile);
-		if (open?.id) {
-			await filesystemActions.openFile(open);
+				// Re-read open file only if its content changed
+				const open = get(currentFile);
+				if (open?.id && result.changedNodeIds.has(open.id)) {
+					await filesystemActions.openFile(open);
+				}
+			}
 		}
 
 		await push();
