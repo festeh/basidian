@@ -29,10 +29,25 @@ export async function pull(): Promise<string | null> {
 		content: changes.content.length
 	});
 
+	// Topological sort: parents before children (FK constraint)
+	const nodeMap = new Map(changes.nodes.map((n) => [n.id, n]));
+	const sortedNodes: typeof changes.nodes = [];
+	const visited = new Set<string>();
+
+	function visit(node: (typeof changes.nodes)[0]) {
+		if (visited.has(node.id)) return;
+		visited.add(node.id);
+		if (node.parent_id && nodeMap.has(node.parent_id)) {
+			visit(nodeMap.get(node.parent_id)!);
+		}
+		sortedNodes.push(node);
+	}
+	for (const node of changes.nodes) visit(node);
+
 	// Apply node changes — upsert, but skip locally dirty rows
 	const newConflicts: SyncConflict[] = [];
 
-	for (const node of changes.nodes) {
+	for (const node of sortedNodes) {
 		const local = await db.select<{ is_dirty: number; deleted_at: string | null }[]>(
 			'SELECT is_dirty, deleted_at FROM fs_nodes WHERE id = $1',
 			[node.id]

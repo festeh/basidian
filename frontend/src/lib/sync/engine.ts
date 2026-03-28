@@ -28,8 +28,8 @@ async function runSync(): Promise<void> {
 		const pending = await refreshPendingCount();
 		syncState.set(pending > 0 ? 'pending' : 'synced');
 	} catch (e) {
-		const message = e instanceof Error ? e.message : 'Sync failed';
-		log.warn('sync failed', { error: message });
+		const message = e instanceof Error ? e.message : String(e);
+		log.warn('sync failed', e);
 		syncError.set(message);
 		syncState.set('error');
 	}
@@ -81,8 +81,8 @@ export function schedulePush(): void {
 			const pending = await refreshPendingCount();
 			syncState.set(pending > 0 ? 'pending' : 'synced');
 		} catch (e) {
-			const message = e instanceof Error ? e.message : 'Push failed';
-			log.warn('push failed', { error: message });
+			const message = e instanceof Error ? e.message : String(e);
+			log.warn('push failed', e);
 			syncError.set(message);
 			syncState.set('error');
 		}

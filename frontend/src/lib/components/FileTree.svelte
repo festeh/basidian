@@ -126,8 +126,7 @@
 		</div>
 	{:else if $error}
 		<div class="error-state">
-			<p>Could not connect to server</p>
-			<p class="hint">{$error}</p>
+			<p>{$error}</p>
 			<button class="retry-btn" onclick={() => filesystemActions.loadTree()}>Retry</button>
 		</div>
 	{:else if $rootNodes.length === 0}
@@ -210,12 +209,6 @@
 
 	.error-state p {
 		margin: 0;
-	}
-
-	.error-state .hint {
-		font-size: var(--text-label);
-		margin-top: var(--space-tight);
-		color: var(--color-error);
 	}
 
 	.retry-btn {

@@ -1,12 +1,17 @@
 import Database from '@tauri-apps/plugin-sql';
 import { CREATE_TABLES, SCHEMA_VERSION } from './schema';
 
-let db: Database | null = null;
+let dbPromise: Promise<Database> | null = null;
 
-export async function getDb(): Promise<Database> {
-	if (db) return db;
+export function getDb(): Promise<Database> {
+	if (!dbPromise) {
+		dbPromise = initDb();
+	}
+	return dbPromise;
+}
 
-	db = await Database.load('sqlite:basidian-local.db');
+async function initDb(): Promise<Database> {
+	const db = await Database.load('sqlite:basidian-local.db');
 	await db.execute('PRAGMA foreign_keys = ON');
 	await runMigrations(db);
 	return db;
@@ -43,8 +48,9 @@ async function runMigrations(conn: Database): Promise<void> {
 }
 
 export async function closeDb(): Promise<void> {
-	if (db) {
+	if (dbPromise) {
+		const db = await dbPromise;
+		dbPromise = null;
 		await db.close();
-		db = null;
 	}
 }

@@ -13,6 +13,8 @@
       "identifier": "fs:scope",
       "allow": [{ "path": "$TEMP/**" }]
     },
-    "sql:default"
+    "sql:default",
+    "sql:allow-execute",
+    "sql:allow-select"
   ]
 }
